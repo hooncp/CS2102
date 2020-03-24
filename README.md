@@ -15,7 +15,7 @@ Test using postman:
 
 - eg: http://localhost:5000/rider/getData
 
-2. POST requests 
+2.POST requests 
 
 - eg: http://localhost:5000/rider/insertData
 
