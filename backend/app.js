@@ -11,6 +11,11 @@ var testRouter = require('./routes/index');
 var riderRouter = require('./routes/rider');
 /* ---------------------------- */
 var app = express();
+// app.set('views', 'pug');
+
+const port = process.env.PORT || 5000; //connect to port 5000
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.use(logger('dev'));
 app.use(express.json());
