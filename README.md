@@ -1,29 +1,29 @@
 # CS2102
 For testing:
-cd to frontend => npm start
 
-cd to backend => node app.js
+- cd to frontend => npm start
 
-update db.js in backend to fit your own (currently using test inserted with pizza.sql
+- cd to backend => node app.js
+
+- update db.js in backend to fit your own (currently using test inserted with pizza.sql
 
 
 
 Test using postman:
 
-GET requests 
+1.GET requests 
 
-eg: http://localhost:5000/rider/getData
+- eg: http://localhost:5000/rider/getData
 
+2. POST requests 
 
-POST requests 
-
-eg: http://localhost:5000/rider/insertData
+- eg: http://localhost:5000/rider/insertData
 
 - add Key: Content-Type & Value: application/json to HEADER,
 
 - include info in json format in BODY -> raw
 
-eg: 
+- eg: 
 {
 "name1": "value1",
 "name2": "value2"
