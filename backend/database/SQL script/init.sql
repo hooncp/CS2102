@@ -136,13 +136,12 @@ CREATE TABLE Intervals (
 CREATE TABLE Promotions (
 	promoCode	    VARCHAR(20),	
 	promoDesc 		VARCHAR(200),
-	createdBy	    VARCHAR(50),
-	applicableTo	VARCHAR(200),
-	discUnit	    VARCHAR(20),
-	discRate	    VARCHAR(20),
-	startDate	    DATE,
-	endDate	        DATE,
-	type		    VARCHAR(50),
+	createdBy	    VARCHAR(50), --?
+	applicableTo	VARCHAR(200) REFERENCES Restaurants(rname) ON DELETE CASCADE,
+	discUnit	    VARCHAR(20) NOT NULL,
+	discRate	    VARCHAR(20) NOT NULL,
+	startDate	    TIMESTAMP NOT NULL,
+	endDate	        TIMESTAMP NOT NULL,
 	PRIMARY KEY (promoCode, applicableTo)
 );
 
@@ -193,17 +192,15 @@ CREATE TABLE Delivery_Details (
 CREATE TABLE MinSpendingPromotions (
 	promoCode	    VARCHAR(20),	
 	applicableTo	VARCHAR(200),
-	minAmt	        NUMERIC(8, 2),
+	minAmt	        NUMERIC(8, 2) DEFAULT 0,
 	PRIMARY KEY (promoCode, applicableTo),
-	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions
+	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE CustomerPromotions (
     promoCode		VARCHAR(20),	
 	applicableTo	VARCHAR(200),
-	minAge			INTEGER,
-	maxAge 			INTEGER,
 	minTimeFromLastOrder 	INTEGER, -- # of days
 	PRIMARY KEY (promoCode, applicableTo),
-	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions
+	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
 );	

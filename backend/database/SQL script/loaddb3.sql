@@ -88,11 +88,11 @@ INSERT INTO Orders(orderId, userId, promoCode, applicableTo,
                 usedRewardPoints, givenRewardPoints, reviewContent) VALUES
 (1, 1, NULL, NULL, 'cash', 30.00, 10.00, '2020-06-22 19:05:25', 'blk singapore', NULL, 3, 'SOO GOOD'),
 (2, 1, NULL, NULL, 'cash', 40.00, 10.00, '2020-06-22 19:05:25', 'blk singapore', NULL, 3, 'NOT GOOD'),
-(3, 2, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'NOT GOOD'),
-(4, 2, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD'),
-(5, 3, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD'),
-(6, 3, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD'),
-(7, 3, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD');
+(3, 2, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'NOT GOOD1'),
+(4, 2, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD1'),
+(5, 3, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD2'),
+(6, 3, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD3'),
+(7, 3, NULL, NULL, 'credit', 20.00, 7.50, '2020-06-22 19:15:25', 'blk 123', NULL, 3, 'CHICKEN GOOD DUCK BAD4');
 
 INSERT INTO Delivery_Details(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant
                             ,deliveryTimetoCustomer, arrivalTimeAtRestaurant, rating) VALUES
@@ -114,3 +114,13 @@ INSERT INTO Order_Details(orderId, rname, fname, foodQty) VALUES
 (5, 'JIT YONG RESTAURANT', 'DUCK', 1),
 (6, 'JIT YONG RESTAURANT', 'DUCK', 1),
 (7, 'JIT YONG RESTAURANT', 'DUCK', 1);
+
+INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, discUnit, discRate, startDate, endDate) VALUES
+('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT', 10, 10, '2020-06-22 19:10:25', '2020-06-25 19:11:25'),
+('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT1', 15, 15, '2022-06-22 19:10:25', '2027-06-25 19:11:25');
+
+INSERT INTO MinSpendingPromotions(promoCode, applicableTo, minAmt) VALUES
+('A123', 'JIT YONG RESTAURANT', 10);
+
+INSERT INTO CustomerPromotions(promoCode, applicableTo, minTimeFromLastOrder) VALUES
+('A123', 'JIT YONG RESTAURANT1', 10);

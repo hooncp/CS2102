@@ -30,4 +30,17 @@ SELECT R.userId, coalesce(count(R.deliveryId), 0) as totalOrders,
 FROM RiderDetails R
 GROUP BY R.userId;
 
+--customers could view review postings and their past orders
+SELECT distinct O.reviewContent, OD.rname, O.orderId
+FROM orders O join Order_details OD on O.orderId = OD.orderId
+WHERE O.userId = 1;
 
+/*
+Support the browsing of summary information for FDS managers. The summary information could
+include the following:
+
+For each month, the total number of new customers, the total number of orders, and the total
+cost of all orders.
+*/
+
+--SELECT EXTRACT(MONTH FROM TIMESTAMP '2016-12-31 13:30:15');
