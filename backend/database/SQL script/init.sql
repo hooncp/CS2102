@@ -97,12 +97,13 @@ CREATE TABLE Full_Time (
 );
 
 CREATE TABLE Schedules (
-	scheduleId	INTEGER,
-	userId		INTEGER,
-	startDate	DATE,
-	endDate	    DATE,
+	scheduleId INTEGER,
+	userId INTEGER,
+	startDate date,
+	endDate date,
 	PRIMARY KEY (scheduleId),
-	FOREIGN KEY (userId) REFERENCES Riders(userId)
+	FOREIGN KEY (userId) REFERENCES Riders(userId),
+	check ((endDate - startDate) = 7)
 );
 
 CREATE TABLE Monthly_Work_Schedules (
@@ -120,10 +121,30 @@ CREATE TABLE Weekly_Work_Schedules (
 
 
 CREATE TABLE Intervals (
-	scheduleId 	INTEGER REFERENCES Schedules,
-	startTime	TIMESTAMP,
-	endTime	    TIMESTAMP,
-    PRIMARY KEY (scheduleId)
+	intervalId INTEGER,
+	scheduleId INTEGER,
+	startTime TIMESTAMP,
+	endTime TIMESTAMP,
+	PRIMARY KEY (intervalId),
+	FOREIGN KEY (scheduleId) REFERENCES Schedules(scheduleId),
+	check (DATE_PART('minutes', startTime) = 0
+	AND
+	DATE_PART('seconds', startTime) = 0
+	AND
+	DATE_PART('minutes', endTime) = 0
+	AND
+	DATE_PART('seconds', startTime) = 0
+	AND
+	DATE_PART('hours', endTime) - DATE_PART('hours', startTime) <= 4
+	AND
+	startTime::date = endTime::date
+	AND
+	DATE_PART('hours', endTime) > DATE_PART('hours', startTime)
+	AND
+	startTime::time >= '10:00'
+	AND
+	endTime::time <='22:00'
+	)
 );
 
 CREATE TABLE Delivery_Details (
