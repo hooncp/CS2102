@@ -20,14 +20,17 @@ rating received by the rider for all the orders delivered for that month.
 */
 
 WITH RiderDetails AS (
-    SELECT R.userId, D.rating, age(D.deliveryTimetoCustomer, D.departTimeForRestaurant) as timeTaken, D.deliveryId
+    SELECT R.userId, D.rating, age(D.deliveryTimetoCustomer, D.departTimeForRestaurant) as timeTaken, 
+            D.orderId, EXTRACT(MONTH FROM D.deliveryTimetoCustomer) as month, 
+            EXTRACT(YEAR FROM D.deliveryTimetoCustomer) as year
     FROM Riders R left join Delivery_Details D ON R.userId = D.userId
 )
-SELECT R.userId, coalesce(count(R.deliveryId), 0) as totalOrders, 
+SELECT R.userId, coalesce(count(R.orderId), 0) as totalOrders, 
                 avg(R.timeTaken) as averageTime,
                 coalesce(count(R.rating), 0) as totalNoOfRating, 
                 coalesce(avg(R.rating), 0) as averageRating
 FROM RiderDetails R
+WHERE R.month = 6 AND R.year = 2020
 GROUP BY R.userId;
 
 --customers could view review postings and their past orders
@@ -44,3 +47,5 @@ cost of all orders.
 */
 
 --SELECT EXTRACT(MONTH FROM TIMESTAMP '2016-12-31 13:30:15');
+SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer)
+FROM Delivery_Details;
