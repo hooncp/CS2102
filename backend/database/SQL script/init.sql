@@ -169,10 +169,7 @@ CREATE TABLE Contains (
 	rname			VARCHAR(100),
 	fname 			VARCHAR(100),
 	foodQty		    INTEGER NOT NULL,
-<<<<<<< Updated upstream
-=======
 	reviewContent	VARCHAR(300),
->>>>>>> Stashed changes
 
 	PRIMARY KEY(orderId, rname, fname),
 	FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
