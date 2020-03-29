@@ -21,13 +21,14 @@ DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 
 CREATE TABLE Users (
 	userId 		INTEGER,
+	name		VARCHAR(100),
     	PRIMARY KEY (userId)
 );
 
 CREATE TABLE Restaurants (
 	rname 		VARCHAR(200),
 	minOrderAmt	NUMERIC(8, 2),
-	area 		VARCHAR(200),
+	area 		VARCHAR(20),
     	PRIMARY KEY (rname),
 	CHECK(area = 'central' OR
 		 area = 'west' OR
@@ -67,6 +68,7 @@ CREATE TABLE Restaurant_Staff (
 
 CREATE TABLE Customers (
 	userId 		INTEGER,
+	creditCardInfo	VARCHAR(100),
     PRIMARY KEY (userId),
 	FOREIGN KEY (userId) REFERENCES Users
 		on DELETE CASCADE
@@ -151,12 +153,10 @@ CREATE TABLE Orders (
 	promoCode		VARCHAR(20),
     	applicableTo	VARCHAR(200),
 	modeOfPayment 	VARCHAR(10) NOT NULL,
-	totalFoodPrice 	NUMERIC(8,2) NOT NULL,
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
 	usedRewardPoints	INTEGER DEFAULT 0,
 	givenRewardPoints	INTEGER NOT NULL,
-	reviewContent		    VARCHAR(100),
 	
 	PRIMARY KEY(orderId),
 	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
@@ -169,6 +169,7 @@ CREATE TABLE Order_Details (
 	rname			VARCHAR(100),
 	fname 			VARCHAR(100),
 	foodQty		    INTEGER NOT NULL,
+	reviewContent		VARCHAR(300),
 
 	PRIMARY KEY(orderId, rname, fname),
 	FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
