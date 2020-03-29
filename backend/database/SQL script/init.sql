@@ -12,9 +12,9 @@ DROP TABLE IF EXISTS Monthly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Weekly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Intervals CASCADE;
 DROP TABLE IF EXISTS Orders CASCADE;
-DROP TABLE IF EXISTS Order_Details CASCADE;
+DROP TABLE IF EXISTS Contains CASCADE;
 DROP TABLE IF EXISTS Schedules CASCADE;
-DROP TABLE IF EXISTS Delivery_Details CASCADE;
+DROP TABLE IF EXISTS Delivers CASCADE;
 DROP TABLE IF EXISTS Promotions CASCADE;
 DROP TABLE IF EXISTS MinSpendingPromotions CASCADE;
 DROP TABLE IF EXISTS CustomerPromotions CASCADE;
@@ -149,9 +149,9 @@ CREATE TABLE Promotions (
 
 CREATE TABLE Orders (
 	orderId 		INTEGER,
-	userId 			INTEGER NOT NULL REFERENCES Customers ON UPDATE CASCADE,
+	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
 	promoCode		VARCHAR(20),
-    	applicableTo	VARCHAR(200),
+    applicableTo	VARCHAR(200),
 	modeOfPayment 	VARCHAR(10) NOT NULL,
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
@@ -164,19 +164,19 @@ CREATE TABLE Orders (
 		 	modeOfPayment ='credit')
 );
 
-CREATE TABLE Order_Details (
+CREATE TABLE Contains (
 	orderId 		INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
 	rname			VARCHAR(100),
 	fname 			VARCHAR(100),
 	foodQty		    INTEGER NOT NULL,
-	reviewContent		VARCHAR(300),
+	reviewContent	VARCHAR(300),
 
 	PRIMARY KEY(orderId, rname, fname),
 	FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
 	CHECK(foodQty >= 1)
 );
 
-CREATE TABLE Delivery_Details (
+CREATE TABLE Delivers (
 	orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
 	userId				        INTEGER NOT NULL, 
 	departTimeForRestaurant	    TIMESTAMP,
@@ -184,8 +184,8 @@ CREATE TABLE Delivery_Details (
 	arrivalTimeAtRestaurant	    TIMESTAMP,
 	deliveryTimetoCustomer	    TIMESTAMP,
 	rating			    INTEGER,
-    	PRIMARY KEY (orderId),
-	FOREIGN KEY (userId) REFERENCES Riders,
+    PRIMARY KEY (orderId),
+	FOREIGN KEY (userId) REFERENCES Riders ON DELETE CASCADE,
 	CHECK(rating <= 5)
 );
 
