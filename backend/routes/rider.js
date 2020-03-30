@@ -29,13 +29,6 @@ router.put('/insertData', async (req, res) => {
 		console.error(err.message);
 	}
 });
-/*
-router.get('/test', function(req, res, next) {
-	pool.query(sql_query, (err, data) => {
-    //console.log(data);
-    if (err) throw err;
-		res.send(data.rows);
-	});
-});
-*/
+
+
 module.exports = router;

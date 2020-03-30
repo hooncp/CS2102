@@ -1,7 +1,6 @@
 /* START TEST SCHEDULES */
 -- insert values
 insert into users values (1);
-insert into riders values (1, 'West', 2000.20, 5, 'monthly');
 --[fail] test endDate - startDate <> 7 days
 insert into schedules values (5,1,'13 dec 2020', '19 dec 2020');
 insert into schedules values (5,1,'13 dec 2020', '21 dec 2020');
