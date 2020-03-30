@@ -21,7 +21,8 @@ DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 
 CREATE TABLE Users (
 	userId 		INTEGER,
-    PRIMARY KEY (userId)
+	name		VARCHAR(100),
+    	PRIMARY KEY (userId)
 );
 
 CREATE TABLE Restaurants (
@@ -63,10 +64,11 @@ CREATE TABLE Restaurant_Staff (
 			on DELETE CASCADE
 			on UPDATE CASCADE
 );
--- Delete cascade can only work on foreign key 
+
 
 CREATE TABLE Customers (
 	userId 		INTEGER,
+	creditCardInfo	VARCHAR(100),
     PRIMARY KEY (userId),
 	FOREIGN KEY (userId) REFERENCES Users
 		on DELETE CASCADE
@@ -172,14 +174,11 @@ CREATE TABLE Orders (
 	promoCode		VARCHAR(20),
     applicableTo	VARCHAR(200),
 	modeOfPayment 	VARCHAR(10) NOT NULL,
-	totalFoodPrice 	NUMERIC(8,2) NOT NULL,
-	deliveryFee		NUMERIC(8,2) NOT NULL,
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
 	usedRewardPoints	INTEGER DEFAULT 0,
 	givenRewardPoints	INTEGER NOT NULL,
 	reviewContent		    VARCHAR(100),
-	
 	PRIMARY KEY(orderId),
 	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
 	CHECK(modeOfPayment = 'cash' OR
@@ -191,15 +190,14 @@ CREATE TABLE Order_Details (
 	rname			VARCHAR(100),
 	fname 			VARCHAR(100),
 	foodQty		    INTEGER NOT NULL,
-
 	PRIMARY KEY(orderId, rname, fname),
 	FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
 	CHECK(foodQty >= 1)
 );
 
 CREATE TABLE Delivery_Details (
-	orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
-	userId				        INTEGER NOT NULL, 
+    orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
+	userId				        INTEGER NOT NULL,
 	departTimeForRestaurant	    TIMESTAMP,
 	departTimeFromRestaurant    TIMESTAMP,
 	arrivalTimeAtRestaurant	    TIMESTAMP,
@@ -219,9 +217,10 @@ CREATE TABLE MinSpendingPromotions (
 );
 
 CREATE TABLE CustomerPromotions (
-    promoCode		VARCHAR(20),	
+    	promoCode		VARCHAR(20),	
 	applicableTo	VARCHAR(200),
 	minTimeFromLastOrder 	INTEGER, -- # of days
 	PRIMARY KEY (promoCode, applicableTo),
 	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
-);	
+);
+

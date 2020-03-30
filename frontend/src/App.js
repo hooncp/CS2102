@@ -1,41 +1,98 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 export default class App extends Component {
-  constructor(props){
-    super(props);
-    this.state = {apiResponse: "NOT yet",
-                  data: "data"};
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: "nil",
+            testInsertData: "nil",
+            testDeleteData: "nil",
+            testUpdateData: "nil",
 
-  callAPI() {
-    fetch("http://localhost:9000/testAPI")
-    .then(res=>res.text())
-    .then(res=>this.setState({apiResponse: res}))
-    .catch(err=>err);
-  }
+        };
+    }
 
-  callAPI2() {
-    fetch("http://localhost:9000/select")
-    .then(res=>res.text())
-    .then(res=>this.setState({data: res}))
-    .catch(err=>err);
-  }
+    getData() {
+        return fetch("http://localhost:5000/rider/getData")
+            .then(res => res.text())
+            .then(res => this.setState({data: res}))
+            .catch(err => err);
+    }
 
-  componentDidMount() {
-    this.callAPI();
-    this.callAPI2();
-  }
+    testInsertData(pizza) {
+        return fetch("http://localhost:5000/rider/insertData", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                pname: pizza,
+            })
+        })
+            .then(res => res.text())
+            .then(res => this.setState({testInsertData: res}))
+            .catch(err => err);
+    }
 
-  render() {
-    return (
-      <div>
-        <p>{this.state.apiResponse}</p>
-        <p>{this.state.data}</p>       
-      </div>
-    );
-  }
+    testDeleteData(pizza) {
+        return fetch("http://localhost:5000/rider/deleteData", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                pname: pizza,
+            })
+        })
+            .then(res => res.text())
+            .then(res => this.setState({testDeleteData: res}))
+            .catch(err => err);
+    }
+
+    testUpdateData(oldPizza, newPizza) {
+        return fetch("http://localhost:5000/rider/updateData", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                oldPname: oldPizza,
+                newPname: newPizza,
+            })
+        })
+            .then(res => res.text())
+            .then(res => this.setState({testUpdateData: res}))
+            .catch(err => err);
+    }
+
+    componentDidMount() {
+      /* does not happen in order, can test one by one*/
+      /* if insert dup keys into table, backend will return error and stop running*/
+
+        // this.testInsertData("pizza2")
+        // this.testUpdateData("pizza1","pizza2")
+        // this.testDeleteData("pizza2")
+        this.getData();
+    }
+
+    render() {
+        return (
+            <div>
+                <p>Test Insert data:{this.state.testInsertData}</p>
+                <br/>
+                <p>Test Update data:{this.state.testUpdateData}</p>
+                <br/>
+                <p>Test Delete data:{this.state.testDeleteData}</p>
+                <br/>
+                <p>Data: {this.state.data} </p>
+                <br/>
+            </div>
+        );
+    }
 }
-
 
 
 /*import React, { Component } from 'react';
