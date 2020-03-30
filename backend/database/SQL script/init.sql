@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS MinSpendingPromotions CASCADE;
 DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 
 CREATE TABLE Users (
-	userId 		INTEGER,
+	userId 		SERIAL,
 	name		VARCHAR(100),
     	PRIMARY KEY (userId)
 );
@@ -81,7 +81,9 @@ CREATE TABLE Riders (
     PRIMARY KEY (userId),
 	FOREIGN KEY (userId) REFERENCES Users
 			on DELETE CASCADE
-			on UPDATE CASCADE,
+			on UPDATE CASCADE
+--             DEFERRABLE INITIALLY DEFERRED
+    ,
 	CHECK(area = 'central' OR
 		 area = 'west' OR
 		 area = 'east' OR
@@ -90,11 +92,12 @@ CREATE TABLE Riders (
 );
 
 CREATE TABLE Part_Time (
-    userId 		INTEGER,
-    PRIMARY KEY (userId), 
-	FOREIGN KEY (userId) REFERENCES Riders
-			on DELETE CASCADE
-			on UPDATE CASCADE
+   userId 		INTEGER,
+   PRIMARY KEY (userId),
+   FOREIGN KEY (userId) REFERENCES Riders
+       on DELETE CASCADE
+       on UPDATE CASCADE
+--        DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE Full_Time (
@@ -103,10 +106,12 @@ CREATE TABLE Full_Time (
 	FOREIGN KEY (userId) REFERENCES Riders 
 			on DELETE CASCADE
 			on UPDATE CASCADE
+--             DEFERRABLE INITIALLY DEFERRED
+
 );
 
 CREATE TABLE Schedules (
-	scheduleId INTEGER,
+	scheduleId SERIAL,
 	userId INTEGER,
 	startDate date,
 	endDate date,
@@ -133,7 +138,8 @@ CREATE TABLE Intervals (
 	startTime TIMESTAMP,
 	endTime TIMESTAMP,
 	PRIMARY KEY (intervalId),
-	FOREIGN KEY (scheduleId) REFERENCES Schedules(scheduleId),
+	FOREIGN KEY (scheduleId) REFERENCES Schedules(scheduleId)
+	deferrable initially deferred,
 	check (DATE_PART('minutes', startTime) = 0
 	AND
 	DATE_PART('seconds', startTime) = 0

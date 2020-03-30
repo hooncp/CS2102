@@ -6,102 +6,226 @@ const pool = require('../database/db');
 /* Useful guide:
 https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-d96d6fc892d8/
 */
+/* Features:
+1. on create rider, choose if monthly or weekly //done
+2. create a schedule -> choose start date, plan schedule for one week
+3. total number of orders delivered by rider
+4. total number of hours worked by the rider for that month
+5. total salary earned by the rider for that month
+6. average delivery time by the rider for that month
+7. number of ratings received by rider for all orders delivered for that month
+8. averaged rating received by rider for orders delivered that month
+9. Browsing summary info for delivery riders -> weekly/monthly info on
+	(a) total num of orders delivered,
+	(b) total num of hours worked
+	(c) total salary earned
+*/
+
 
 /* SQL Query */
-var sql_query = 'SELECT * FROM student_info';
+// var sql_query = 'SELECT * FROM student_info';
+//
+// router.get('/testGet', async (req, res) => {
+// 	try {
+// 		console.log(req);
+// 		return res.json("test");
+// 	} catch (err) {
+// 		console.error(err.message);
+// 	}
+// });
+//
+// router.get('/getRiderInfo', async (req, res) => {
+// 	try {
+// 		console.log(req);
+// 		await pool.query("SELECT * FROM pizzas");
+// 		return res.json(test.rows);
+// 	} catch (err) {
+// 		console.error(err.message);
+// 	}
+// });
 
-router.get('/testGet', async (req, res) => {
-	try {
-		console.log(req);
-		return res.json("test");
-	} catch (err) {
-		console.error(err.message);
-	}
-});
+// router.post('/testPut', async (req,res) => {
+// 	try {
+// 		return res.json(req.body);
+// 	} catch( err ){
+// 		console.error(err.message);
+// 	}
+// })
+/*test input json:
+*
+* */
+// 2. create a schedule -> choose start date, plan schedule for one week
+// router.post('/createWeeklySchedule', async (req, res) => {
+// 	try {
+// 		const userId = req.body.userId;
+// 		const startDate = req.body.startDate;
+// 		const intervals = req.body.intervals;
+// 		/* "intervals" :
+// 			[
+// 				{"startTime" :"2020-05-05 10:00:00 ","endTime"},
+// 				{"startTime" :"2020-05-05 14:00:00 ","endTime"}
+// 			]
+// 		*/
+// 		let intervalId;
+// 		await pool.query(
+// 			`INSERT INTO `
+// 		)
+// 	}
+// })
 
-router.get('/getData', async (req, res) => {
-	try {
-		console.log(req);
-		const test = await pool.query("SELECT * FROM pizzas");
-		return res.json(test.rows);
-	} catch (err) {
-		console.error(err.message);
-	}
-});
+// function insertRider(name, area) {
+//     return new Promise((res, rej) => {
+//         let currId;
+//         try {
+//             pool.query(`INSERT INTO users(name)
+// 					VALUES ($1)
+// 					returning userId`,
+//                 [name],
+//             ).then(result => {
+//                     currId = result.rows[0].userid;
+//                     pool.query(
+//                             `INSERT INTO riders values($1, $2)`,
+//                         [currId, area]
+//                     )
+//                 }
+//             ).then(result => {
+//                     res(currId);
+//                 }
+//             )
+//         } catch (err) {
+//             console.err(err);
+//             pool.query('ROLLBACK');
+//         }
+//     })
+// }
 
-router.post('/testPut', async (req,res) => {
-	try {
-		return res.json(req.body);
-	} catch( err ){
-		console.error(err.message);
-	}
-})
-
-router.post('/insertData', async (req, res) => {
+/*https://stackoverflow.com/questions/55764970/node-mysql-query-not-updating-variable-from-outside-the-query*/
+// create Part Time Rider
+router.post('/insertPartTimeRider', async (req, res) => {
 	// console.log("succeed");
 	try {
-		const {pname} = req.body;
-		console.log(pname);
-		await pool.query(
-			`INSERT INTO pizzas (pizza)
-					VALUES ($1)`,
-			[pname],
-			(error,result) => {
-				if (error) {
-					throw error
-				}
+		let currId = 0;
+		const name = req.body.name;
+		const area = req.body.area;
+		await pool.query(`BEGIN`, (err, result) => {
+			if (err) {
+				console.log(err);
+				return pool.query(`ROLLBACK`);
 			}
-		);
-	return res.json(`${pname} added to Pizza`);
+			pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name], (err, result) => {
+				if (err) {
+					console.log(err);
+					return pool.query(`ROLLBACK`);
+				}
+				currId = result.rows[0].userid;
+				console.log('currId:', currId);
+				pool.query(
+					`INSERT INTO riders VALUES ($1, $2)`, [currId, area], (err, result) => {
+						if (err) {
+							console.log(err);
+							return pool.query(`ROLLBACK`);
+						}
+						pool.query(
+							`INSERT INTO Part_Time VALUES  ($1)`, [currId], (err, result) => {
+								if (err) {
+									console.log(err);
+									return pool.query(`ROLLBACK`);
+								}
+							})
+					})
+			})
+		})
+		pool.query(`COMMIT`);
+		return res.json(`${name} added as a Rider`);
 	} catch (err) {
-		console.error(err.message);
+		// pool.query(`ROLLBACK`);
+		console.error("error triggered: ", err.message);
 	}
 });
-
-<<<<<<< HEAD
-
-=======
-router.post('/deleteData', async (req, res) => {
+router.post('/insertFullTimeRider', async (req, res) => {
 	// console.log("succeed");
+	await pool.query('BEGIN');
 	try {
-		const {pname} = req.body;
-		await pool.query(
-			`DELETE FROM pizzas 
-					WHERE pizza = ($1)`,
-			[pname],
-			(error, results) => {
-				if (error) {
-					throw error
-				}
+		const name = req.body.name;
+		const area = req.body.area;
+		pool.query('BEGIN', (err, result) => {
+			if (err) {
+				console.error(err);
+				pool.query('ROLLBACK');
 			}
-		);
-		return res.json(`${pname} deleted.`);
-
+			pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name], (err, result) => {
+				if (err) {
+					console.error(err);
+					pool.query('ROLLBACK');
+				}
+				currId = result.rows[0].userid;
+				pool.query(
+					`INSERT INTO riders values($1, $2)`, [currId, area], (err, result) => {
+						if (err) {
+							console.error(err);
+							pool.query('ROLLBACK');
+						}
+						pool.query(
+							`INSERT INTO Full_Time values ($1)`, [currId], (err, result) => {
+								if (err) {
+									console.error(err);
+									pool.query('ROLLBACK');
+								}
+							});
+					});
+			});
+		});
+		pool.query('COMMIT');
+		return res.json(`${name} added as a Rider`);
 	} catch (err) {
-		console.error(err.message);
+		pool.query('ROLLBACK');
+		console.error("error triggered: ", err.message);
 	}
 });
 
-router.post('/updateData', async (req, res) => {
-	// console.log("succeed");
-	try {
-		const {oldPname, newPname} = req.body;
-		await pool.query(
-			`UPDATE pizzas 
-			SET pizza = $2 
-			WHERE pizza = $1`,
-			[oldPname, newPname],
-			(error, results) => {
-				if (error) {
-					throw error
-				}
-			}
-		);
-		return res.json(`${oldPname} updated to ${newPname}`);
-	} catch (err) {
-		console.error(err.message);
-	}
-});
+/*https://codeburst.io/node-js-mysql-and-async-await-6fb25b01b628*/
+
+// router.post('/deleteData', async (req, res) => {
+// 	// console.log("succeed");
+// 	try {
+// 		const {pname} = req.body;
+// 		await pool.query(
+// 			`DELETE FROM pizzas
+// 					WHERE pizza = ($1)`,
+// 			[pname],
+// 			(error, results) => {
+// 				if (error) {
+// 					throw error
+// 				}
+// 			}
+// 		);
+// 		return res.json(`${pname} deleted.`);
+//
+// 	} catch (err) {
+// 		console.error(err.message);
+// 	}
+// });
+//
+// router.post('/updateData', async (req, res) => {
+// 	// console.log("succeed");
+// 	try {
+// 		const {oldPname, newPname} = req.body;
+// 		await pool.query(
+// 			`UPDATE pizzas
+// 			SET pizza = $2
+// 			WHERE pizza = $1`,
+// 			[oldPname, newPname],
+// 			(error, results) => {
+// 				if (error) {
+// 					throw error
+// 				}
+// 			}
+// 		);
+// 		return res.json(`${oldPname} updated to ${newPname}`);
+// 	} catch (err) {
+// 		console.error(err.message);
+// 	}
+// });
 
 /*
 router.get('/test', function(req, res, next) {
@@ -112,5 +236,4 @@ router.get('/test', function(req, res, next) {
 	});
 });
 */
->>>>>>> 1147ae8bad9baa9f6d48dcc7014a96e7e78fcfa5
 module.exports = router;

@@ -208,4 +208,4 @@ CREATE CONSTRAINT TRIGGER schedule_trigger
 FOR EACH ROW EXECUTE FUNCTION check_schedule_constraint_deferred ();
 
 
-
+-- Trigger on create rider to check that userid doesn't exists in other user roles (child)
