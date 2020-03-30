@@ -54,25 +54,6 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 /*test input json:
 *
 * */
-// 2. create a schedule -> choose start date, plan schedule for one week
-// router.post('/createWeeklySchedule', async (req, res) => {
-// 	try {
-// 		const userId = req.body.userId;
-// 		const startDate = req.body.startDate;
-// 		const intervals = req.body.intervals;
-// 		/* "intervals" :
-// 			[
-// 				{"startTime" :"2020-05-05 10:00:00 ","endTime"},
-// 				{"startTime" :"2020-05-05 14:00:00 ","endTime"}
-// 			]
-// 		*/
-// 		let intervalId;
-// 		await pool.query(
-// 			`INSERT INTO `
-// 		)
-// 	}
-// })
-
 // function insertRider(name, area) {
 //     return new Promise((res, rej) => {
 //         let currId;
@@ -99,88 +80,157 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 //     })
 // }
 
+// 2. create a schedule -> choose start date, plan schedule for one week
+router.post('/createWeeklySchedule', async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const startDate = req.body.startDate; //user input
+        const endDate = req.body.endDate; //calculate and pass down from frontend
+        const intervals = req.body.intervals;
+        /* "intervals" :
+            [
+                {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
+                {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
+            ]
+        */
+        let scheduleId;
+        // pool.query('BEGIN', (err, result) => {
+        //         if (err) {
+        //             console.error(err);
+        //             pool.query('ROLLBACK');
+        //         }
+                pool.query(`INSERT INTO Schedules(userId,startDate,endDate) VALUES ($1,$2,$3) RETURNING scheduleId`,
+                    [userId, startDate, endDate], (err, result) => {
+                        if (err) {
+                            console.error(err);
+                            console.log('error in here');
+                            return pool.query('ROLLBACK');
+                        }
+                        scheduleId = result.rows[0].scheduleid;
+                        console.log('scheduleid:', result.rows[0].scheduleid);
+                        pool.query(`INSERT INTO Weekly_Work_Schedules VALUES ($1)`, [scheduleId], async (err, result) => {
+                            if (err) {
+                                console.error(err);
+                                return pool.query('ROLLBACK');
+                            }
+                            var temp;
+                            pool.query(`select scheduleid from schedules where scheduleid=1`,(err,result) =>{
+                            	if (err) {
+                            		console.log(err);
+								} console.log(result);
+
+							})
+                            // const test = await intervals.map(async currInt => {
+                            //     var currentStartTime = currInt.startTime;
+                            //     var currentEndTime = currInt.endTime;
+                            //     await pool.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
+                            //         [scheduleId, currentStartTime, currentEndTime], (err, result) => {
+                            //             if (err) {
+                            //                 console.error(err);
+                            //                 return pool.query('ROLLBACK');
+                            //             }
+                            //         }
+                            //     )
+                            // })
+							// console.log('test:',test);
+                            // pool.query('COMMIT');
+                        // })
+                    }
+                )
+            }
+        )
+
+        return res.json(`${userId}'s schedule added as scheduleId ${scheduleId}`);
+    } catch (err) {
+        pool.query(`ROLLBACK`);
+        console.error("error triggered: ", err.message);
+    }
+})
+
 /*https://stackoverflow.com/questions/55764970/node-mysql-query-not-updating-variable-from-outside-the-query*/
+/*async await guide: https://www.geeksforgeeks.org/using-async-await-in-node-js/ */
 // create Part Time Rider
 router.post('/insertPartTimeRider', async (req, res) => {
-	// console.log("succeed");
-	try {
-		let currId = 0;
-		const name = req.body.name;
-		const area = req.body.area;
-		await pool.query(`BEGIN`, (err, result) => {
-			if (err) {
-				console.log(err);
-				return pool.query(`ROLLBACK`);
-			}
-			pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name], (err, result) => {
-				if (err) {
-					console.log(err);
-					return pool.query(`ROLLBACK`);
-				}
-				currId = result.rows[0].userid;
-				console.log('currId:', currId);
-				pool.query(
-					`INSERT INTO riders VALUES ($1, $2)`, [currId, area], (err, result) => {
-						if (err) {
-							console.log(err);
-							return pool.query(`ROLLBACK`);
-						}
-						pool.query(
-							`INSERT INTO Part_Time VALUES  ($1)`, [currId], (err, result) => {
-								if (err) {
-									console.log(err);
-									return pool.query(`ROLLBACK`);
-								}
-							})
-					})
-			})
-		})
-		pool.query(`COMMIT`);
-		return res.json(`${name} added as a Rider`);
-	} catch (err) {
-		// pool.query(`ROLLBACK`);
-		console.error("error triggered: ", err.message);
-	}
+    // console.log("succeed");
+    try {
+        let currId = 0;
+        const name = req.body.name;
+        const area = req.body.area;
+        pool.query('BEGIN', async (err, result) => {
+            if (err) {
+                console.log('error here:', err);
+                return pool.query(`ROLLBACK`);
+            }
+            pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name],  (err, result) => {
+                if (err) {
+                    console.log('error here:', err);
+                    return pool.query(`ROLLBACK`);
+                }
+                currId = result.rows[0].userid;
+                console.log('currId:', currId);
+                pool.query(
+                        `INSERT INTO riders VALUES ($1, $2)`, [currId, area],  (err, result) => {
+                        if (err) {
+                            console.log('error here:', err);
+                            return pool.query(`ROLLBACK`);
+                        }
+                        pool.query(
+                                `INSERT INTO Part_Time VALUES  ($1)`, [currId], async (err, result) => {
+                                if (err) {
+                                    console.log('error here:', err);
+                                    // return pool.query(`ROLLBACK`);
+                                }
+                                pool.query('COMMIT');
+                            })
+                    })
+            })
+        })
+        return res.json(`${name} added as a Rider`);
+    } catch (err) {
+        pool.query(`ROLLBACK`);
+        console.error("error triggered: ", err.message);
+    }
 });
 router.post('/insertFullTimeRider', async (req, res) => {
-	// console.log("succeed");
-	await pool.query('BEGIN');
-	try {
-		const name = req.body.name;
-		const area = req.body.area;
-		pool.query('BEGIN', (err, result) => {
-			if (err) {
-				console.error(err);
-				pool.query('ROLLBACK');
-			}
-			pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name], (err, result) => {
-				if (err) {
-					console.error(err);
-					pool.query('ROLLBACK');
-				}
-				currId = result.rows[0].userid;
-				pool.query(
-					`INSERT INTO riders values($1, $2)`, [currId, area], (err, result) => {
-						if (err) {
-							console.error(err);
-							pool.query('ROLLBACK');
-						}
-						pool.query(
-							`INSERT INTO Full_Time values ($1)`, [currId], (err, result) => {
-								if (err) {
-									console.error(err);
-									pool.query('ROLLBACK');
-								}
-							});
-					});
-			});
-		});
-		pool.query('COMMIT');
-		return res.json(`${name} added as a Rider`);
-	} catch (err) {
-		pool.query('ROLLBACK');
-		console.error("error triggered: ", err.message);
-	}
+    // console.log("succeed");
+    try {
+        let currId = 0;
+        const name = req.body.name;
+        const area = req.body.area;
+        pool.query('BEGIN', async (err, result) => {
+            if (err) {
+                console.log('error here:', err);
+                return pool.query(`ROLLBACK`);
+            }
+            await pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name], async (err, result) => {
+                if (err) {
+                    console.log('error here:', err);
+                    // return pool.query(`ROLLBACK`);
+                }
+                currId = result.rows[0].userid;
+                console.log('currId:', currId);
+                await pool.query(
+                        `INSERT INTO riders VALUES ($1, $2)`, [currId, area], async (err, result) => {
+                        if (err) {
+                            console.log('error here:', err);
+                            // return pool.query(`ROLLBACK`);
+                        }
+                        await pool.query(
+                                `INSERT INTO Full_Time VALUES  ($1)`, [currId], async (err, result) => {
+                                if (err) {
+                                    console.log('error here:', err);
+                                    // return pool.query(`ROLLBACK`);
+                                }
+                                await pool.query('COMMIT');
+                            })
+                    })
+            })
+        })
+        return res.json(`${name} added as a Rider`);
+    } catch (err) {
+        // pool.query(`ROLLBACK`);
+        console.error("error triggered: ", err.message);
+    }
 });
 
 /*https://codeburst.io/node-js-mysql-and-async-await-6fb25b01b628*/

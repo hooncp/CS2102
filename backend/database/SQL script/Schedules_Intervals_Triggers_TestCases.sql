@@ -6,11 +6,14 @@ insert into schedules values (5,1,'13 dec 2020', '19 dec 2020');
 insert into schedules values (5,1,'13 dec 2020', '21 dec 2020');
 
 --[pass] test newly added startdate must be > latest end date
-insert into schedules values (1,1,'05 dec 2020', '12 dec 2020');
-insert into schedules values (2,1,'13 dec 2020', '20 dec 2020');
+insert into schedules values (1,1,'05 dec 2020', '11 dec 2020');
+insert into schedules values (2,1,'13 dec 2020', '19 dec 2020');
 --[fail] overlapping weeks user 1
-insert into schedules values (3,1,'03 dec 2020', '10 dec 2020');
-insert into schedules values (4,1,'13 dec 2020', '20 dec 2020');
+insert into schedules values (2,1,'02 dec 2020', '08 dec 2020');
+insert into schedules values (3,1,'03 dec 2020', '09 dec 2020');
+insert into schedules values (4,1,'10 dec 2020', '16 dec 2020');
+insert into schedules values (5,1,'13 dec 2020', '19 dec 2020');
+
 
 --[pass]introduce user 2, should be able to have same start & end dates, diff scheduleId
 insert into users values (2);
@@ -40,7 +43,7 @@ insert into Intervals values (1,1,'2020-12-05 07:01','2020-12-05 12:00');
 insert into Intervals values (1,1,'2020-12-05 07:00:00','2020-12-06 11:00');
 
 --pass
-insert into Intervals values (1,1,'2020-11-05 07:00:00','2020-12-05 11:00');
+insert into Intervals values (1,1,'2020-12-05 10:00:00','2020-12-05 12:00');
 
 --[fail] test > 4 hrs
 insert into Intervals values (1,1,'2020-12-05 07:00:00','2020-12-06 12:00');
@@ -170,7 +173,7 @@ BEGIN
     RAISE EXCEPTION '% : Total duration of weekly schedule cannot be < 10 or > 48', badInputSchedule;
     END IF;
     RETURN NULL; 
-	END;
+END;
 $$ LANGUAGE PLPGSQL;
 
 DROP TRIGGER IF EXISTS interval_trigger ON Intervals CASCADE;
@@ -184,14 +187,21 @@ FOR EACH ROW EXECUTE FUNCTION check_intervals_duration_deferred ();
 CREATE OR REPLACE FUNCTION check_schedule_constraint_deferred () RETURNS TRIGGER AS $$
 	DECLARE 
         latestEndDate TIMESTAMP;	
-    BEGIN
-
-            SELECT endDate into latestEndDate
-            FROM Schedules S 
-            WHERE UserId = NEW.UserId
-            AND S.scheduleId <> NEW.scheduleId
-            ORDER BY endDate DESC
-            LIMIT 1
+     BEGIN
+        SELECT DISTINCT S1.scheduleId INTO badInputSchedule
+        FROM Schedules S1
+        WHERE EXISTS (
+            SELECT 1
+            FROM Schedules S2
+            WHERE S2.scheduleId <> S1.scheduleId
+            AND(
+            (S2.startDate <= S1.startDate
+            AND S2.endDate >= S1.startDate)
+            OR
+            (S2.startDate <= S1.endDate
+            AND S2.endDate >= S1.endDate)
+            )
+        )
     ;
     IF NEW.startDate <= latestEndDate THEN
     RAISE EXCEPTION 'Newly added schedule must start after the latest schedule';
@@ -209,3 +219,295 @@ FOR EACH ROW EXECUTE FUNCTION check_schedule_constraint_deferred ();
 
 
 -- Trigger on create rider to check that userid doesn't exists in other user roles (child)
+--Trigger to check for predefined intervals
+DROP FUNCTION IF EXISTS check_mws_intervals_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS $$
+	DECLARE
+		badInputSchedule 	INTEGER;
+BEGIN
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I
+        WHERE I.scheduleId = NEW.scheduleId1
+    ),
+    Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
+        select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
+        from curr_Intervals cI1, curr_Intervals cI2
+        where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
+        and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
+    )
+    SELECT S.scheduleId INTO badInputSchedule
+    FROM Schedules S
+    WHERE S.scheduleId = NEW.scheduleId1
+    AND (
+        NOT EXISTS ( -- table is non-empty
+        select 1 from Interval_Pairs IP2 limit 1
+        )
+        OR
+        EXISTS ( --checks for any bad intervals
+            SELECT 1
+            FROM Interval_Pairs IP
+            WHERE (select count(*) from Interval_Pairs) <> ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
+            OR NOT(
+                IP.startTime1::time = '10:00' OR
+                IP.startTime1::time = '11:00' OR
+                IP.startTime1::time = '12:00' OR
+                IP.startTime1::time = '13:00'
+            )
+            OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours',IP.startTime1) = 4
+                AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours',IP.startTime1) = 4)
+
+            OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours',IP.endTime1) = 1)
+        )
+    )
+;
+
+    IF badInputSchedule IS NOT NULL THEN
+    RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+    END IF;
+    RETURN NULL;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS mws_interval_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_interval_trigger
+	AFTER INSERT ON Monthly_Work_Schedules
+	DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION check_mws_intervals_constraint_deferred();
+
+--[fail] bad intervals (start time wrong)
+begin;
+insert into schedules values (1,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (2,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (3,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (4,1,'25 nov 2020', '1 dec 2020');
+insert into Intervals values (1,1,'2020-11-05 14:00','2020-11-05 18:00');
+insert into Intervals values (2,1,'2020-11-05 20:00','2020-11-05 22:00');
+insert into monthly_work_schedules values (1,2,3,4);
+commit;
+
+--[fail] bad intervals (start time first right, second wrong)
+begin;
+insert into schedules values (1,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (2,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (3,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (4,1,'25 nov 2020', '1 dec 2020');
+insert into Intervals values (1,1,'2020-11-05 10:00','2020-11-05 14:00');
+insert into Intervals values (2,1,'2020-11-05 16:00','2020-11-05 20:00');
+insert into monthly_work_schedules values (1,2,3,4);
+commit;
+
+--[fail] bad intervals (no pair)
+begin;
+insert into schedules values (1,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (2,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (3,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (4,1,'25 nov 2020', '1 dec 2020');
+insert into Intervals values (1,1,'2020-11-05 10:00','2020-11-05 14:00');
+insert into Intervals values (2,1,'2020-12-05 10:00','2020-12-05 14:00');
+insert into monthly_work_schedules values (1,2,3,4);
+commit;
+
+--[pass] good interval
+begin;
+insert into schedules values (1,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (2,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (3,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (4,1,'25 nov 2020', '1 dec 2020');
+insert into Intervals values (1,1,'2020-11-05 10:00','2020-11-05 14:00');
+insert into Intervals values (2,1,'2020-11-05 15:00','2020-11-05 19:00');
+insert into monthly_work_schedules values (1,2,3,4);
+commit;
+
+
+--Trigger to check for 28 days
+DROP FUNCTION IF EXISTS check_mws_28days_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_28days_constraint_deferred() RETURNS TRIGGER AS $$
+	DECLARE
+        newEndDate DATE;
+        newStartDate DATE;
+    BEGIN
+            SELECT endDate into newEndDate
+            FROM Schedules S
+            WHERE S.scheduleId = NEW.scheduleId4;
+            SELECT startDate into newStartDate
+            FROM Schedules S2
+            WHERE S2.scheduleId = NEW.scheduleId1
+    ;
+    IF (newEndDate - newStartDate) <> 27 THEN
+    RAISE EXCEPTION 'MWS must be declared for 28 days only.';
+    END IF;
+    RETURN NULL;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_trigger
+	AFTER INSERT ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION check_mws_28days_constraint_deferred();
+
+-- [fail] MWS is 29 days long
+begin;
+insert into schedules values (5,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (6,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (7,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (8,1,'25 nov 2020', '2 dec 2020');
+insert into Intervals values (3,5,'2020-11-05 10:00','2020-11-05 14:00');
+insert into Intervals values (4,5,'2020-11-05 15:00','2020-11-05 19:00');
+insert into monthly_work_schedules values (5,6,7,8);
+commit;
+
+-- [pass] MWS is 28 days long
+begin;
+insert into schedules values (5,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (6,1,'14 nov 2020', '20 nov 2020');
+insert into schedules values (7,1,'21 nov 2020', '27 nov 2020');
+insert into schedules values (8,1,'28 nov 2020', '4 dec 2020');
+insert into Intervals values (3,5,'2020-11-05 10:00','2020-11-05 14:00');
+insert into Intervals values (4,5,'2020-11-05 15:00','2020-11-05 19:00');
+insert into monthly_work_schedules values (5,6,7,8);
+commit;
+
+/* Deprecated
+--[pass] test MWS is 28 days long
+with schedule1 as (
+    insert into schedules values (5,1,'1 dec 2020', '7 dec 2020')
+    returning scheduleId
+),
+schedule2 as (
+    insert into schedules values (6,1,'8 dec 2020', '14 dec 2020')
+    returning scheduleId
+),
+schedule3 as (
+    insert into schedules values (7,1,'15 dec 2020', '22 dec 2020')
+    returning scheduleId
+),
+schedule4 as (
+    insert into schedules values (8,1,'23 dec 2020', '29 dec 2020')
+    returning scheduleId
+)
+insert into monthly_work_schedules (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
+    select schedule1.scheduleId,
+    schedule2.scheduleId,
+    schedule3.scheduleId,
+    schedule4.scheduleId
+    from schedule1, schedule2, schedule3, schedule4;
+*/
+
+--Trigger to check for 5 consec days of work
+DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_5days_consecutive_constraint_deferred() RETURNS TRIGGER AS $$
+	DECLARE
+        lastIntervalStartTime TIMESTAMP;
+        firstIntervalStartTime TIMESTAMP;
+        distinctDates INTEGER;
+    BEGIN
+            WITH curr_Intervals AS (
+            SELECT *
+            FROM Intervals I
+            WHERE I.scheduleId = NEW.scheduleId1
+            )
+            SELECT startTime into lastIntervalStartTime
+            FROM curr_Intervals I
+            ORDER BY endTime DESC
+            LIMIT 1;
+
+            WITH curr_Intervals AS (
+            SELECT *
+            FROM Intervals I2
+            WHERE I2.scheduleId = NEW.scheduleId1
+            )
+            SELECT startTime into firstIntervalStartTime
+            FROM curr_Intervals I
+            ORDER BY endTime ASC
+            LIMIT 1;
+
+            WITH curr_Intervals AS (
+            SELECT *
+            FROM Intervals I3
+            WHERE I3.scheduleId = NEW.scheduleId1
+            )
+            SELECT COUNT(DISTINCT I.startTime::date) into distinctDates
+            FROM curr_Intervals I
+    ;
+    IF ((lastIntervalStartTime::date - firstIntervalStartTime::date) <> 4 --all intervals within 5 days
+    OR distinctDates <> 5) -- each day got interval
+    THEN RAISE EXCEPTION 'MWS must have 5 consecutive work days';
+    END IF;
+    RETURN NULL;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_trigger
+	AFTER INSERT ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION check_mws_5days_consecutive_constraint_deferred();
+
+-- [fail] MWS has 6 days
+begin;
+insert into schedules values (9,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (10,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (11,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (12,1,'25 nov 2020', '2 dec 2020');
+
+insert into Intervals values (5,9,'2020-11-07 10:00','2020-11-07 14:00');
+insert into Intervals values (6,9,'2020-11-07 15:00','2020-11-07 19:00');
+insert into Intervals values (7,9,'2020-11-08 10:00','2020-11-08 14:00');
+insert into Intervals values (8,9,'2020-11-08 15:00','2020-11-08 19:00');
+insert into Intervals values (9,9,'2020-11-09 10:00','2020-11-09 14:00');
+insert into Intervals values (10,9,'2020-11-09 15:00','2020-11-09 19:00');
+insert into Intervals values (11,9,'2020-11-10 10:00','2020-11-10 14:00');
+insert into Intervals values (12,9,'2020-11-10 15:00','2020-11-10 19:00');
+insert into Intervals values (13,9,'2020-11-12 10:00','2020-11-12 14:00');
+insert into Intervals values (14,9,'2020-11-12 15:00','2020-11-12 19:00');
+
+insert into monthly_work_schedules values (9,10,11,12);
+commit;
+
+-- [fail] MWS has 5 days, but not all days got work
+
+begin;
+insert into schedules values (9,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (10,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (11,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (12,1,'25 nov 2020', '2 dec 2020');
+
+insert into Intervals values (5,9,'2020-11-07 10:00','2020-11-07 14:00');
+insert into Intervals values (6,9,'2020-11-07 15:00','2020-11-07 19:00');
+--insert into Intervals values (7,9,'2020-11-08 10:00','2020-11-08 14:00');
+--insert into Intervals values (8,9,'2020-11-08 15:00','2020-11-08 19:00');
+insert into Intervals values (9,9,'2020-11-09 10:00','2020-11-09 14:00');
+insert into Intervals values (10,9,'2020-11-09 15:00','2020-11-09 19:00');
+insert into Intervals values (11,9,'2020-11-10 10:00','2020-11-10 14:00');
+insert into Intervals values (12,9,'2020-11-10 15:00','2020-11-10 19:00');
+insert into Intervals values (13,9,'2020-11-12 10:00','2020-11-12 14:00');
+insert into Intervals values (14,9,'2020-11-12 15:00','2020-11-12 19:00');
+
+insert into monthly_work_schedules values (9,10,11,12);
+commit;
+
+-- [pass] MWS has 5 consecutive days
+begin;
+insert into schedules values (9,1,'7 nov 2020', '13 nov 2020');
+insert into schedules values (10,1,'13 nov 2020', '19 nov 2020');
+insert into schedules values (11,1,'19 nov 2020', '25 nov 2020');
+insert into schedules values (12,1,'25 nov 2020', '2 dec 2020');
+
+insert into Intervals values (5,9,'2020-11-07 10:00','2020-11-07 14:00');
+insert into Intervals values (6,9,'2020-11-07 15:00','2020-11-07 19:00');
+insert into Intervals values (7,9,'2020-11-08 10:00','2020-11-08 14:00');
+insert into Intervals values (8,9,'2020-11-08 15:00','2020-11-08 19:00');
+insert into Intervals values (9,9,'2020-11-09 10:00','2020-11-09 14:00');
+insert into Intervals values (10,9,'2020-11-09 15:00','2020-11-09 19:00');
+insert into Intervals values (11,9,'2020-11-10 10:00','2020-11-10 14:00');
+insert into Intervals values (12,9,'2020-11-10 15:00','2020-11-10 19:00');
+insert into Intervals values (13,9,'2020-11-11 10:00','2020-11-11 14:00');
+insert into Intervals values (14,9,'2020-11-11 15:00','2020-11-11 19:00');
+
+insert into monthly_work_schedules values (9,10,11,12);
+commit;
+

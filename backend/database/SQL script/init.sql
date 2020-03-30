@@ -19,214 +19,504 @@ DROP TABLE IF EXISTS Promotions CASCADE;
 DROP TABLE IF EXISTS MinSpendingPromotions CASCADE;
 DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 
-CREATE TABLE Users (
-	userId 		SERIAL,
-	name		VARCHAR(100),
-    	PRIMARY KEY (userId)
+CREATE TABLE Users
+(
+    userId SERIAL,
+    name   VARCHAR(100),
+    PRIMARY KEY (userId)
 );
 
-CREATE TABLE Restaurants (
-	rname 		VARCHAR(200),
-	minOrderAmt	NUMERIC(8, 2),
-	area 		VARCHAR(200),
+CREATE TABLE Restaurants
+(
+    rname       VARCHAR(200),
+    minOrderAmt NUMERIC(8, 2),
+    area        VARCHAR(200),
     PRIMARY KEY (rname),
-	CHECK(area = 'central' OR
-		 area = 'west' OR
-		 area = 'east' OR
-		 area = 'north' OR
-		 area = 'south')
+    CHECK (area = 'central' OR
+           area = 'west' OR
+           area = 'east' OR
+           area = 'north' OR
+           area = 'south')
 );
 
-CREATE TABLE Food (
-	fname 		VARCHAR(20),
-	category 	VARCHAR(20) NOT NULL,
+CREATE TABLE Food
+(
+    fname    VARCHAR(20),
+    category VARCHAR(20) NOT NULL,
     PRIMARY KEY (fname),
-	CHECK (category = 'western' OR
-		   category = 'chinese' OR
-		   category = 'japanese' OR
-		   category = 'korean' OR
-		   category = 'fusion')
+    CHECK (category = 'western' OR
+           category = 'chinese' OR
+           category = 'japanese' OR
+           category = 'korean' OR
+           category = 'fusion')
 );
 
-CREATE TABLE Sells (
-	rname 		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
-    fname 		VARCHAR(20) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
-    price 		NUMERIC(8, 2) NOT NULL,
-    availability 	INTEGER DEFAULT 10,
-    PRIMARY KEY (rname, fname) 
+CREATE TABLE Sells
+(
+    rname        VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
+    fname        VARCHAR(20) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
+    price        NUMERIC(8, 2) NOT NULL,
+    availability INTEGER DEFAULT 10,
+    PRIMARY KEY (rname, fname)
 );
 
-CREATE TABLE Restaurant_Staff (
-	userId 		INTEGER,
-	rname		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
-	PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Users
-			on DELETE CASCADE
-			on UPDATE CASCADE
-);
-
-
-CREATE TABLE Customers (
-	userId 		INTEGER,
-	creditCardInfo	VARCHAR(100),
+CREATE TABLE Restaurant_Staff
+(
+    userId INTEGER,
+    rname  VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
     PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Users
-		on DELETE CASCADE
-		on UPDATE CASCADE
+    FOREIGN KEY (userId) REFERENCES Users
+        on DELETE CASCADE
+        on UPDATE CASCADE
 );
 
-CREATE TABLE Riders (
-	userId 		INTEGER,
-	area 		VARCHAR(20) NOT NULL,
+
+CREATE TABLE Customers
+(
+    userId         INTEGER,
+    creditCardInfo VARCHAR(100),
     PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Users
-			on DELETE CASCADE
-			on UPDATE CASCADE
+    FOREIGN KEY (userId) REFERENCES Users
+        on DELETE CASCADE
+        on UPDATE CASCADE
+);
+
+CREATE TABLE Riders
+(
+    userId INTEGER,
+    area   VARCHAR(20) NOT NULL,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+        on DELETE CASCADE
+        on UPDATE CASCADE
 --             DEFERRABLE INITIALLY DEFERRED
     ,
-	CHECK(area = 'central' OR
-		 area = 'west' OR
-		 area = 'east' OR
-		 area = 'north' OR
-		 area = 'south')
+    CHECK (area = 'central' OR
+           area = 'west' OR
+           area = 'east' OR
+           area = 'north' OR
+           area = 'south')
 );
 
-CREATE TABLE Part_Time (
-   userId 		INTEGER,
-   PRIMARY KEY (userId),
-   FOREIGN KEY (userId) REFERENCES Riders
-       on DELETE CASCADE
-       on UPDATE CASCADE
+CREATE TABLE Part_Time
+(
+    userId INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Riders
+        on DELETE CASCADE
+        on UPDATE CASCADE
 --        DEFERRABLE INITIALLY DEFERRED
 );
 
-CREATE TABLE Full_Time (
-    userId 		INTEGER,
+CREATE TABLE Full_Time
+(
+    userId INTEGER,
     PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Riders 
-			on DELETE CASCADE
-			on UPDATE CASCADE
+    FOREIGN KEY (userId) REFERENCES Riders
+        on DELETE CASCADE
+        on UPDATE CASCADE
 --             DEFERRABLE INITIALLY DEFERRED
 
 );
 
-CREATE TABLE Schedules (
-	scheduleId SERIAL,
-	userId INTEGER,
-	startDate date,
-	endDate date,
-	PRIMARY KEY (scheduleId),
-	FOREIGN KEY (userId) REFERENCES Riders(userId),
-	check ((endDate - startDate) = 7)
+CREATE TABLE Schedules
+(
+    scheduleId SERIAL,
+    userId     INTEGER,
+    startDate  TIMESTAMP,
+    endDate    TIMESTAMP,
+    PRIMARY KEY (scheduleId),
+    FOREIGN KEY (userId) REFERENCES Riders (userId),
+    check ((endDate::date - startDate::date) = 6)
 );
 
-CREATE TABLE Monthly_Work_Schedules (
-	scheduleId	INTEGER REFERENCES Schedules,
-	PRIMARY KEY (scheduleId)
-	--DEFERRED TRIGGER TO CHECK FOR CONSTRAINTS (FOR BOTH INTERVAL & SCHEDULE)
+CREATE TABLE Monthly_Work_Schedules
+(
+    scheduleId1 INTEGER REFERENCES Schedules ON DELETE CASCADE,
+    scheduleId2 INTEGER REFERENCES Schedules ON DELETE CASCADE,
+    scheduleId3 INTEGER REFERENCES Schedules ON DELETE CASCADE,
+    scheduleId4 INTEGER REFERENCES Schedules ON DELETE CASCADE,
+    PRIMARY KEY (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
+    --DEFERRED TRIGGER TO CHECK FOR CONSTRAINTS (FOR BOTH INTERVAL & SCHEDULE)
 );
 
-CREATE TABLE Weekly_Work_Schedules (
-	scheduleId	INTEGER  REFERENCES Schedules,
-	PRIMARY KEY (scheduleId)
-	--DEFERRED TRIGGER TO CHECK FOR CONSTRAINTS (FOR BOTH INTERVAL & SCHEDULE)
+CREATE TABLE Weekly_Work_Schedules
+(
+    scheduleId INTEGER REFERENCES Schedules ON DELETE CASCADE,
+    PRIMARY KEY (scheduleId)
+    --DEFERRED TRIGGER TO CHECK FOR CONSTRAINTS (FOR BOTH INTERVAL & SCHEDULE)
 );
 
-CREATE TABLE Intervals (
-	intervalId INTEGER,
-	scheduleId INTEGER,
-	startTime TIMESTAMP,
-	endTime TIMESTAMP,
-	PRIMARY KEY (intervalId),
-	FOREIGN KEY (scheduleId) REFERENCES Schedules(scheduleId)
-	deferrable initially deferred,
-	check (DATE_PART('minutes', startTime) = 0
-	AND
-	DATE_PART('seconds', startTime) = 0
-	AND
-	DATE_PART('minutes', endTime) = 0
-	AND
-	DATE_PART('seconds', startTime) = 0
-	AND
-	DATE_PART('hours', endTime) - DATE_PART('hours', startTime) <= 4
-	AND
-	startTime::date = endTime::date
-	AND
-	DATE_PART('hours', endTime) > DATE_PART('hours', startTime)
-	AND
-	startTime::time >= '10:00'
-	AND
-	endTime::time <='22:00'
-	)
+CREATE TABLE Intervals
+(
+    intervalId SERIAL,
+    scheduleId INTEGER,
+    startTime  TIMESTAMP,
+    endTime    TIMESTAMP,
+    PRIMARY KEY (intervalId),
+    FOREIGN KEY (scheduleId) REFERENCES Schedules (scheduleId)
+        ON DELETE CASCADE,
+        check (DATE_PART('minutes', startTime) = 0
+        AND
+           DATE_PART('seconds', startTime) = 0
+        AND
+           DATE_PART('minutes', endTime) = 0
+        AND
+           DATE_PART('seconds', startTime) = 0
+        AND
+           DATE_PART('hours', endTime) - DATE_PART('hours', startTime) <= 4
+        AND
+           startTime::date = endTime::date
+        AND
+           DATE_PART('hours', endTime) > DATE_PART('hours', startTime)
+        AND
+           startTime::time >= '10:00'
+        AND
+           endTime::time <= '22:00'
+        )
 );
 
 
 --able to share the same promoCode
-CREATE TABLE Promotions (
-	promoCode	    VARCHAR(20),	
-	promoDesc 		VARCHAR(200),
-	createdBy	    VARCHAR(50), --?
-	applicableTo	VARCHAR(200) REFERENCES Restaurants(rname) ON DELETE CASCADE,
-	discUnit	    VARCHAR(20) NOT NULL,
-	discRate	    VARCHAR(20) NOT NULL,
-	startDate	    TIMESTAMP NOT NULL,
-	endDate	        TIMESTAMP NOT NULL,
-	PRIMARY KEY (promoCode, applicableTo)
+CREATE TABLE Promotions
+(
+    promoCode    VARCHAR(20),
+    promoDesc    VARCHAR(200),
+    createdBy    VARCHAR(50), --?
+    applicableTo VARCHAR(200) REFERENCES Restaurants (rname) ON DELETE CASCADE,
+    discUnit     VARCHAR(20) NOT NULL,
+    discRate     VARCHAR(20) NOT NULL,
+    startDate    TIMESTAMP   NOT NULL,
+    endDate      TIMESTAMP   NOT NULL,
+    PRIMARY KEY (promoCode, applicableTo)
 );
 
-CREATE TABLE Orders (
-	orderId 		INTEGER,
-	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
-	promoCode		VARCHAR(20),
-    applicableTo	VARCHAR(200),
-	modeOfPayment 	VARCHAR(10) NOT NULL,
-	timeOfOrder		TIMESTAMP NOT NULL,
-	deliveryLocation	VARCHAR(100) NOT NULL,
-	usedRewardPoints	INTEGER DEFAULT 0,
-	givenRewardPoints	INTEGER NOT NULL,
-	reviewContent		    VARCHAR(100),
-	PRIMARY KEY(orderId),
-	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
-	CHECK(modeOfPayment = 'cash' OR
-		 	modeOfPayment ='credit')
-);
-
-CREATE TABLE Order_Details (
-	orderId 		INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
-	rname			VARCHAR(100),
-	fname 			VARCHAR(100),
-	foodQty		    INTEGER NOT NULL,
-	PRIMARY KEY(orderId, rname, fname),
-	FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
-	CHECK(foodQty >= 1)
-);
-
-CREATE TABLE Delivery_Details (
-    orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
-	userId				        INTEGER NOT NULL,
-	departTimeForRestaurant	    TIMESTAMP,
-	departTimeFromRestaurant    TIMESTAMP,
-	arrivalTimeAtRestaurant	    TIMESTAMP,
-	deliveryTimetoCustomer	    TIMESTAMP,
-	rating					    INTEGER,
+CREATE TABLE Orders
+(
+    orderId           INTEGER,
+    userId            INTEGER      NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
+    promoCode         VARCHAR(20),
+    applicableTo      VARCHAR(200),
+    modeOfPayment     VARCHAR(10)  NOT NULL,
+    timeOfOrder       TIMESTAMP    NOT NULL,
+    deliveryLocation  VARCHAR(100) NOT NULL,
+    usedRewardPoints  INTEGER DEFAULT 0,
+    givenRewardPoints INTEGER      NOT NULL,
+    reviewContent     VARCHAR(100),
     PRIMARY KEY (orderId),
-	FOREIGN KEY (userId) REFERENCES Riders on DELETE CASCADE,
-	CHECK(rating <= 5)
+    FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions,
+    CHECK (modeOfPayment = 'cash' OR
+           modeOfPayment = 'credit')
 );
 
-CREATE TABLE MinSpendingPromotions (
-	promoCode	    VARCHAR(20),	
-	applicableTo	VARCHAR(200),
-	minAmt	        NUMERIC(8, 2) DEFAULT 0,
-	PRIMARY KEY (promoCode, applicableTo),
-	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE Order_Details
+(
+    orderId INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
+    rname   VARCHAR(100),
+    fname   VARCHAR(100),
+    foodQty INTEGER NOT NULL,
+    PRIMARY KEY (orderId, rname, fname),
+    FOREIGN KEY (rname, fname) REFERENCES Sells (rname, fname),
+    CHECK (foodQty >= 1)
 );
 
-CREATE TABLE CustomerPromotions (
-    	promoCode		VARCHAR(20),	
-	applicableTo	VARCHAR(200),
-	minTimeFromLastOrder 	INTEGER, -- # of days
-	PRIMARY KEY (promoCode, applicableTo),
-	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE Delivery_Details
+(
+    orderId                  INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
+    userId                   INTEGER NOT NULL,
+    departTimeForRestaurant  TIMESTAMP,
+    departTimeFromRestaurant TIMESTAMP,
+    arrivalTimeAtRestaurant  TIMESTAMP,
+    deliveryTimetoCustomer   TIMESTAMP,
+    rating                   INTEGER,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (userId) REFERENCES Riders on DELETE CASCADE,
+    CHECK (rating <= 5)
 );
+
+CREATE TABLE MinSpendingPromotions
+(
+    promoCode    VARCHAR(20),
+    applicableTo VARCHAR(200),
+    minAmt       NUMERIC(8, 2) DEFAULT 0,
+    PRIMARY KEY (promoCode, applicableTo),
+    FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE CustomerPromotions
+(
+    promoCode            VARCHAR(20),
+    applicableTo         VARCHAR(200),
+    minTimeFromLastOrder INTEGER, -- # of days
+    PRIMARY KEY (promoCode, applicableTo),
+    FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+/* Trigger functions */
+
+DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_5days_consecutive_constraint_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    lastIntervalStartTime  TIMESTAMP;
+    firstIntervalStartTime TIMESTAMP;
+    distinctDates          INTEGER;
+BEGIN
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I
+        WHERE I.scheduleId = NEW.scheduleId1
+    )
+    SELECT startTime
+    into lastIntervalStartTime
+    FROM curr_Intervals I
+    ORDER BY endTime DESC
+    LIMIT 1;
+
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I2
+        WHERE I2.scheduleId = NEW.scheduleId1
+    )
+    SELECT startTime
+    into firstIntervalStartTime
+    FROM curr_Intervals I
+    ORDER BY endTime ASC
+    LIMIT 1;
+
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I3
+        WHERE I3.scheduleId = NEW.scheduleId1
+    )
+    SELECT COUNT(DISTINCT I.startTime::date)
+    into distinctDates
+    FROM curr_Intervals I;
+    IF ((lastIntervalStartTime::date - firstIntervalStartTime::date) <> 4 --all intervals within 5 days
+        OR distinctDates <> 5) -- each day got interval
+    THEN
+        RAISE EXCEPTION 'MWS must have 5 consecutive work days';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_trigger
+    AFTER INSERT
+    ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_mws_5days_consecutive_constraint_deferred();
+
+DROP FUNCTION IF EXISTS check_mws_28days_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_28days_constraint_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    newEndDate   DATE;
+    newStartDate DATE;
+BEGIN
+    SELECT endDate
+    into newEndDate
+    FROM Schedules S
+    WHERE S.scheduleId = NEW.scheduleId4;
+    SELECT startDate
+    into newStartDate
+    FROM Schedules S2
+    WHERE S2.scheduleId = NEW.scheduleId1;
+    IF (newEndDate - newStartDate) <> 27 THEN
+        RAISE EXCEPTION 'MWS must be declared for 28 days only.';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_trigger
+    AFTER INSERT
+    ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_mws_28days_constraint_deferred();
+
+DROP FUNCTION IF EXISTS check_mws_intervals_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    badInputSchedule INTEGER;
+BEGIN
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I
+        WHERE I.scheduleId = NEW.scheduleId1
+    ),
+         Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
+             select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
+             from curr_Intervals cI1,
+                  curr_Intervals cI2
+             where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
+               and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
+         )
+    SELECT S.scheduleId
+    INTO badInputSchedule
+    FROM Schedules S
+    WHERE S.scheduleId = NEW.scheduleId1
+      AND (
+            NOT EXISTS( -- table is non-empty
+                    select 1 from Interval_Pairs IP2 limit 1
+                )
+            OR
+            EXISTS( --checks for any bad intervals
+                    SELECT 1
+                    FROM Interval_Pairs IP
+                    WHERE (select count(*) from Interval_Pairs) <>
+                          ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
+                       OR NOT (
+                            IP.startTime1::time = '10:00' OR
+                            IP.startTime1::time = '11:00' OR
+                            IP.startTime1::time = '12:00' OR
+                            IP.startTime1::time = '13:00'
+                        )
+                       OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4
+                        AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4)
+
+                       OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours', IP.endTime1) = 1)
+                )
+        );
+
+    IF badInputSchedule IS NOT NULL THEN
+        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS mws_interval_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_interval_trigger
+    AFTER INSERT
+    ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_mws_intervals_constraint_deferred();
+
+
+CREATE OR REPLACE FUNCTION check_intervals_overlap_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    badInputSchedule INTEGER;
+BEGIN
+    SELECT DISTINCT I1.scheduleId
+    INTO badInputSchedule
+    FROM Intervals I1
+    WHERE EXISTS(
+                  SELECT 1
+                  FROM Intervals I2
+                  WHERE I2.scheduleId = I1.scheduleId
+                    AND I2.intervalId <> I1.intervalId
+                    AND (
+                          (I2.startTime::time <= I1.startTime::time
+                              AND I2.endTime::time >= I1.startTime::time)
+                          --IE: first input shift 2-5pm , current input shift 3 - 4pm / 3 - 6pm etc
+                          OR
+                          (I2.startTime::time <= I1.endTime::time
+                              AND I2.endTime::time >= I1.endTime::time)
+                          --IE: first input shift 2-5pm, current input shift 12pm - 3pm / 12pm - 6pm
+                          OR (
+                                      DATE_PART('hours', I1.startTime) - DATE_PART('hours', I2.endTime) < 1
+                                  AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours', I2.endTime)
+                              -- if current inputted shift start time is less than 1hr from other shifts end time, violated (of the same day).
+                              -- this constraint should also be covered without this last statement when the intervals start and end on the hour
+                              -- constraint is enforced
+                              )
+                      )
+              );
+    IF badInputSchedule IS NOT NULL THEN
+        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS interval_trigger ON Intervals CASCADE;
+CREATE CONSTRAINT TRIGGER interval_trigger
+    AFTER INSERT
+    ON Intervals
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_intervals_overlap_deferred();
+
+
+CREATE OR REPLACE FUNCTION check_intervals_duration_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    badInputSchedule INTEGER;
+BEGIN
+    WITH IntervalDuration AS (
+        SELECT IntervalId,
+               scheduleId,
+               startTime,
+               endTime,
+               date_part('hours', endTime) - date_part('hours', startTime) as duration
+        FROM Intervals
+    )
+    SELECT DISTINCT scheduleId
+    INTO badInputSchedule
+    FROM IntervalDuration
+    GROUP BY scheduleId
+    HAVING sum(duration) < 10
+        or sum(duration) > 48;
+    IF badInputSchedule IS NOT NULL THEN
+        RAISE EXCEPTION '% : Total duration of weekly schedule cannot be < 10 or > 48', badInputSchedule;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS interval_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER interval_trigger
+    AFTER INSERT
+    ON Weekly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_intervals_duration_deferred();
+
+
+
+CREATE OR REPLACE FUNCTION check_schedule_constraint_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    badInputSchedule INTEGER;
+BEGIN
+    SELECT DISTINCT S1.scheduleId INTO badInputSchedule
+    FROM Schedules S1
+    WHERE EXISTS(
+                  SELECT 1
+                  FROM Schedules S2
+                  WHERE S2.scheduleId <> S1.scheduleId
+                    AND (
+                          (S2.startDate <= S1.startDate
+                              AND S2.endDate >= S1.startDate)
+                          OR
+                          (S2.startDate <= S1.endDate
+                              AND S2.endDate >= S1.endDate)
+                      )
+              );
+    IF badInputSchedule IS NOT NULL THEN
+        RAISE EXCEPTION 'Newly added schedule must start after the latest schedule';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS schedule_trigger ON Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER schedule_trigger
+    AFTER INSERT
+    ON Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_schedule_constraint_deferred();
+
 
