@@ -286,11 +286,19 @@ router.get('/test', function(req, res, next) {
 	});
 });
 */
-// 3. total number of orders delivered by rider
-router.get('/viewPastOrder' , (req,res) => {
+// 3. total number of orders delivered by rider for the month
+router.get('/viewMonthPastOrder' , (req,res) => {
     const userId = req.body.userId;
+    const month = req.body.month;
+    const year = req.body.year;
+    const text = `SELECT * FROM Delivers D      
+                    WHERE userId = $1
+                    AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
+                    AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3`
+
+    const values = [userId, month, year];
     pool
-        .query('SELECT * FROM Delivers WHERE UserId = $1', [userId])
+        .query(text, values)
         .then(result => {
             console.log(result.rows);
             res.json(result.rows);
@@ -299,7 +307,7 @@ router.get('/viewPastOrder' , (req,res) => {
 })
 
 // 4. total number of hours worked by rider for that month
-router.get('/viewHoursWorked' , (req,res) => {
+router.get('/viewMonthHoursWorked' , (req,res) => {
     const userId = req.body.userId;
     const month = req.body.month;
     const year = req.body.year;
@@ -323,7 +331,47 @@ router.get('/viewHoursWorked' , (req,res) => {
 })
 
 // 5. total salary earned by the rider for that month
+router.get('/viewMonthSalary' , (req,res) => {
+    const userId = req.body.userId;
+    const month = req.body.month;
+    const year = req.body.year;
+    const text = `
+    with result as (                                                                                                                      
+        select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration                                
+        from schedules S join intervals I                                                                                                     
+        on (S.scheduleId = I.scheduleId)                                                                                                  
+        and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
+        and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
+    result2 as (
+        SELECT D.deliveryTimetoCustomer, case 
+                                        when ((deliveryTimetoCustomer::time >= '12:00' and deliveryTimetoCustomer::time <= '13:00')
+                                                OR (deliveryTimetoCustomer::time >= '18:00' and deliveryTimetoCustomer::time <= '20:00'))
+                                        then 4
+                                        else 2
+                                        end as delivery_fee
+        FROM Delivers D      
+        WHERE userId = $1
+        AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
+        AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3),
+    result3 as (
+        select coalesce((select sum(duration) from result R),0) as totalHoursWorked , coalesce(sum(delivery_fee),0) as totalFees
+        from result2 R2)
+    select R3.totalHoursWorked, R3.totalFees, case
+        when $1 in (select F.userId from full_time F) then (R3.totalHoursWorked * 5 + totalFees)
+        else (R3.totalHoursWorked * 2 + totalFees) --part_time
+        end as pay
+    from result3 R3`;
+//select sum(duration) form result;
 
+    const values = [userId, month, year];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
 
 
 module.exports = router;
