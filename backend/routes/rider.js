@@ -55,39 +55,16 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 /*test input json:
 *
 * */
-// function insertRider(name, area) {
-//     return new Promise((res, rej) => {
-//         let currId;
-//         try {
-//             pool.query(`INSERT INTO users(name)
-// 					VALUES ($1)
-// 					returning userId`,
-//                 [name],
-//             ).then(result => {
-//                     currId = result.rows[0].userid;
-//                     pool.query(
-//                             `INSERT INTO riders values($1, $2)`,
-//                         [currId, area]
-//                     )
-//                 }
-//             ).then(result => {
-//                     res(currId);
-//                 }
-//             )
-//         } catch (err) {
-//             console.err(err);
-//             pool.query('ROLLBACK');
-//         }
-//     })
-// }
 
+// 6. average delivery time by the rider for that month
+//departTimeForRestaurant - deliveryTimetoCustomer = delivery time
+// average delivery time = total delivery time / total num of orders [monthly]
+
+router.get('/getAverageDeliveryTime', async (req,res)=>{
+	const month = req.body.month;
+
+})
 // 2. create a schedule -> choose start date, plan schedule for one week
-/*Example: "intervals" :
-    [
-        {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
-        {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
-    ]
-*/
 //IMPORTANT: DO NOT USE POOL.QUERY() WITH TRANSACTIONS
 //TODO: catch exceptions raised by db and return it back in res
 // maybe useful: https://codeburst.io/node-js-mysql-and-promises-4c3be599909b

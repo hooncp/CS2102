@@ -13,7 +13,6 @@ DELETE FROM Weekly_Work_Schedules;
 DELETE FROM Intervals;
 DELETE FROM Orders;
 DELETE FROM Contains;
-DELETE FROM Schedules;
 DELETE FROM Delivers;
 DELETE FROM Promotions;
 DELETE FROM MinSpendingPromotions;
