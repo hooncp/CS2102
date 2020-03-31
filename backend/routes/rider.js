@@ -286,4 +286,12 @@ router.get('/test', function(req, res, next) {
 	});
 });
 */
+router.get('/viewPastOrder' , (req,res) => {
+    pool
+        .query('SELECT * FROM Delivery_Details WHERE UserId = 1')
+        .then(res => {
+            console.log(res.rows)
+        })
+        .catch(e => console.error(e.stack))
+})
 module.exports = router;
