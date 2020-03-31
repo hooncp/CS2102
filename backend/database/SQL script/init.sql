@@ -277,8 +277,8 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER mws_trigger
+DROP TRIGGER IF EXISTS mws_5days_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_5days_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
@@ -306,8 +306,8 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER mws_trigger
+DROP TRIGGER IF EXISTS mws_28days_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_28days_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
@@ -367,8 +367,8 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS mws_interval_trigger ON Monthly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER mws_interval_trigger
+DROP TRIGGER IF EXISTS mws_predefined_interval_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_predefined_interval_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
@@ -389,6 +389,7 @@ BEGIN
                   FROM Intervals I2
                   WHERE I2.scheduleId = I1.scheduleId
                     AND I2.intervalId <> I1.intervalId
+                    AND I2.startTime::date = I1.startTime::date
                     AND (
                           (I2.startTime::time <= I1.startTime::time
                               AND I2.endTime::time >= I1.startTime::time)
@@ -407,14 +408,14 @@ BEGIN
                       )
               );
     IF badInputSchedule IS NOT NULL THEN
-        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+        RAISE EXCEPTION 'scheduleId % has some overlapping intervals', badInputSchedule;
     END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS interval_trigger ON Intervals CASCADE;
-CREATE CONSTRAINT TRIGGER interval_trigger
+DROP TRIGGER IF EXISTS interval_overlap_trigger ON Intervals CASCADE;
+CREATE CONSTRAINT TRIGGER interval_overlap_trigger
     AFTER INSERT
     ON Intervals
     DEFERRABLE INITIALLY DEFERRED
@@ -422,40 +423,71 @@ CREATE CONSTRAINT TRIGGER interval_trigger
 EXECUTE FUNCTION check_intervals_overlap_deferred();
 
 
-CREATE OR REPLACE FUNCTION check_intervals_duration_deferred() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION check_wws_duration_deferred() RETURNS TRIGGER AS
 $$
 DECLARE
     badInputSchedule INTEGER;
 BEGIN
-    WITH IntervalDuration AS (
-        SELECT IntervalId,
-               scheduleId,
-               startTime,
-               endTime,
-               date_part('hours', endTime) - date_part('hours', startTime) as duration
-        FROM Intervals
+    WITH IntervalDuration AS
+    (
+    SELECT IntervalId, scheduleId, startTime, endTime,
+    date_part('hours', endTime) - date_part('hours',startTime) as duration
+    FROM Intervals
     )
-    SELECT DISTINCT scheduleId
-    INTO badInputSchedule
+    SELECT DISTINCT scheduleId INTO badInputSchedule
     FROM IntervalDuration
+    WHERE scheduleId = NEW.scheduleId
     GROUP BY scheduleId
-    HAVING sum(duration) < 10
-        or sum(duration) > 48;
-    IF badInputSchedule IS NOT NULL THEN
+    HAVING sum(duration) >= 10 and sum(duration) <= 48
+    ;
+
+    IF badInputSchedule IS NULL THEN
         RAISE EXCEPTION '% : Total duration of weekly schedule cannot be < 10 or > 48', badInputSchedule;
     END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS interval_trigger ON Weekly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER interval_trigger
+DROP TRIGGER IF EXISTS wws_duration_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER wws_duration_trigger
     AFTER INSERT
     ON Weekly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
-EXECUTE FUNCTION check_intervals_duration_deferred();
+EXECUTE FUNCTION check_wws_duration_deferred();
 
+
+CREATE OR REPLACE FUNCTION check_wws_within_seven_days_deferred () RETURNS TRIGGER AS $$
+DECLARE
+    badInputInterval INTEGER;
+BEGIN
+    SELECT intervalId into badInputInterval
+    FROM  Intervals I
+    WHERE I.scheduleId = NEW.scheduleId
+    AND EXISTS (
+        SELECT 1
+        FROM Weekly_Work_Schedules WWS
+        WHERE WWS.scheduleId = NEW.scheduleId
+        AND (
+            I.startTime::date < WWS.startDate::date
+            OR
+            I.startTime::date > WWs.endDate::date
+        )
+    )
+    ;
+    IF badInputInterval IS NOT NULL THEN
+        RAISE EXCEPTION 'Intervals in newly added schedule must not exceed 7 days';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS wws_seven_days_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER wws_seven_days_trigger
+    AFTER INSERT ON Weekly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW EXECUTE FUNCTION check_wws_within_seven_days_deferred ();
 
 
 CREATE OR REPLACE FUNCTION check_wws_overlap_deferred() RETURNS TRIGGER AS
@@ -463,18 +495,19 @@ $$
 DECLARE
     badInputSchedule INTEGER;
 BEGIN
-    SELECT DISTINCT S1.scheduleId INTO badInputSchedule
+    SELECT S1.scheduleId INTO badInputSchedule
     FROM Weekly_Work_Schedules S1
     WHERE EXISTS(
                   SELECT 1
                   FROM Weekly_Work_Schedules S2
                   WHERE S2.scheduleId <> S1.scheduleId
+                  AND S2.userId = S1.userId
                     AND (
-                          (S2.startDate <= S1.startDate
-                              AND S2.endDate >= S1.startDate)
+                          (S2.startDate::date <= S1.startDate::date
+                              AND S2.endDate::date >= S1.startDate::date)
                           OR
-                          (S2.startDate <= S1.endDate
-                              AND S2.endDate >= S1.endDate)
+                          (S2.startDate::date <= S1.endDate::date
+                              AND S2.endDate::date >= S1.endDate::date)
                       )
               );
     IF badInputSchedule IS NOT NULL THEN
@@ -485,35 +518,12 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP TRIGGER IF EXISTS schedule_trigger ON Weekly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER schedule_trigger
+DROP TRIGGER IF EXISTS wws_overlap_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER wws_overlap_trigger
     AFTER INSERT
     ON Weekly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
 EXECUTE FUNCTION check_wws_overlap_deferred();
 
-CREATE OR REPLACE FUNCTION check_wws_within_seven_days_deferred () RETURNS TRIGGER AS $$
-DECLARE
-    NewLastDate TIMESTAMP;
-    EndDateLimit TIMESTAMP;
-BEGIN
-    SELECT S.endDate, I.startTime INTO EndDateLimit, NewLastDate
-    FROM Weekly_Work_Schedules S join Intervals I on (S.scheduleId = I.scheduleId)
-        AND S.scheduleId = NEW.scheduleId
-    ORDER BY I.startTime DESC
-    LIMIT 1
-    ;
-    IF NewLastDate > EndDateLimit THEN
-        RAISE EXCEPTION 'Newly added schedule must start after the latest schedule';
-    END IF;
-    RETURN NULL;
-END;
-$$ LANGUAGE PLPGSQL;
 
-
-DROP TRIGGER IF EXISTS schedule_trigger ON Weekly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER schedule_trigger
-    AFTER INSERT ON Weekly_Work_Schedules
-    DEFERRABLE INITIALLY DEFERRED
-    FOR EACH ROW EXECUTE FUNCTION check_wws_within_seven_days_deferred ();
