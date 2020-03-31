@@ -126,7 +126,12 @@ router.post('/createWeeklySchedule', async (req, res) => {
 	}
 })
 
-async function insertMonthlySchedule(client, userId, startDate, endDate, intervals) {
+async function insertMonthlySchedule(client, schedules) {
+	var userId = schedules.userId;
+	var startDate = schedules.startDate;
+	var endDate = schedules.endDate;
+	var intervals = schedules.intervals;
+	console.log(schedules);
 	return new Promise((res, rej) => {
 		try {
 			client.query('BEGIN').then(result => {
@@ -147,76 +152,52 @@ async function insertMonthlySchedule(client, userId, startDate, endDate, interva
 						res(scheduleId);
 					})
 			})
+			return 0;
 		} catch
 			(err) {
-			client.release()
 			console.error("error triggered: ", err.message);
+			throw (err);
 		}
 	})
 }
-/*Example:
-"intervals":
-[
- "intervals1" :
-    [
-        {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
-        {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
-    ],
-    "intervals2" :
-    [
-        {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
-        {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
-    ],
-    "intervals3" :
-    [
-        {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
-        {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
-    ],
-    "intervals4" :
-    [
-        {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
-        {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
-    ]
-]
-*/
 router.post('/createMonthlySchedule', async (req, res) => {
 	const client = await pool.connect();
+	const schedules = req.body.schedules;
+	console.log(schedules);
 	try {
-		const userId = req.body.userId;
-		const startDate = req.body.startDate; //user input
-		const endDate = req.body.endDate; //calculate and pass down from frontend
-		const intervals = req.body.intervals;
 		let scheduleId1 = 0;
 		let scheduleId2 = 0;
 		let scheduleId3 = 0;
 		let scheduleId4 = 0;
 
 		client.query('BEGIN').then(result => {
-				insertMonthlySchedule(client, userId, startDate, endDate, intervals[0])
+				insertMonthlySchedule(client, schedules[0])
 					.then(result => {
 						scheduleId1 = result;
-						insertMonthlySchedule(client, userId, startDate, endDate, intervals[1])
+						return insertMonthlySchedule(client, schedules[1])
 							.then(result => {
 								scheduleId2 = result;
-								insertMonthlySchedule(client, userId, startDate, endDate, intervals[2])
+								return insertMonthlySchedule(client, schedules[2])
 									.then(result => {
 										scheduleId3 = result;
-										insertMonthlySchedule(client, userId, startDate, endDate, intervals[3])
+										return insertMonthlySchedule(client, schedules[3])
 											.then(result => {
 												scheduleId4 = result;
-												client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
+												return client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
 													[scheduleId1, scheduleId2, scheduleId3, scheduleId4])
 													.then(result => {
 														client.query('COMMIT');
-														client.release();
-													})
+														// client.release();
+													}).catch(err=> {
+													console.error(err);
+												})
 											})
 									})
 							})
 					})
 			}
 		)
-		return res.json(`${userId}'s schedule added`);
+		return res.json(`schedule added`);
 	} catch (err) {
 		client.query(`ROLLBACK`);
 		client.release()

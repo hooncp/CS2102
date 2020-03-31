@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS Customers CASCADE;
 DROP TABLE IF EXISTS Riders CASCADE;
 DROP TABLE IF EXISTS Part_Time CASCADE;
 DROP TABLE IF EXISTS Full_Time CASCADE;
-DROP TABLE IF EXISTS Schedules CASCADE;
 DROP TABLE IF EXISTS Monthly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Weekly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Intervals CASCADE;
@@ -316,55 +315,52 @@ EXECUTE FUNCTION check_mws_28days_constraint_deferred();
 
 -- if conform to predefined timings
 DROP FUNCTION IF EXISTS check_mws_intervals_constraint_deferred() CASCADE;
-CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS
-$$
-DECLARE
-    badInputSchedule INTEGER;
+CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS $$
+	DECLARE
+		badInputSchedule 	INTEGER;
 BEGIN
     WITH curr_Intervals AS (
         SELECT *
         FROM Intervals I
-        WHERE I.scheduleId = NEW.scheduleId
+        WHERE I.scheduleId = NEW.scheduleId1
     ),
-         Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
-             select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
-             from curr_Intervals cI1,
-                  curr_Intervals cI2
-             where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
-               and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
-         )
-    SELECT S.scheduleId
-    INTO badInputSchedule
+    Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
+        select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
+        from curr_Intervals cI1, curr_Intervals cI2
+        where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
+        and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
+    )
+    SELECT S.scheduleId INTO badInputSchedule
     FROM Weekly_Work_Schedules S
-    WHERE S.scheduleId = NEW.scheduleId
-      AND (
-            NOT EXISTS( -- table is non-empty
-                    select 1 from Interval_Pairs IP2 limit 1
-                )
-            OR
-            EXISTS( --checks for any bad intervals
-                    SELECT 1
-                    FROM Interval_Pairs IP
-                    WHERE (select count(*) from Interval_Pairs) <>
-                          ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
-                       OR NOT (
-                            IP.startTime1::time = '10:00' OR
-                            IP.startTime1::time = '11:00' OR
-                            IP.startTime1::time = '12:00' OR
-                            IP.startTime1::time = '13:00'
-                        )
-                       OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4
-                        AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4)
+    WHERE S.scheduleId = NEW.scheduleId1
+    AND (
+        NOT EXISTS ( -- table is non-empty
+        select 1 from Interval_Pairs IP2 limit 1
+        )
+        OR
+        EXISTS ( --checks for any bad intervals
+            SELECT 1
+            FROM Interval_Pairs IP
+            WHERE (select count(*) from Interval_Pairs) <> ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
+            OR NOT(
+                IP.startTime1::time = '10:00' OR
+                IP.startTime1::time = '11:00' OR
+                IP.startTime1::time = '12:00' OR
+                IP.startTime1::time = '13:00'
+            )
+            OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours',IP.startTime1) = 4
+                AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours',IP.startTime1) = 4)
 
-                       OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours', IP.endTime1) = 1)
-                )
-        );
+            OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours',IP.endTime1) = 1)
+        )
+    )
+;
 
     IF badInputSchedule IS NOT NULL THEN
-        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+    RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
     END IF;
     RETURN NULL;
-END;
+	END;
 $$ LANGUAGE PLPGSQL;
 
 DROP TRIGGER IF EXISTS mws_predefined_interval_trigger ON Monthly_Work_Schedules CASCADE;
