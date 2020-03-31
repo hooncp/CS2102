@@ -286,12 +286,44 @@ router.get('/test', function(req, res, next) {
 	});
 });
 */
+// 3. total number of orders delivered by rider
 router.get('/viewPastOrder' , (req,res) => {
+    const userId = req.body.userId;
     pool
-        .query('SELECT * FROM Delivery_Details WHERE UserId = 1')
-        .then(res => {
-            console.log(res.rows)
+        .query('SELECT * FROM Delivers WHERE UserId = $1', [userId])
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
         })
         .catch(e => console.error(e.stack))
 })
+
+// 4. total number of hours worked by rider for that month
+router.get('/viewHoursWorked' , (req,res) => {
+    const userId = req.body.userId;
+    const month = req.body.month;
+    const year = req.body.year;
+    const text = `with result as ( 
+    select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration 
+    from schedules S join intervals I 
+        on (S.scheduleId = I.scheduleId) 
+        and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2 
+        and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3)   
+    select * from result`;
+//select sum(duration) form result;
+
+    const values = [userId, month, year];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
+
+// 5. total salary earned by the rider for that month
+
+
+
 module.exports = router;

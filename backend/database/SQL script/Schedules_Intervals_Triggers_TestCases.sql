@@ -103,17 +103,17 @@ insert into Intervals values (15,1,'2020-12-09 20:00','2020-12-09 21:00');
 
 SELECT IntervalId, scheduleId, startTime, endTime,
 date_part('hours', endTime) - date_part('hours',startTime) as duration
-FROM Intervals  
+FROM Intervals
 ;
 select endDate - startDate is distinct from 7 as diff
 from schedules;
 
-select endTime - startTime 
+select endTime - startTime
 from intervals;
 
 
 CREATE OR REPLACE FUNCTION check_intervals_overlap_deferred () RETURNS TRIGGER AS $$
-	DECLARE 
+	DECLARE
 		badInputSchedule 	INTEGER;
 BEGIN
     SELECT DISTINCT I1.scheduleId INTO badInputSchedule
@@ -122,21 +122,21 @@ BEGIN
     SELECT 1
     FROM Intervals I2
     WHERE I2.scheduleId = I1.scheduleId
-    AND I2.intervalId <> I1.intervalId    
-    AND(   
+    AND I2.intervalId <> I1.intervalId
+    AND(
         (I2.startTime::time <= I1.startTime::time
         AND I2.endTime::time >= I1.startTime::time)
         --IE: first input shift 2-5pm , current input shift 3 - 4pm / 3 - 6pm etc
-        OR 
+        OR
         (I2.startTime::time <= I1.endTime::time
-        AND I2.endTime::time >= I1.endTime::time) 
+        AND I2.endTime::time >= I1.endTime::time)
         --IE: first input shift 2-5pm, current input shift 12pm - 3pm / 12pm - 6pm
-        OR ( 
+        OR (
             DATE_PART('hours', I1.startTime) - DATE_PART('hours',I2.endTime) < 1
-            AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours',I2.endTime) 
+            AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours',I2.endTime)
         -- if current inputted shift start time is less than 1hr from other shifts end time, violated (of the same day).
         -- this constraint should also be covered without this last statement when the intervals start and end on the hour
-        -- constraint is enforced 
+        -- constraint is enforced
         )
     )
     )
@@ -144,7 +144,7 @@ BEGIN
     IF badInputSchedule IS NOT NULL THEN
     RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
     END IF;
-    RETURN NULL; 
+    RETURN NULL;
 	END;
 $$ LANGUAGE PLPGSQL;
 
@@ -156,13 +156,13 @@ FOR EACH ROW EXECUTE FUNCTION check_intervals_overlap_deferred();
 
 
 CREATE OR REPLACE FUNCTION check_intervals_duration_deferred () RETURNS TRIGGER AS $$
-	DECLARE 
+	DECLARE
 		badInputSchedule 	INTEGER;
 BEGIN
     WITH IntervalDuration AS (
     SELECT IntervalId, scheduleId, startTime, endTime,
     date_part('hours', endTime) - date_part('hours',startTime) as duration
-    FROM Intervals  
+    FROM Intervals
     )
     SELECT DISTINCT scheduleId INTO badInputSchedule
     FROM IntervalDuration
@@ -172,7 +172,7 @@ BEGIN
     IF badInputSchedule IS NOT NULL THEN
     RAISE EXCEPTION '% : Total duration of weekly schedule cannot be < 10 or > 48', badInputSchedule;
     END IF;
-    RETURN NULL; 
+    RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
 
@@ -185,8 +185,8 @@ FOR EACH ROW EXECUTE FUNCTION check_intervals_duration_deferred ();
 
 
 CREATE OR REPLACE FUNCTION check_schedule_constraint_deferred () RETURNS TRIGGER AS $$
-	DECLARE 
-        latestEndDate TIMESTAMP;	
+	DECLARE
+        latestEndDate TIMESTAMP;
      BEGIN
         SELECT DISTINCT S1.scheduleId INTO badInputSchedule
         FROM Schedules S1
@@ -206,7 +206,7 @@ CREATE OR REPLACE FUNCTION check_schedule_constraint_deferred () RETURNS TRIGGER
     IF NEW.startDate <= latestEndDate THEN
     RAISE EXCEPTION 'Newly added schedule must start after the latest schedule';
     END IF;
-    RETURN NULL; 
+    RETURN NULL;
 	END;
 $$ LANGUAGE PLPGSQL;
 
@@ -492,10 +492,10 @@ commit;
 
 -- [pass] MWS has 5 consecutive days
 begin;
-insert into schedules values (9,1,'7 nov 2020', '13 nov 2020');
-insert into schedules values (10,1,'13 nov 2020', '19 nov 2020');
-insert into schedules values (11,1,'19 nov 2020', '25 nov 2020');
-insert into schedules values (12,1,'25 nov 2020', '2 dec 2020');
+insert into schedules values (9,4,'7 nov 2020', '13 nov 2020');
+insert into schedules values (10,4,'14 nov 2020', '20 nov 2020');
+insert into schedules values (11,4,'21 nov 2020', '27 nov 2020');
+insert into schedules values (12,4,'28 nov 2020', '4 dec 2020');
 
 insert into Intervals values (5,9,'2020-11-07 10:00','2020-11-07 14:00');
 insert into Intervals values (6,9,'2020-11-07 15:00','2020-11-07 19:00');
