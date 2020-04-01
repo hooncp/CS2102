@@ -396,7 +396,7 @@ router.get('/viewMonthHoursWorked', (req, res) => {
 	const year = req.body.year;
 	const text = `with result as ( 
     select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration 
-    from schedules S join intervals I 
+    from Weekly_Work_Schedules S join intervals I 
         on (S.scheduleId = I.scheduleId) 
         and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2 
         and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3)   
@@ -421,7 +421,7 @@ router.get('/viewMonthSalary', (req, res) => {
 	const text = `
     with result as (                                                                                                                      
         select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration                                
-        from schedules S join intervals I                                                                                                     
+        from Weekly_Work_Schedules S join intervals I                                                                                                     
         on (S.scheduleId = I.scheduleId)                                                                                                  
         and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
         and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
@@ -440,7 +440,7 @@ router.get('/viewMonthSalary', (req, res) => {
         select coalesce((select sum(duration) from result R),0) as totalHoursWorked , coalesce(sum(delivery_fee),0) as totalFees
         from result2 R2)
     select R3.totalHoursWorked, R3.totalFees, case
-        when $1 in (select F.userId from full_time F) then (R3.totalHoursWorked * 5 + totalFees)
+        when $1 not in (select PT.userId from Part_Time PT) then (R3.totalHoursWorked * 5 + totalFees)
         else (R3.totalHoursWorked * 2 + totalFees) --part_time
         end as pay
     from result3 R3

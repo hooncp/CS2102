@@ -7,7 +7,7 @@ DELETE FROM Customers;
 DELETE FROM Riders;
 DELETE FROM Part_Time;
 DELETE FROM Full_Time;
-DELETE FROM Schedules;
+-- DELETE FROM Schedules;
 DELETE FROM Monthly_Work_Schedules;
 DELETE FROM Weekly_Work_Schedules;
 DELETE FROM Intervals;
@@ -50,10 +50,10 @@ INSERT INTO Part_Time (userId) VALUES
 (4),
 (5);
 
-INSERT INTO Full_Time (userId) VALUES
-(6),
-(7),
-(8);
+-- INSERT INTO Full_Time (userId) VALUES
+-- (6),
+-- (7),
+-- (8);
 
 INSERT INTO Restaurants (rname, minOrderAmt, area) VALUES
 ('JIT YONG RESTAURANT', 100.00, 'central'),
