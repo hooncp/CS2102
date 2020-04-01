@@ -57,29 +57,7 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 * */
 
 
-router.get('/getMonthlySummary', async (req,res)=> {
-	const month = req.body.month;
-	const userId = req.body.userId;
-	const query = `SELECT round(sum(rating)::numeric/count(rating),2) as avgRating
-	FROM Delivers D
-	WHERE DATE_PART('MONTHS',D.deliveryTimetoCustomer) = ${month}
-	GROUP BY userId
-	HAVING userId = ${userId}
-	;`
-	pool.query(query).then(result => {
-		let avgRating = (result.rows[0].avgrating);
-		console.log('num of ratings:', avgRating);
-		res.json(avgRating);
-	}).catch(err => {
-		if (err.constraint) {
-			console.error(err.constraint);
-		} else {
-			console.log(err);
-			res.json(err);
-		}
-	});
 
-})
 router.get('/getMonthlyAvgRating', async (req,res)=> {
 	const month = req.body.month;
 	const userId = req.body.userId;
