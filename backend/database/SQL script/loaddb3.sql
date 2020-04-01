@@ -70,7 +70,7 @@ INSERT INTO Food (fname, category) VALUES
 INSERT INTO Sells (rname, fname, price) VALUES
 ('JIT YONG RESTAURANT', 'CHICKEN', 10.0),
 ('JIT YONG PTE LTD', 'DUCK', 5.0),
-('JIT YONG RESTAURANT1', 'CHICKEN', 11.0);
+('JIT YONG RESTAURANT1', 'DUCK', 11.0);
 
 INSERT INTO Sells (rname, fname, price, availability) VALUES
 ('JIT YONG RESTAURANT', 'DUCK', 10.0, 5);
@@ -100,9 +100,20 @@ INSERT INTO Orders(orderId, userId, promoCode, applicableTo,
 (2, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
 (3, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 10),
 (4, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
-(5, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 5),
-(6, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+(5, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+(6, 3, NULL, NULL, 'credit', '2020-06-22 19:10:25', 'blk 123', 0),
 (7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0);
+
+
+INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
+(1, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD'),
+(2, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
+(3, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
+(4, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
+(4, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD3'),
+(5, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD51'),
+(6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6'),
+(7, 'JIT YONG RESTAURANT1', 'DUCK', 1, 'GOOD1'); 
 
 INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant
                             ,deliveryTimetoCustomer, arrivalTimeAtRestaurant, rating) VALUES
@@ -114,13 +125,3 @@ INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRes
 (5, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:33:25', '2020-06-24 20:24:25', 2),
 (6, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 20:13:25', '2020-06-24 20:34:25', 2);
 
-
-INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
-(1, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD'),
-(1, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD1'),
-(2, 'JIT YONG RESTAURANT1', 'CHICKEN', 3, 'GOOD2'),
-(3, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD3'),
-(4, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD4'),
-(5, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD51'),
-(6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6'),
-(7, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD1'); 

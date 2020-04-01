@@ -182,7 +182,8 @@ CREATE TABLE Orders (
 	PRIMARY KEY(orderId),
 	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
 	CHECK(modeOfPayment = 'cash' OR
-		 	modeOfPayment ='credit')
+		 	modeOfPayment ='credit'),
+    CHECK(usedRewardPoints = 5 OR usedRewardPoints = 10 OR usedRewardPoints = 15 OR usedRewardPoints = 0)
 );
 
 CREATE TABLE Contains (
@@ -540,11 +541,19 @@ $$ LANGUAGE SQL
 DROP FUNCTION IF EXISTS getDeliveryFee CASCADE;
 CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP)
 RETURNS NUMERIC(4,2) AS $$
-    SELECT CASE 
-        WHEN orderTime::time < '19:10:00' AND orderTime::time > '17:00:00'then 10.00
-        else 5.00
+    DECLARE
+        test time;
+        amount NUMERIC(4,2);
+    
+    BEGIN
+        test = orderTime::time;
+        CASE
+            WHEN test < '19:10:00' AND test > '17:00:00'then amount = 10.00;
+            else amount = 5.00;
+        END CASE;
+        RETURN amount;
     END;
-$$ LANGUAGE SQL;
+$$ LANGUAGE PLPGSQL;
 
 DROP FUNCTION IF EXISTS getearnedRewardPts CASCADE;
 CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(4,2))
@@ -565,37 +574,42 @@ CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
 )
 
 RETURNS NUMERIC(4,2) AS $$
-    SELECT CASE
-        WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL)) 
-            THEN 
-            getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee
-        WHEN EXISTS (
-            SELECT 1 
-            FROM CustomerPromotions P
-            WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
+    DECLARE 
+        amount NUMERIC(4,2);
+    
+    BEGIN 
+        CASE
+            WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL)) 
+                THEN amount = 
+                (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
+            WHEN EXISTS (
+                SELECT 1 
+                FROM CustomerPromotions P
+                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
 
-            THEN getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - 
-                (SELECT P.amout 
-                FROM CustomerPromotions P 
-                WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
-                + deliveryfee 
-        WHEN EXISTS (
-            SELECT 1 
-            FROM MinSpendingPromotions P
-            WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1)
-        THEN (
-            getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
-        )
-        ELSE -1.00
-        END; 
-
-$$ LANGUAGE SQL;
+                THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - 
+                    (SELECT P.amout 
+                    FROM CustomerPromotions P 
+                    WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
+                    + deliveryfee);
+            WHEN EXISTS (
+                SELECT 1 
+                FROM MinSpendingPromotions P
+                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1)
+            THEN amount = (
+                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
+            );
+            ELSE amount = -1.00;
+        END CASE;
+        RETURN amount;
+    END;
+$$ LANGUAGE PLPGSQL;
 
 
 DROP VIEW IF EXISTS OrderInfo CASCADE;
 CREATE VIEW OrderInfo AS
    
-SELECT O.orderId, O.userId, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
+SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
         getDeliveryFee(O.timeOfOrder) as deliveryfee,
         getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
         O.usedRewardPoints, 
@@ -603,6 +617,6 @@ SELECT O.orderId, O.userId, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as 
         getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
         
     FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
-    GROUP BY O.orderId
+    GROUP BY O.orderId, C.rname
     ORDER BY O.orderId ASC;
 ---END OF ORDERS CALCULATION---
