@@ -3,6 +3,9 @@ var router = express.Router();
 
 const pool = require('../database/db');
 
+
+
+
 //8. averaged rating received by rider for orders delivered that month
 router.get('/getMonthlyAvgRating', async (req,res)=> {
     const month = req.body.month;
