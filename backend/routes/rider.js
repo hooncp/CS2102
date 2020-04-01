@@ -8,7 +8,7 @@ const pool = require('../database/db');
 https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-d96d6fc892d8/
 */
 /* Features:
-1. on create rider, choose if monthly or weekly //done
+1. on create rider, choose if monthly or weekly
 2. create a schedule -> choose start date, plan schedule for one week
 3. total number of orders delivered by rider
 4. total number of hours worked by the rider for that month
@@ -56,12 +56,106 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 *
 * */
 
+
+router.get('/getMonthlySummary', async (req,res)=> {
+	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `SELECT round(sum(rating)::numeric/count(rating),2) as avgRating
+	FROM Delivers D
+	WHERE DATE_PART('MONTHS',D.deliveryTimetoCustomer) = ${month}
+	GROUP BY userId
+	HAVING userId = ${userId}
+	;`
+	pool.query(query).then(result => {
+		let avgRating = (result.rows[0].avgrating);
+		console.log('num of ratings:', avgRating);
+		res.json(avgRating);
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
+
+})
+router.get('/getMonthlyAvgRating', async (req,res)=> {
+	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `SELECT round(sum(rating)::numeric/count(rating),2) as avgRating
+	FROM Delivers D
+	WHERE DATE_PART('MONTHS',D.deliveryTimetoCustomer) = ${month}
+	GROUP BY userId
+	HAVING userId = ${userId}
+	;`
+	pool.query(query).then(result => {
+		let avgRating = (result.rows[0].avgrating);
+		console.log('num of ratings:', avgRating);
+		res.json(avgRating);
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
+
+})
+
+router.get('/getMonthlyNumRating', async (req,res)=> {
+	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `SELECT count(rating) as numRating
+	FROM Delivers D
+	WHERE DATE_PART('MONTHS',D.deliveryTimetoCustomer) = ${month}
+	GROUP BY userId
+	HAVING userId = ${userId}
+	;`
+	pool.query(query).then(result => {
+		let numRating =  result.rows[0].numrating
+		console.log('num of ratings:', numRating);
+		res.json(numRating);
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
+
+})
+
 // 6. average delivery time by the rider for that month
 //departTimeForRestaurant - deliveryTimetoCustomer = delivery time
 // average delivery time = total delivery time / total num of orders [monthly]
-
-router.get('/getAverageDeliveryTime', async (req,res)=>{
+router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
 	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `select sum((extract(epoch from (deliveryTimetoCustomer - departTimeForRestaurant)))/60)
+		/count(userId) as avgTime
+		FROM Delivers D
+		WHERE DATE_PART('months',D.deliveryTimetoCustomer) = ${month}
+		GROUP BY userId
+		HAVING userId = ${userId};`
+		pool.query(query).then(result => {
+			if (typeof result.rows[0] == 'undefined') {
+				throw `rider ${userId} does not have any deliveries`;
+			} else {
+				let avgTime = result.rows[0].avgtime
+				console.log('result:', avgTime);
+				res.json(avgTime);
+			}
+		}).catch(err => {
+			if (err.constraint) {
+				console.error(err.constraint);
+			} else {
+				console.log(err);
+				res.json(err);
+			}
+		});
 
 })
 // 2. create a schedule -> choose start date, plan schedule for one week
@@ -103,7 +197,7 @@ router.post('/createWeeklySchedule', async (req, res) => {
 	}
 })
 
-async function insertMonthlySchedule(client, schedules) {
+async function insertWeeklySchedule(client, schedules) {
 	var userId = schedules.userId;
 	var startDate = schedules.startDate;
 	var endDate = schedules.endDate;
@@ -148,16 +242,16 @@ router.post('/createMonthlySchedule', async (req, res) => {
 		let scheduleId4 = 0;
 
 		client.query('BEGIN').then(result => {
-				insertMonthlySchedule(client, schedules[0])
+				insertWeeklySchedule(client, schedules[0])
 					.then(result => {
 						scheduleId1 = result;
-						return insertMonthlySchedule(client, schedules[1])
+						return insertWeeklySchedule(client, schedules[1])
 							.then(result => {
 								scheduleId2 = result;
-								return insertMonthlySchedule(client, schedules[2])
+								return insertWeeklySchedule(client, schedules[2])
 									.then(result => {
 										scheduleId3 = result;
-										return insertMonthlySchedule(client, schedules[3])
+										return insertWeeklySchedule(client, schedules[3])
 											.then(result => {
 												scheduleId4 = result;
 												return client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
