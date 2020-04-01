@@ -9,7 +9,7 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 /* Features:
 1. on create rider, choose if monthly or weekly //done
 2. create a schedule -> choose start date, plan schedule for one week
-3. total number of orders delivered by rider
+3. total number of orders delivered by rider for that month
 4. total number of hours worked by the rider for that month
 5. total salary earned by the rider for that month
 6. average delivery time by the rider for that month
@@ -360,8 +360,8 @@ router.get('/viewMonthSalary' , (req,res) => {
         when $1 in (select F.userId from full_time F) then (R3.totalHoursWorked * 5 + totalFees)
         else (R3.totalHoursWorked * 2 + totalFees) --part_time
         end as pay
-    from result3 R3`;
-//select sum(duration) form result;
+    from result3 R3
+    `;
 
     const values = [userId, month, year];
     pool
