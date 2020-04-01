@@ -7,7 +7,6 @@ DELETE FROM Customers;
 DELETE FROM Riders;
 DELETE FROM Part_Time;
 DELETE FROM Full_Time;
-DELETE FROM Schedules;
 DELETE FROM Monthly_Work_Schedules;
 DELETE FROM Weekly_Work_Schedules;
 DELETE FROM Intervals;
@@ -82,16 +81,28 @@ INSERT INTO Restaurant_Staff (userId, rname) VALUES
 (11, 'JIT YONG RESTAURANT1'),
 (12, 'JIT YONG RESTAURANT2');
 
+
+
+INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, discUnit, discRate, startDate, endDate) VALUES
+('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT', 10, 10, '2020-06-22 19:10:25', '2020-06-25 19:11:25'),
+('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT1', 15, 15, '2022-06-22 19:10:25', '2027-06-25 19:11:25');
+
+INSERT INTO MinSpendingPromotions(promoCode, applicableTo, minAmt) VALUES
+('A123', 'JIT YONG RESTAURANT', 10);
+
+INSERT INTO CustomerPromotions(promoCode, applicableTo, amout, minTimeFromLastOrder) VALUES
+('A123', 'JIT YONG RESTAURANT1',5 , 10);
+
 INSERT INTO Orders(orderId, userId, promoCode, applicableTo, 
                 modeOfPayment, timeOfOrder, deliveryLocation, 
-                usedRewardPoints, givenRewardPoints) VALUES
-(1, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', NULL, 3),
-(2, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', NULL, 3),
-(3, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', NULL, 3),
-(4, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', NULL, 3),
-(5, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', NULL, 3),
-(6, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', NULL, 3),
-(7, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', NULL, 3);
+                usedRewardPoints) VALUES
+(1, 1, 'A123', 'JIT YONG RESTAURANT', 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
+(2, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
+(3, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 10),
+(4, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+(5, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 5),
+(6, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+(7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0);
 
 INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant
                             ,deliveryTimetoCustomer, arrivalTimeAtRestaurant, rating) VALUES
@@ -112,14 +123,4 @@ INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
 (4, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD4'),
 (5, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD51'),
 (6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6'),
-(7, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD1');
-
-INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, discUnit, discRate, startDate, endDate) VALUES
-('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT', 10, 10, '2020-06-22 19:10:25', '2020-06-25 19:11:25'),
-('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT1', 15, 15, '2022-06-22 19:10:25', '2027-06-25 19:11:25');
-
-INSERT INTO MinSpendingPromotions(promoCode, applicableTo, minAmt) VALUES
-('A123', 'JIT YONG RESTAURANT', 10);
-
-INSERT INTO CustomerPromotions(promoCode, applicableTo, minTimeFromLastOrder) VALUES
-('A123', 'JIT YONG RESTAURANT1', 10);
+(7, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD1'); 

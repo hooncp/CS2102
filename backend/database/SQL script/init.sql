@@ -168,6 +168,7 @@ CREATE TABLE Promotions (
 	PRIMARY KEY (promoCode, applicableTo)
 );
 
+--TODO: TRIGGER FOR used reward Points make sure used reward points lesser than actual
 CREATE TABLE Orders (
 	orderId 		INTEGER,
 	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
@@ -176,8 +177,7 @@ CREATE TABLE Orders (
 	modeOfPayment 	VARCHAR(10) NOT NULL,
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
-	usedRewardPoints	INTEGER DEFAULT 0,
-	givenRewardPoints	INTEGER NOT NULL,
+	usedRewardPoints	INTEGER NOT NULL DEFAULT 0,
 	
 	PRIMARY KEY(orderId),
 	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
@@ -210,6 +210,7 @@ CREATE TABLE Delivers (
 	CHECK(rating <= 5)
 );
 
+-- Free delivery
 CREATE TABLE MinSpendingPromotions (
 	promoCode	    VARCHAR(20),	
 	applicableTo	VARCHAR(200),
@@ -218,9 +219,11 @@ CREATE TABLE MinSpendingPromotions (
 	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- a certain amount off
 CREATE TABLE CustomerPromotions (
-    	promoCode		VARCHAR(20),	
+    promoCode		VARCHAR(20),	
 	applicableTo	VARCHAR(200),
+    amout           INTEGER,
 	minTimeFromLastOrder 	INTEGER, -- # of days
 	PRIMARY KEY (promoCode, applicableTo),
 	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
@@ -523,3 +526,83 @@ CREATE CONSTRAINT TRIGGER wws_overlap_trigger
 EXECUTE FUNCTION check_wws_overlap_deferred();
 
 
+---FOR ORDERS CALCULATION---
+DROP FUNCTION IF EXISTS calculatePrice CASCADE;
+CREATE OR REPLACE FUNCTION calculatePrice(rname VARCHAR(20), fname VARCHAR(20), foodQty INTEGER) 
+RETURNS NUMERIC(4,2) AS $$
+    SELECT S.price * foodQty
+    FROM SELLS S
+    WHERE S.fname = fname AND S.rname = rname
+$$ LANGUAGE SQL
+;
+
+--nonpeak vs peak hour deliveryfee
+DROP FUNCTION IF EXISTS getDeliveryFee CASCADE;
+CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP)
+RETURNS NUMERIC(4,2) AS $$
+    SELECT CASE 
+        WHEN orderTime::time < '19:10:00' AND orderTime::time > '17:00:00'then 10.00
+        else 5.00
+    END;
+$$ LANGUAGE SQL;
+
+DROP FUNCTION IF EXISTS getearnedRewardPts CASCADE;
+CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(4,2))
+RETURNS NUMERIC(4,0) AS $$
+    SELECT FLOOR(foodprice / 10.0)
+$$ LANGUAGE SQL;
+
+DROP FUNCTION IF EXISTS getTotalPriceAdjustedForRewards CASCADE;
+CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(4,2), rewardPt INTEGER)
+RETURNS NUMERIC(4,0) AS $$
+    SELECT foodprice - (rewardPt/5)
+$$ LANGUAGE SQL;
+
+DROP FUNCTION IF EXISTS calculateTotalPriceAfterPromotionAndRewards CASCADE;
+CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
+    foodprice NUMERIC(4,2), deliveryfee NUMERIC(4,2), promoCode1 VARCHAR(20),
+    applicableTo1 VARCHAR(200), usedRewardPoints INTEGER
+)
+
+RETURNS NUMERIC(4,2) AS $$
+    SELECT CASE
+        WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL)) 
+            THEN 
+            getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee
+        WHEN EXISTS (
+            SELECT 1 
+            FROM CustomerPromotions P
+            WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
+
+            THEN getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - 
+                (SELECT P.amout 
+                FROM CustomerPromotions P 
+                WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
+                + deliveryfee 
+        WHEN EXISTS (
+            SELECT 1 
+            FROM MinSpendingPromotions P
+            WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1)
+        THEN (
+            getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
+        )
+        ELSE -1.00
+        END; 
+
+$$ LANGUAGE SQL;
+
+
+DROP VIEW IF EXISTS OrderInfo CASCADE;
+CREATE VIEW OrderInfo AS
+   
+SELECT O.orderId, O.userId, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
+        getDeliveryFee(O.timeOfOrder) as deliveryfee,
+        getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
+        O.usedRewardPoints, 
+        calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
+        getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints)
+        
+    FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
+    GROUP BY O.orderId
+    ORDER BY O.orderId ASC;
+---END OF ORDERS CALCULATION---
