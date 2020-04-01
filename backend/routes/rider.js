@@ -3,13 +3,14 @@ var router = express.Router();
 
 const pool = require('../database/db');
 
+
 /* Useful guide:
 https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-d96d6fc892d8/
 */
 /* Features:
-1. on create rider, choose if monthly or weekly //done
+1. on create rider, choose if monthly or weekly
 2. create a schedule -> choose start date, plan schedule for one week
-3. total number of orders delivered by rider for that month
+3. total number of orders delivered by rider
 4. total number of hours worked by the rider for that month
 5. total salary earned by the rider for that month
 6. average delivery time by the rider for that month
@@ -54,184 +55,266 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 /*test input json:
 *
 * */
-// function insertRider(name, area) {
-//     return new Promise((res, rej) => {
-//         let currId;
-//         try {
-//             pool.query(`INSERT INTO users(name)
-// 					VALUES ($1)
-// 					returning userId`,
-//                 [name],
-//             ).then(result => {
-//                     currId = result.rows[0].userid;
-//                     pool.query(
-//                             `INSERT INTO riders values($1, $2)`,
-//                         [currId, area]
-//                     )
-//                 }
-//             ).then(result => {
-//                     res(currId);
-//                 }
-//             )
-//         } catch (err) {
-//             console.err(err);
-//             pool.query('ROLLBACK');
-//         }
-//     })
-// }
 
+
+//8. averaged rating received by rider for orders delivered that month
+router.get('/getMonthlyAvgRating', async (req, res) => {
+	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `SELECT round(sum(rating)::numeric/count(rating),2) as avgRating
+	FROM Delivers D
+	WHERE DATE_PART('MONTHS',D.deliveryTimetoCustomer) = ${month}
+	GROUP BY userId
+	HAVING userId = ${userId}
+	;`
+	pool.query(query).then(result => {
+		let avgRating = (result.rows[0]);
+		console.log('num of ratings:', avgRating);
+		res.json(avgRating);
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
+
+})
+
+//7. number of ratings received by rider for all orders delivered for that month
+router.get('/getMonthlyNumRating', async (req, res) => {
+	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `SELECT count(rating) as numRating
+	FROM Delivers D
+	WHERE DATE_PART('MONTHS',D.deliveryTimetoCustomer) = ${month}
+	GROUP BY userId
+	HAVING userId = ${userId}
+	;`
+	pool.query(query).then(result => {
+		let numRating = result.rows[0]
+		console.log('num of ratings:', numRating);
+		res.json(numRating);
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
+
+})
+
+// 6. average delivery time by the rider for that month
+//departTimeForRestaurant - deliveryTimetoCustomer = delivery time
+// average delivery time = total delivery time / total num of orders [monthly]
+router.get('/getMonthlyAverageDeliveryTime', async (req, res) => {
+	const month = req.body.month;
+	const userId = req.body.userId;
+	const query = `select sum((extract(epoch from (deliveryTimetoCustomer - departTimeForRestaurant)))/60)
+		/count(userId) as avgTime
+		FROM Delivers D
+		WHERE DATE_PART('months',D.deliveryTimetoCustomer) = ${month}
+		GROUP BY userId
+		HAVING userId = ${userId};`
+	pool.query(query).then(result => {
+		if (typeof result.rows[0] == 'undefined') {
+			throw `rider ${userId} does not have any deliveries`;
+		} else {
+			let avgTime = result.rows[0]
+			console.log('result:', avgTime);
+			res.json(avgTime);
+		}
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
+
+})
 // 2. create a schedule -> choose start date, plan schedule for one week
+//IMPORTANT: DO NOT USE POOL.QUERY() WITH TRANSACTIONS
+//TODO: catch exceptions raised by db and return it back in res
+// maybe useful: https://codeburst.io/node-js-mysql-and-promises-4c3be599909b
 router.post('/createWeeklySchedule', async (req, res) => {
-    try {
-        const userId = req.body.userId;
-        const startDate = req.body.startDate; //user input
-        const endDate = req.body.endDate; //calculate and pass down from frontend
-        const intervals = req.body.intervals;
-        /* "intervals" :
-            [
-                {"startTime" :"2020-05-05 10:00:00 ","endTime":"2020-05-05 14:00:00"},
-                {"startTime" :"2020-05-05 15:00:00 ","endTime":"2020-05-05 19:00:00"}
-            ]
-        */
-        let scheduleId;
-        // pool.query('BEGIN', (err, result) => {
-        //         if (err) {
-        //             console.error(err);
-        //             pool.query('ROLLBACK');
-        //         }
-                pool.query(`INSERT INTO Schedules(userId,startDate,endDate) VALUES ($1,$2,$3) RETURNING scheduleId`,
-                    [userId, startDate, endDate], (err, result) => {
-                        if (err) {
-                            console.error(err);
-                            console.log('error in here');
-                            return pool.query('ROLLBACK');
-                        }
-                        scheduleId = result.rows[0].scheduleid;
-                        console.log('scheduleid:', result.rows[0].scheduleid);
-                        pool.query(`INSERT INTO Weekly_Work_Schedules VALUES ($1)`, [scheduleId], async (err, result) => {
-                            if (err) {
-                                console.error(err);
-                                return pool.query('ROLLBACK');
-                            }
-                            var temp;
-                            pool.query(`select scheduleid from schedules where scheduleid=1`,(err,result) =>{
-                            	if (err) {
-                            		console.log(err);
-								} console.log(result);
-
+	const client = await pool.connect();
+	try {
+		const userId = req.body.userId;
+		const startDate = req.body.startDate; //user input
+		const endDate = req.body.endDate; //calculate and pass down from frontend
+		const intervals = req.body.intervals;
+		let scheduleId = 0;
+		client.query('BEGIN').then(result => {
+			client.query(`INSERT INTO Weekly_Work_Schedules(userId,startDate,endDate) VALUES ($1,$2,$3) RETURNING scheduleId`,
+				[userId, startDate, endDate])
+				.then(result => {
+					scheduleId = result.rows[0].scheduleid;
+					console.log('scheduleid:', result.rows[0].scheduleid);
+					intervals.forEach(currInt => {
+						var currScheduleId = scheduleId;
+						var currentStartTime = currInt.startTime;
+						var currentEndTime = currInt.endTime;
+						client.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
+							[currScheduleId, currentStartTime, currentEndTime]).then(result => {
 							})
-                            // const test = await intervals.map(async currInt => {
-                            //     var currentStartTime = currInt.startTime;
-                            //     var currentEndTime = currInt.endTime;
-                            //     await pool.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
-                            //         [scheduleId, currentStartTime, currentEndTime], (err, result) => {
-                            //             if (err) {
-                            //                 console.error(err);
-                            //                 return pool.query('ROLLBACK');
-                            //             }
-                            //         }
-                            //     )
-                            // })
-							// console.log('test:',test);
-                            // pool.query('COMMIT');
-                        // })
-                    }
-                )
-            }
-        )
+					})
+					client.query('COMMIT');
+					client.release()
+				})
+		}
+		)
+		res.json(`${userId}'s schedule added`);
+	} catch (err) {
+		client.query(`ROLLBACK`);
+		client.release()
+		console.error("error triggered: ", err.message);
+	}
+})
 
-        return res.json(`${userId}'s schedule added as scheduleId ${scheduleId}`);
-    } catch (err) {
-        pool.query(`ROLLBACK`);
-        console.error("error triggered: ", err.message);
-    }
+async function insertWeeklySchedule(client, schedules) {
+	var userId = schedules.userId;
+	var startDate = schedules.startDate;
+	var endDate = schedules.endDate;
+	var intervals = schedules.intervals;
+	console.log(schedules);
+	return new Promise((res, rej) => {
+		try {
+			client.query('BEGIN').then(result => {
+				return client.query(`INSERT INTO Weekly_Work_Schedules(userId,startDate,endDate) VALUES ($1,$2,$3) RETURNING scheduleId`,
+					[userId, startDate, endDate])
+					.then(async result => {
+						scheduleId = result.rows[0].scheduleid;
+						console.log('scheduleid:', result.rows[0].scheduleid);
+						await intervals.forEach(currInt => {
+							var currScheduleId = scheduleId;
+							var currentStartTime = currInt.startTime;
+							var currentEndTime = currInt.endTime;
+							return client.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
+								[currScheduleId, currentStartTime, currentEndTime])
+						})
+					})
+					.then(result => {
+						res(scheduleId);
+					})
+			})
+			return 0;
+		} catch
+		(err) {
+			console.error("error triggered: ", err.message);
+			throw (err);
+		}
+	})
+}
+router.post('/createMonthlySchedule', async (req, res) => {
+	const client = await pool.connect();
+	const schedules = req.body.schedules;
+	console.log(schedules);
+	try {
+		let scheduleId1 = 0;
+		let scheduleId2 = 0;
+		let scheduleId3 = 0;
+		let scheduleId4 = 0;
+
+		client.query('BEGIN').then(result => {
+			insertWeeklySchedule(client, schedules[0])
+				.then(result => {
+					scheduleId1 = result;
+					return insertWeeklySchedule(client, schedules[1])
+						.then(result => {
+							scheduleId2 = result;
+							return insertWeeklySchedule(client, schedules[2])
+								.then(result => {
+									scheduleId3 = result;
+									return insertWeeklySchedule(client, schedules[3])
+										.then(result => {
+											scheduleId4 = result;
+											return client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
+												[scheduleId1, scheduleId2, scheduleId3, scheduleId4])
+												.then(result => {
+													client.query('COMMIT');
+													// client.release();
+												}).catch(err => {
+													console.error(err);
+												})
+										})
+								})
+						})
+				})
+		}
+		)
+		return res.json(`schedule added`);
+	} catch (err) {
+		client.query(`ROLLBACK`);
+		client.release()
+		console.error("error triggered: ", err.message);
+	}
 })
 
 /*https://stackoverflow.com/questions/55764970/node-mysql-query-not-updating-variable-from-outside-the-query*/
 /*async await guide: https://www.geeksforgeeks.org/using-async-await-in-node-js/ */
 // create Part Time Rider
 router.post('/insertPartTimeRider', async (req, res) => {
-    // console.log("succeed");
-    try {
-        let currId = 0;
-        const name = req.body.name;
-        const area = req.body.area;
-        pool.query('BEGIN', async (err, result) => {
-            if (err) {
-                console.log('error here:', err);
-                return pool.query(`ROLLBACK`);
-            }
-            pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name],  (err, result) => {
-                if (err) {
-                    console.log('error here:', err);
-                    return pool.query(`ROLLBACK`);
-                }
-                currId = result.rows[0].userid;
-                console.log('currId:', currId);
-                pool.query(
-                        `INSERT INTO riders VALUES ($1, $2)`, [currId, area],  (err, result) => {
-                        if (err) {
-                            console.log('error here:', err);
-                            return pool.query(`ROLLBACK`);
-                        }
-                        pool.query(
-                                `INSERT INTO Part_Time VALUES  ($1)`, [currId], async (err, result) => {
-                                if (err) {
-                                    console.log('error here:', err);
-                                    // return pool.query(`ROLLBACK`);
-                                }
-                                pool.query('COMMIT');
-                            })
-                    })
-            })
-        })
-        return res.json(`${name} added as a Rider`);
-    } catch (err) {
-        pool.query(`ROLLBACK`);
-        console.error("error triggered: ", err.message);
-    }
+	// console.log("succeed");
+	const client = await pool.connect();
+	try {
+		let currId = 0;
+		const name = req.body.name;
+		const area = req.body.area;
+		client.query('BEGIN').then(res => {
+			client.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name]).then(result => {
+				currId = result.rows[0].userid;
+				console.log('currId:', currId);
+				client.query(
+					`INSERT INTO riders VALUES ($1, $2)`, [currId, area]).then(result => {
+						client.query(
+							`INSERT INTO Part_Time VALUES  ($1)`, [currId]).then(result => {
+								client.query('COMMIT');
+								client.release()
+							})
+					})
+			})
+		})
+		return res.json(`${name} added as a Rider`);
+	} catch (err) {
+		client.query(`ROLLBACK`);
+		client.release()
+		console.error("error triggered: ", err.message);
+	}
 });
 router.post('/insertFullTimeRider', async (req, res) => {
-    // console.log("succeed");
-    try {
-        let currId = 0;
-        const name = req.body.name;
-        const area = req.body.area;
-        pool.query('BEGIN', async (err, result) => {
-            if (err) {
-                console.log('error here:', err);
-                return pool.query(`ROLLBACK`);
-            }
-            await pool.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name], async (err, result) => {
-                if (err) {
-                    console.log('error here:', err);
-                    // return pool.query(`ROLLBACK`);
-                }
-                currId = result.rows[0].userid;
-                console.log('currId:', currId);
-                await pool.query(
-                        `INSERT INTO riders VALUES ($1, $2)`, [currId, area], async (err, result) => {
-                        if (err) {
-                            console.log('error here:', err);
-                            // return pool.query(`ROLLBACK`);
-                        }
-                        await pool.query(
-                                `INSERT INTO Full_Time VALUES  ($1)`, [currId], async (err, result) => {
-                                if (err) {
-                                    console.log('error here:', err);
-                                    // return pool.query(`ROLLBACK`);
-                                }
-                                await pool.query('COMMIT');
-                            })
-                    })
-            })
-        })
-        return res.json(`${name} added as a Rider`);
-    } catch (err) {
-        // pool.query(`ROLLBACK`);
-        console.error("error triggered: ", err.message);
-    }
+	// console.log("succeed");
+	const client = await pool.connect();
+	try {
+		let currId = 0;
+		const name = req.body.name;
+		const area = req.body.area;
+		client.query('BEGIN').then(res => {
+			client.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name]).then(result => {
+				currId = result.rows[0].userid;
+				console.log('currId:', currId);
+				client.query(
+					`INSERT INTO riders VALUES ($1, $2)`, [currId, area]).then(result => {
+						client.query(
+							`INSERT INTO Full_Time VALUES  ($1)`, [currId]).then(result => {
+								client.query('COMMIT');
+								client.release()
+							})
+					})
+			})
+		})
+		return res.json(`${name} added as a Rider`);
+	} catch (err) {
+		client.query(`ROLLBACK`);
+		client.release()
+		console.error("error triggered: ", err.message);
+	}
 });
+
 
 /*https://codeburst.io/node-js-mysql-and-async-await-6fb25b01b628*/
 
@@ -287,55 +370,55 @@ router.get('/test', function(req, res, next) {
 });
 */
 // 3. total number of orders delivered by rider for the month
-router.get('/viewMonthPastOrder' , (req,res) => {
-    const userId = req.body.userId;
-    const month = req.body.month;
-    const year = req.body.year;
-    const text = `SELECT * FROM Delivers D      
+router.get('/viewMonthPastOrder', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `SELECT * FROM Delivers D      
                     WHERE userId = $1
                     AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
                     AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3`
 
-    const values = [userId, month, year];
-    pool
-        .query(text, values)
-        .then(result => {
-            console.log(result.rows);
-            res.json(result.rows);
-        })
-        .catch(e => console.error(e.stack))
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
 })
 
 // 4. total number of hours worked by rider for that month
-router.get('/viewMonthHoursWorked' , (req,res) => {
-    const userId = req.body.userId;
-    const month = req.body.month;
-    const year = req.body.year;
-    const text = `with result as ( 
+router.get('/viewMonthHoursWorked', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `with result as ( 
     select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration 
     from schedules S join intervals I 
         on (S.scheduleId = I.scheduleId) 
         and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2 
         and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3)   
     select * from result`;
-//select sum(duration) form result;
+	//select sum(duration) form result;
 
-    const values = [userId, month, year];
-    pool
-        .query(text, values)
-        .then(result => {
-            console.log(result.rows);
-            res.json(result.rows);
-        })
-        .catch(e => console.error(e.stack))
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
 })
 
 // 5. total salary earned by the rider for that month
-router.get('/viewMonthSalary' , (req,res) => {
-    const userId = req.body.userId;
-    const month = req.body.month;
-    const year = req.body.year;
-    const text = `
+router.get('/viewMonthSalary', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `
     with result as (                                                                                                                      
         select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration                                
         from schedules S join intervals I                                                                                                     
@@ -363,14 +446,14 @@ router.get('/viewMonthSalary' , (req,res) => {
     from result3 R3
     `;
 
-    const values = [userId, month, year];
-    pool
-        .query(text, values)
-        .then(result => {
-            console.log(result.rows);
-            res.json(result.rows);
-        })
-        .catch(e => console.error(e.stack))
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
 })
 
 

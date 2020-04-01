@@ -1,23 +1,21 @@
 /* START TEST SCHEDULES */
 -- insert values
 insert into users values (1);
+insert into riders values (1, 'west', 2000.20, 5, 'monthly');
 --[fail] test endDate - startDate <> 7 days
 insert into schedules values (5,1,'13 dec 2020', '19 dec 2020');
 insert into schedules values (5,1,'13 dec 2020', '21 dec 2020');
 
 --[pass] test newly added startdate must be > latest end date
-insert into schedules values (1,1,'05 dec 2020', '11 dec 2020');
-insert into schedules values (2,1,'13 dec 2020', '19 dec 2020');
+insert into schedules values (1,1,'05 dec 2020', '12 dec 2020');
+insert into schedules values (2,1,'13 dec 2020', '20 dec 2020');
 --[fail] overlapping weeks user 1
-insert into schedules values (2,1,'02 dec 2020', '08 dec 2020');
-insert into schedules values (3,1,'03 dec 2020', '09 dec 2020');
-insert into schedules values (4,1,'10 dec 2020', '16 dec 2020');
-insert into schedules values (5,1,'13 dec 2020', '19 dec 2020');
-
+insert into schedules values (3,1,'03 dec 2020', '10 dec 2020');
+insert into schedules values (4,1,'13 dec 2020', '20 dec 2020');
 
 --[pass]introduce user 2, should be able to have same start & end dates, diff scheduleId
 insert into users values (2);
-insert into riders values (2, 'West', 2000.20, 5, 'monthly');
+insert into riders values (2, 'west', 2000.20, 5, 'monthly');
 insert into schedules values (6,2,'05 dec 2020', '12 dec 2020');
 insert into schedules values (7,2,'13 dec 2020', '20 dec 2020');
 
@@ -43,7 +41,7 @@ insert into Intervals values (1,1,'2020-12-05 07:01','2020-12-05 12:00');
 insert into Intervals values (1,1,'2020-12-05 07:00:00','2020-12-06 11:00');
 
 --pass
-insert into Intervals values (1,1,'2020-12-05 10:00:00','2020-12-05 12:00');
+insert into Intervals values (1,1,'2020-11-05 07:00:00','2020-12-05 11:00');
 
 --[fail] test > 4 hrs
 insert into Intervals values (1,1,'2020-12-05 07:00:00','2020-12-06 12:00');
@@ -103,17 +101,17 @@ insert into Intervals values (15,1,'2020-12-09 20:00','2020-12-09 21:00');
 
 SELECT IntervalId, scheduleId, startTime, endTime,
 date_part('hours', endTime) - date_part('hours',startTime) as duration
-FROM Intervals
+FROM Intervals  
 ;
 select endDate - startDate is distinct from 7 as diff
 from schedules;
 
-select endTime - startTime
+select endTime - startTime 
 from intervals;
 
 
 CREATE OR REPLACE FUNCTION check_intervals_overlap_deferred () RETURNS TRIGGER AS $$
-	DECLARE
+	DECLARE 
 		badInputSchedule 	INTEGER;
 BEGIN
     SELECT DISTINCT I1.scheduleId INTO badInputSchedule
@@ -122,21 +120,21 @@ BEGIN
     SELECT 1
     FROM Intervals I2
     WHERE I2.scheduleId = I1.scheduleId
-    AND I2.intervalId <> I1.intervalId
-    AND(
+    AND I2.intervalId <> I1.intervalId    
+    AND(   
         (I2.startTime::time <= I1.startTime::time
         AND I2.endTime::time >= I1.startTime::time)
         --IE: first input shift 2-5pm , current input shift 3 - 4pm / 3 - 6pm etc
-        OR
+        OR 
         (I2.startTime::time <= I1.endTime::time
-        AND I2.endTime::time >= I1.endTime::time)
+        AND I2.endTime::time >= I1.endTime::time) 
         --IE: first input shift 2-5pm, current input shift 12pm - 3pm / 12pm - 6pm
-        OR (
+        OR ( 
             DATE_PART('hours', I1.startTime) - DATE_PART('hours',I2.endTime) < 1
-            AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours',I2.endTime)
+            AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours',I2.endTime) 
         -- if current inputted shift start time is less than 1hr from other shifts end time, violated (of the same day).
         -- this constraint should also be covered without this last statement when the intervals start and end on the hour
-        -- constraint is enforced
+        -- constraint is enforced 
         )
     )
     )
@@ -144,7 +142,7 @@ BEGIN
     IF badInputSchedule IS NOT NULL THEN
     RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
     END IF;
-    RETURN NULL;
+    RETURN NULL; 
 	END;
 $$ LANGUAGE PLPGSQL;
 
@@ -156,13 +154,13 @@ FOR EACH ROW EXECUTE FUNCTION check_intervals_overlap_deferred();
 
 
 CREATE OR REPLACE FUNCTION check_intervals_duration_deferred () RETURNS TRIGGER AS $$
-	DECLARE
+	DECLARE 
 		badInputSchedule 	INTEGER;
 BEGIN
     WITH IntervalDuration AS (
     SELECT IntervalId, scheduleId, startTime, endTime,
     date_part('hours', endTime) - date_part('hours',startTime) as duration
-    FROM Intervals
+    FROM Intervals  
     )
     SELECT DISTINCT scheduleId INTO badInputSchedule
     FROM IntervalDuration
@@ -172,8 +170,8 @@ BEGIN
     IF badInputSchedule IS NOT NULL THEN
     RAISE EXCEPTION '% : Total duration of weekly schedule cannot be < 10 or > 48', badInputSchedule;
     END IF;
-    RETURN NULL;
-END;
+    RETURN NULL; 
+	END;
 $$ LANGUAGE PLPGSQL;
 
 DROP TRIGGER IF EXISTS interval_trigger ON Intervals CASCADE;
@@ -185,28 +183,21 @@ FOR EACH ROW EXECUTE FUNCTION check_intervals_duration_deferred ();
 
 
 CREATE OR REPLACE FUNCTION check_schedule_constraint_deferred () RETURNS TRIGGER AS $$
-	DECLARE
-        latestEndDate TIMESTAMP;
-     BEGIN
-        SELECT DISTINCT S1.scheduleId INTO badInputSchedule
-        FROM Schedules S1
-        WHERE EXISTS (
-            SELECT 1
-            FROM Schedules S2
-            WHERE S2.scheduleId <> S1.scheduleId
-            AND(
-            (S2.startDate <= S1.startDate
-            AND S2.endDate >= S1.startDate)
-            OR
-            (S2.startDate <= S1.endDate
-            AND S2.endDate >= S1.endDate)
-            )
-        )
+	DECLARE 
+        latestEndDate TIMESTAMP;	
+    BEGIN
+
+            SELECT endDate into latestEndDate
+            FROM Schedules S 
+            WHERE UserId = NEW.UserId
+            AND S.scheduleId <> NEW.scheduleId
+            ORDER BY endDate DESC
+            LIMIT 1
     ;
     IF NEW.startDate <= latestEndDate THEN
     RAISE EXCEPTION 'Newly added schedule must start after the latest schedule';
     END IF;
-    RETURN NULL;
+    RETURN NULL; 
 	END;
 $$ LANGUAGE PLPGSQL;
 

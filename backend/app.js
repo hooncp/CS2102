@@ -9,6 +9,8 @@ var testRouter = require('./routes/index');
 
 /* --------- Routers ---------- */
 var riderRouter = require('./routes/rider');
+var fdsRouter = require('./routes/fds');
+
 /* ---------------------------- */
 var app = express();
 // app.set('views', 'pug');
@@ -27,6 +29,7 @@ app.use(cors());
 app.use('/', testRouter);
 /* --- V4: Database Connect --- */
 app.use('/rider', riderRouter);
+app.use('/fds', fdsRouter);
 /* ---------------------------- */
 
 

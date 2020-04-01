@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS Customers CASCADE;
 DROP TABLE IF EXISTS Riders CASCADE;
 DROP TABLE IF EXISTS Part_Time CASCADE;
 DROP TABLE IF EXISTS Full_Time CASCADE;
-DROP TABLE IF EXISTS Schedules CASCADE;
 DROP TABLE IF EXISTS Monthly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Weekly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Intervals CASCADE;
@@ -20,9 +19,9 @@ DROP TABLE IF EXISTS MinSpendingPromotions CASCADE;
 DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 
 CREATE TABLE Users (
-                       userId 		INTEGER,
-                       name		VARCHAR(100),
-                       PRIMARY KEY (userId)
+	userId 		SERIAL,
+	name		VARCHAR(100),
+    	PRIMARY KEY (userId)
 );
 
 CREATE TABLE Restaurants (
@@ -99,18 +98,7 @@ CREATE TABLE Part_Time
 --        DEFERRABLE INITIALLY DEFERRED
 );
 
-CREATE TABLE Full_Time
-(
-    userId INTEGER,
-    PRIMARY KEY (userId),
-    FOREIGN KEY (userId) REFERENCES Riders
-        on DELETE CASCADE
-        on UPDATE CASCADE
---             DEFERRABLE INITIALLY DEFERRED
-
-);
-
-CREATE TABLE Schedules
+CREATE TABLE Weekly_Work_Schedules
 (
     scheduleId SERIAL,
     userId     INTEGER,
@@ -121,20 +109,13 @@ CREATE TABLE Schedules
     check ((endDate::date - startDate::date) = 6)
 );
 
-CREATE TABLE Monthly_Work_Schedules
-(
-    scheduleId1 INTEGER REFERENCES Schedules ON DELETE CASCADE,
-    scheduleId2 INTEGER REFERENCES Schedules ON DELETE CASCADE,
-    scheduleId3 INTEGER REFERENCES Schedules ON DELETE CASCADE,
-    scheduleId4 INTEGER REFERENCES Schedules ON DELETE CASCADE,
-    PRIMARY KEY (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
-    --DEFERRED TRIGGER TO CHECK FOR CONSTRAINTS (FOR BOTH INTERVAL & SCHEDULE)
-);
 
-CREATE TABLE Weekly_Work_Schedules
-(
-    scheduleId INTEGER REFERENCES Schedules ON DELETE CASCADE,
-    PRIMARY KEY (scheduleId)
+CREATE TABLE Monthly_Work_Schedules (
+        scheduleId1  INTEGER REFERENCES Weekly_Work_Schedules ON DELETE CASCADE,
+        scheduleId2  INTEGER REFERENCES Weekly_Work_Schedules ON DELETE CASCADE,
+        scheduleId3  INTEGER REFERENCES Weekly_Work_Schedules ON DELETE CASCADE,
+        scheduleId4  INTEGER REFERENCES Weekly_Work_Schedules ON DELETE CASCADE,
+        PRIMARY KEY (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
     --DEFERRED TRIGGER TO CHECK FOR CONSTRAINTS (FOR BOTH INTERVAL & SCHEDULE)
 );
 
@@ -145,9 +126,9 @@ CREATE TABLE Intervals
     startTime  TIMESTAMP,
     endTime    TIMESTAMP,
     PRIMARY KEY (intervalId),
-    FOREIGN KEY (scheduleId) REFERENCES Schedules (scheduleId)
+    FOREIGN KEY (scheduleId) REFERENCES Weekly_Work_Schedules (scheduleId)
         ON DELETE CASCADE,
-    check (DATE_PART('minutes', startTime) = 0
+        check (DATE_PART('minutes', startTime) = 0
         AND
            DATE_PART('seconds', startTime) = 0
         AND
@@ -232,12 +213,12 @@ CREATE TABLE MinSpendingPromotions (
 );
 
 CREATE TABLE CustomerPromotions (
-                                    promoCode		VARCHAR(20),
-                                    applicableTo	VARCHAR(200),
-                                    minTimeFromLastOrder 	INTEGER, -- # of days
-                                    PRIMARY KEY (promoCode, applicableTo),
-                                    FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
-);
+    	promoCode		VARCHAR(20),	
+	applicableTo	VARCHAR(200),
+	minTimeFromLastOrder 	INTEGER, -- # of days
+	PRIMARY KEY (promoCode, applicableTo),
+	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
+);	
 
 /* Trigger functions */
 
@@ -289,8 +270,8 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER mws_trigger
+DROP TRIGGER IF EXISTS mws_5days_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_5days_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
@@ -298,20 +279,18 @@ CREATE CONSTRAINT TRIGGER mws_trigger
 EXECUTE FUNCTION check_mws_5days_consecutive_constraint_deferred();
 
 DROP FUNCTION IF EXISTS check_mws_28days_constraint_deferred() CASCADE;
-CREATE OR REPLACE FUNCTION check_mws_28days_constraint_deferred() RETURNS TRIGGER AS
-$$
+CREATE OR REPLACE FUNCTION check_mws_28days_constraint_deferred() RETURNS TRIGGER AS $$
 DECLARE
-    newEndDate   DATE;
+    newEndDate DATE;
     newStartDate DATE;
 BEGIN
-    SELECT endDate
-    into newEndDate
-    FROM Schedules S
+    SELECT endDate into newEndDate
+    FROM Weekly_Work_Schedules S
     WHERE S.scheduleId = NEW.scheduleId4;
-    SELECT startDate
-    into newStartDate
-    FROM Schedules S2
-    WHERE S2.scheduleId = NEW.scheduleId1;
+    SELECT startDate into newStartDate
+    FROM Weekly_Work_Schedules S2
+    WHERE S2.scheduleId = NEW.scheduleId1
+    ;
     IF (newEndDate - newStartDate) <> 27 THEN
         RAISE EXCEPTION 'MWS must be declared for 28 days only.';
     END IF;
@@ -320,68 +299,66 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP TRIGGER IF EXISTS mws_trigger ON Monthly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER mws_trigger
+DROP TRIGGER IF EXISTS mws_28days_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_28days_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
 EXECUTE FUNCTION check_mws_28days_constraint_deferred();
 
+-- if conform to predefined timings
 DROP FUNCTION IF EXISTS check_mws_intervals_constraint_deferred() CASCADE;
-CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS
-$$
-DECLARE
-    badInputSchedule INTEGER;
+CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS $$
+	DECLARE
+		badInputSchedule 	INTEGER;
 BEGIN
     WITH curr_Intervals AS (
         SELECT *
         FROM Intervals I
         WHERE I.scheduleId = NEW.scheduleId1
     ),
-         Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
-             select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
-             from curr_Intervals cI1,
-                  curr_Intervals cI2
-             where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
-               and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
-         )
-    SELECT S.scheduleId
-    INTO badInputSchedule
-    FROM Schedules S
+    Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
+        select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
+        from curr_Intervals cI1, curr_Intervals cI2
+        where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
+        and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
+    )
+    SELECT S.scheduleId INTO badInputSchedule
+    FROM Weekly_Work_Schedules S
     WHERE S.scheduleId = NEW.scheduleId1
-      AND (
-            NOT EXISTS( -- table is non-empty
-                    select 1 from Interval_Pairs IP2 limit 1
-                )
-            OR
-            EXISTS( --checks for any bad intervals
-                    SELECT 1
-                    FROM Interval_Pairs IP
-                    WHERE (select count(*) from Interval_Pairs) <>
-                          ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
-                       OR NOT (
-                                IP.startTime1::time = '10:00' OR
-                                IP.startTime1::time = '11:00' OR
-                                IP.startTime1::time = '12:00' OR
-                                IP.startTime1::time = '13:00'
-                        )
-                       OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4
-                        AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4)
+    AND (
+        NOT EXISTS ( -- table is non-empty
+        select 1 from Interval_Pairs IP2 limit 1
+        )
+        OR
+        EXISTS ( --checks for any bad intervals
+            SELECT 1
+            FROM Interval_Pairs IP
+            WHERE (select count(*) from Interval_Pairs) <> ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
+            OR NOT(
+                IP.startTime1::time = '10:00' OR
+                IP.startTime1::time = '11:00' OR
+                IP.startTime1::time = '12:00' OR
+                IP.startTime1::time = '13:00'
+            )
+            OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours',IP.startTime1) = 4
+                AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours',IP.startTime1) = 4)
 
-                       OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours', IP.endTime1) = 1)
-                )
-        );
+            OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours',IP.endTime1) = 1)
+        )
+    )
+;
 
     IF badInputSchedule IS NOT NULL THEN
-        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+    RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
     END IF;
     RETURN NULL;
-END;
+	END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS mws_interval_trigger ON Monthly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER mws_interval_trigger
+DROP TRIGGER IF EXISTS mws_predefined_interval_trigger ON Monthly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER mws_predefined_interval_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
@@ -412,7 +389,7 @@ BEGIN
                               AND I2.endTime::time >= I1.endTime::time)
                           --IE: first input shift 2-5pm, current input shift 12pm - 3pm / 12pm - 6pm
                           OR (
-                                          DATE_PART('hours', I1.startTime) - DATE_PART('hours', I2.endTime) < 1
+                                      DATE_PART('hours', I1.startTime) - DATE_PART('hours', I2.endTime) < 1
                                   AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours', I2.endTime)
                               -- if current inputted shift start time is less than 1hr from other shifts end time, violated (of the same day).
                               -- this constraint should also be covered without this last statement when the intervals start and end on the hour
@@ -421,14 +398,14 @@ BEGIN
                       )
               );
     IF badInputSchedule IS NOT NULL THEN
-        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+        RAISE EXCEPTION 'scheduleId % has some overlapping intervals', badInputSchedule;
     END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS interval_trigger ON Intervals CASCADE;
-CREATE CONSTRAINT TRIGGER interval_trigger
+DROP TRIGGER IF EXISTS interval_overlap_trigger ON Intervals CASCADE;
+CREATE CONSTRAINT TRIGGER interval_overlap_trigger
     AFTER INSERT
     ON Intervals
     DEFERRABLE INITIALLY DEFERRED
@@ -436,59 +413,91 @@ CREATE CONSTRAINT TRIGGER interval_trigger
 EXECUTE FUNCTION check_intervals_overlap_deferred();
 
 
-CREATE OR REPLACE FUNCTION check_intervals_duration_deferred() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION check_wws_duration_deferred() RETURNS TRIGGER AS
 $$
 DECLARE
     badInputSchedule INTEGER;
 BEGIN
-    WITH IntervalDuration AS (
-        SELECT IntervalId,
-               scheduleId,
-               startTime,
-               endTime,
-               date_part('hours', endTime) - date_part('hours', startTime) as duration
-        FROM Intervals
+    WITH IntervalDuration AS
+    (
+    SELECT IntervalId, scheduleId, startTime, endTime,
+    date_part('hours', endTime) - date_part('hours',startTime) as duration
+    FROM Intervals
     )
-    SELECT DISTINCT scheduleId
-    INTO badInputSchedule
+    SELECT DISTINCT scheduleId INTO badInputSchedule
     FROM IntervalDuration
+    WHERE scheduleId = NEW.scheduleId
     GROUP BY scheduleId
-    HAVING sum(duration) < 10
-        or sum(duration) > 48;
-    IF badInputSchedule IS NOT NULL THEN
+    HAVING sum(duration) >= 10 and sum(duration) <= 48
+    ;
+
+    IF badInputSchedule IS NULL THEN
         RAISE EXCEPTION '% : Total duration of weekly schedule cannot be < 10 or > 48', badInputSchedule;
     END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS interval_trigger ON Weekly_Work_Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER interval_trigger
+DROP TRIGGER IF EXISTS wws_duration_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER wws_duration_trigger
     AFTER INSERT
     ON Weekly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
-EXECUTE FUNCTION check_intervals_duration_deferred();
+EXECUTE FUNCTION check_wws_duration_deferred();
 
 
+CREATE OR REPLACE FUNCTION check_wws_within_seven_days_deferred () RETURNS TRIGGER AS $$
+DECLARE
+    badInputInterval INTEGER;
+BEGIN
+    SELECT intervalId into badInputInterval
+    FROM  Intervals I
+    WHERE I.scheduleId = NEW.scheduleId
+    AND EXISTS (
+        SELECT 1
+        FROM Weekly_Work_Schedules WWS
+        WHERE WWS.scheduleId = NEW.scheduleId
+        AND (
+            I.startTime::date < WWS.startDate::date
+            OR
+            I.startTime::date > WWs.endDate::date
+        )
+    )
+    ;
+    IF badInputInterval IS NOT NULL THEN
+        RAISE EXCEPTION 'Intervals in newly added schedule must not exceed 7 days';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION check_schedule_constraint_deferred() RETURNS TRIGGER AS
+
+DROP TRIGGER IF EXISTS wws_seven_days_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER wws_seven_days_trigger
+    AFTER INSERT ON Weekly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW EXECUTE FUNCTION check_wws_within_seven_days_deferred ();
+
+
+CREATE OR REPLACE FUNCTION check_wws_overlap_deferred() RETURNS TRIGGER AS
 $$
 DECLARE
     badInputSchedule INTEGER;
 BEGIN
-    SELECT DISTINCT S1.scheduleId INTO badInputSchedule
-    FROM Schedules S1
+    SELECT S1.scheduleId INTO badInputSchedule
+    FROM Weekly_Work_Schedules S1
     WHERE EXISTS(
                   SELECT 1
-                  FROM Schedules S2
+                  FROM Weekly_Work_Schedules S2
                   WHERE S2.scheduleId <> S1.scheduleId
+                  AND S2.userId = S1.userId
                     AND (
-                          (S2.startDate <= S1.startDate
-                              AND S2.endDate >= S1.startDate)
+                          (S2.startDate::date <= S1.startDate::date
+                              AND S2.endDate::date >= S1.startDate::date)
                           OR
-                          (S2.startDate <= S1.endDate
-                              AND S2.endDate >= S1.endDate)
+                          (S2.startDate::date <= S1.endDate::date
+                              AND S2.endDate::date >= S1.endDate::date)
                       )
               );
     IF badInputSchedule IS NOT NULL THEN
@@ -499,11 +508,12 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP TRIGGER IF EXISTS schedule_trigger ON Schedules CASCADE;
-CREATE CONSTRAINT TRIGGER schedule_trigger
+DROP TRIGGER IF EXISTS wws_overlap_trigger ON Weekly_Work_Schedules CASCADE;
+CREATE CONSTRAINT TRIGGER wws_overlap_trigger
     AFTER INSERT
-    ON Schedules
+    ON Weekly_Work_Schedules
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
-EXECUTE FUNCTION check_schedule_constraint_deferred();
+EXECUTE FUNCTION check_wws_overlap_deferred();
+
 
