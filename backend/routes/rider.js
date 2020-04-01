@@ -57,7 +57,7 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 * */
 
 
-
+//8. averaged rating received by rider for orders delivered that month
 router.get('/getMonthlyAvgRating', async (req,res)=> {
 	const month = req.body.month;
 	const userId = req.body.userId;
@@ -68,7 +68,7 @@ router.get('/getMonthlyAvgRating', async (req,res)=> {
 	HAVING userId = ${userId}
 	;`
 	pool.query(query).then(result => {
-		let avgRating = (result.rows[0].avgrating);
+		let avgRating = (result.rows[0]);
 		console.log('num of ratings:', avgRating);
 		res.json(avgRating);
 	}).catch(err => {
@@ -82,6 +82,7 @@ router.get('/getMonthlyAvgRating', async (req,res)=> {
 
 })
 
+//7. number of ratings received by rider for all orders delivered for that month
 router.get('/getMonthlyNumRating', async (req,res)=> {
 	const month = req.body.month;
 	const userId = req.body.userId;
@@ -92,7 +93,7 @@ router.get('/getMonthlyNumRating', async (req,res)=> {
 	HAVING userId = ${userId}
 	;`
 	pool.query(query).then(result => {
-		let numRating =  result.rows[0].numrating
+		let numRating =  result.rows[0]
 		console.log('num of ratings:', numRating);
 		res.json(numRating);
 	}).catch(err => {
@@ -122,7 +123,7 @@ router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
 			if (typeof result.rows[0] == 'undefined') {
 				throw `rider ${userId} does not have any deliveries`;
 			} else {
-				let avgTime = result.rows[0].avgtime
+				let avgTime = result.rows[0]
 				console.log('result:', avgTime);
 				res.json(avgTime);
 			}
