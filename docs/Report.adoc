@@ -1,0 +1,407 @@
+= CS2102 PROJECT TEAM 56
+:site-section: Report
+:toc:
+:toc-title: Table Of Content
+:toc-placement: preamble
+:sectnums:
+:imagesDir: images
+:stylesDir: stylesheets
+:xrefstyle: full
+:experimental:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+endif::[]
+:repoURL:
+
+    LEOW JIT YONG (A0183105N)
+    LIM WEI DONG (A0183105N)
+    HOON CHEE PING (A0183105N)
+    LEE EE JIAN (A0183105N)
+
+== Introduction
+The objective of the team project is to create a food delivery service application for the following stakeholders :
+
+* Customers - Browse and place orders on food items from Restaurants
+
+* Restaurants - Receive and prepare orders from Consumers
+
+* Delivery rider - Deliver orders from Restaurants to Consumers
+
+* Food Delivery Service (FDS) Manager - Manage operations of the application
+
+The following sections will attempt to mainly explain the design considerations for the aforementioned application.
+
+== Roles and Responsibilities
+== Application
+=== Data Requirements
+=== Functionalities
+
+The FDS application fulfils the following functionalities:
+[cols="3,40"]
+|========
+a|Customers | - Create / Update / Delete account
+
+            - View his / her monthly statistics : (i) past orders (ii) past reveiws on orders
+
+            - Browse / Search for food items by (i) name (ii) food category (iii) restaurant
+
+
+a|Restaurant Staff | - Create / Update / Delete account
+
+                - View his / her monthly statistics : (i) Total number of completed orders
+
+(ii) Total cost of all completed orders
+(excluding delivery fees)
+
+(iii) Top 5 favorite food items (in terms of the number of orders
+for that item).
+
+- View details of created promotions: (i) Duration (in terms of the number of days/hours) of the
+campaign
+
+(ii) Average number of orders received during the promotion
+
+
+a|Delivery Riders| - Create / Update / Delete account (Full-time OR Part-time)
+
+                    - Declare their monthly schedule (Full-time) or weekly schedule (Part-time)
+
+                    - View his / her monthly statistics ((i) Orders delievered (ii) Hours worked (iii) Ratings received (iv) Salary earned (v) time taken to deliver food)
+
+a|FDS Manager| - View monthly summary information for each Customers:
+
+(i) Total number of new customers
+
+(ii) Total number of orders
+
+(iii) Total cost of all orders
+
+- View monthly summary information for each Rider:
+
+(i) Total number of orders delivered by the rider fo
+
+(ii) Total number of hours worked by the rider
+
+(iii) Total salary earned by the rider
+
+(iv) Average delivery time by the rider
+
+(v) Ratings received by the rider for all the orders delivered
+
+(vi) Average rating received by the rider for all the orders delivered
+
+- View monthly summary information for Deliveries:
+
+(i) For each hour and for each delivery location area, the total number of orders placed at that
+hour for that location area.
+
+|========
+
+=== Interesting / Non-trivial aspects
+=== Constraints
+
+== ER Model
+=== Justification for ER Model
+=== Constraints not captured by ER Model
+
+== Database Relational Schema
+Users schema
+[source,SQL]
+----
+CREATE TABLE Users (
+    userId 	     SERIAL,
+    name		VARCHAR(100),
+    PRIMARY KEY (userId)
+);
+----
+Restaurants schema
+[source,SQL]
+----
+CREATE TABLE Restaurants (
+    rname 		VARCHAR(200),
+    minOrderAmt	   NUMERIC(8, 2),
+    area 		 VARCHAR(20),
+    PRIMARY KEY (rname),
+    CHECK(area = 'central' OR
+        area = 'west' OR
+        area = 'east' OR
+        area = 'north' OR
+        area = 'south')
+);
+----
+Food schema
+[source,SQL]
+----
+CREATE TABLE Food (
+    fname 		VARCHAR(20),
+    category 	     VARCHAR(20) NOT NULL,
+    PRIMARY KEY (fname),
+    CHECK (category = 'western' OR
+        category = 'chinese' OR
+        category = 'japanese' OR
+        category = 'korean' OR
+        category = 'fusion')
+);
+----
+Sells schema
+[source,SQL]
+----
+CREATE TABLE Sells (
+    rname 		VARCHAR(20) REFERENCES Restaurants
+                            on DELETE CASCADE
+                            on UPDATE CASCADE,
+    fname 		VARCHAR(20) REFERENCES Food
+                            on DELETE CASCADE
+                            on UPDATE CASCADE,
+    price 		NUMERIC(8, 2) NOT NULL,
+    availability 	INTEGER DEFAULT 10,
+    PRIMARY KEY (rname, fname)
+);
+----
+Restaurant Staff schema
+[source,SQL]
+----
+CREATE TABLE Restaurant_Staff (
+    userId 		INTEGER,
+    rname		  VARCHAR(20) REFERENCES Restaurants
+                            on DELETE CASCADE
+                            on UPDATE CASCADE,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+                            on DELETE CASCADE
+                            on UPDATE CASCADE
+);
+----
+Customers schema
+[source,SQL]
+----
+CREATE TABLE Customers (
+    userId 		INTEGER,
+    creditCardInfo	 VARCHAR(100),
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+                            on DELETE CASCADE
+                            on UPDATE CASCADE
+);
+----
+Riders schema
+[source,SQL]
+----
+CREATE TABLE Riders (
+    userId 		INTEGER,
+    area 		  VARCHAR(20) NOT NULL,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+                            on DELETE CASCADE
+                            on UPDATE CASCADE,
+    CHECK(area = 'central' OR
+        area = 'west' OR
+        area = 'east' OR
+        area = 'north' OR
+        area = 'south')
+);
+----
+Part-time schema
+[source,SQL]
+----
+CREATE TABLE Part_Time
+(
+    userId               INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Riders
+                            on DELETE CASCADE
+                            on UPDATE CASCADE
+    --        DEFERRABLE INITIALLY DEFERRED
+);
+----
+Weekly Work Schedules (WWS) schema
+[source,SQL]
+----
+CREATE TABLE Weekly_Work_Schedules
+(
+    scheduleId              SERIAL,
+    userId                  INTEGER,
+    startDate               TIMESTAMP,
+    endDate                 TIMESTAMP,
+    PRIMARY KEY (scheduleId),
+    FOREIGN KEY (userId) REFERENCES Riders (userId),
+        check ((endDate::date - startDate::date) = 6)
+);
+----
+Monthly Work Schedules (MWS) schema
+[source,SQL]
+----
+CREATE TABLE Monthly_Work_Schedules (
+    scheduleId1             INTEGER REFERENCES Weekly_Work_Schedules
+                                    ON DELETE CASCADE,
+    scheduleId2             INTEGER REFERENCES Weekly_Work_Schedules
+                                    ON DELETE CASCADE,
+    scheduleId3             INTEGER REFERENCES Weekly_Work_Schedules
+                                    ON DELETE CASCADE,
+    scheduleId4             INTEGER REFERENCES Weekly_Work_Schedules
+                                    ON DELETE CASCADE,
+    PRIMARY KEY (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
+);
+----
+Intervals schema
+[source,SQL]
+----
+CREATE TABLE Intervals
+(
+    intervalId              SERIAL,
+    scheduleId              INTEGER,
+    startTime               TIMESTAMP,
+    endTime                 TIMESTAMP,
+    PRIMARY KEY (intervalId),
+    FOREIGN KEY (scheduleId) REFERENCES Weekly_Work_Schedules (scheduleId)
+                                ON DELETE CASCADE,
+        check (DATE_PART('minutes', startTime) = 0
+        AND
+           DATE_PART('seconds', startTime) = 0
+        AND
+           DATE_PART('minutes', endTime) = 0
+        AND
+           DATE_PART('seconds', startTime) = 0
+        AND
+           DATE_PART('hours', endTime) - DATE_PART('hours', startTime) <= 4
+        AND
+           startTime::date = endTime::date
+        AND
+           DATE_PART('hours', endTime) > DATE_PART('hours', startTime)
+        AND
+           startTime::time >= '10:00'
+        AND
+           endTime::time <= '22:00'
+        )
+);
+
+----
+Promotions schema
+[source,SQL]
+----
+CREATE TABLE Promotions (
+    promoCode	    VARCHAR(20),
+    promoDesc 	   VARCHAR(200),
+    createdBy	    VARCHAR(50), --?
+    applicableTo	 VARCHAR(200) REFERENCES Restaurants(rname)
+                                        ON DELETE CASCADE,
+    discUnit	     VARCHAR(20) NOT NULL,
+    discRate	     VARCHAR(20) NOT NULL,
+    startDate	    TIMESTAMP NOT NULL,
+    endDate	      TIMESTAMP NOT NULL,
+    PRIMARY KEY (promoCode, applicableTo)
+);
+
+----
+Orders schema
+[source,SQL]
+----
+CREATE TABLE Orders (
+    orderId 	    INTEGER,
+    userId              INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
+    promoCode	   VARCHAR(20),
+    applicableTo        VARCHAR(200),
+    modeOfPayment       VARCHAR(10) NOT NULL,
+    timeOfOrder	 TIMESTAMP NOT NULL,
+    deliveryLocation    VARCHAR(100) NOT NULL,
+    usedRewardPoints    INTEGER DEFAULT 0,
+    givenRewardPoints   INTEGER NOT NULL,
+    PRIMARY KEY(orderId),
+    FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
+    CHECK(modeOfPayment = 'cash' OR
+          modeOfPayment ='credit')
+);
+----
+Contains schema
+[source,SQL]
+----
+CREATE TABLE Contains (
+    orderId 		INTEGER REFERENCES Orders
+                                    ON DELETE CASCADE
+                                    ON UPDATE CASCADE,
+    rname		    VARCHAR(100),
+    fname 		   VARCHAR(100),
+    foodQty		  INTEGER NOT NULL,
+    reviewContent            VARCHAR(300),
+    PRIMARY KEY(orderId, rname, fname),
+    FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
+    CHECK(foodQty >= 1)
+);
+----
+Delivers schema
+[source,SQL]
+----
+CREATE TABLE Delivers (
+    orderId                  INTEGER REFERENCES Orders
+                                    ON DELETE CASCADE
+                                    ON UPDATE CASCADE,
+    userId                   INTEGER NOT NULL,
+    departTimeForRestaurant  TIMESTAMP,
+    departTimeFromRestaurant TIMESTAMP,
+    arrivalTimeAtRestaurant  TIMESTAMP,
+    deliveryTimetoCustomer   TIMESTAMP,
+    rating	           INTEGER,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (userId) REFERENCES Riders
+                            ON DELETE CASCADE,
+    CHECK(rating <= 5)
+);
+----
+MinSpendingPromotions schema
+[source,SQL]
+----
+CREATE TABLE MinSpendingPromotions (
+    promoCode	   VARCHAR(20),
+    applicableTo	VARCHAR(200),
+    minAmt	      NUMERIC(8, 2) DEFAULT 0,
+    PRIMARY KEY (promoCode, applicableTo),
+    FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions
+                                            ON DELETE CASCADE
+                                            ON UPDATE CASCADE
+);
+----
+CustomerPromotions schema
+[source,SQL]
+----
+CREATE TABLE CustomerPromotions (
+    promoCode	      VARCHAR(20),
+    applicableTo	   VARCHAR(200),
+    minTimeFromLastOrder   INTEGER, -- # of days
+    PRIMARY KEY (promoCode, applicableTo),
+    FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions
+                                            ON DELETE CASCADE
+                                            ON UPDATE CASCADE
+);
+----
+=== Constraints not captured by ER Model
+=== 3NF/BCNF
+
+== Triggers
+=== 1
+=== 2
+=== 3
+
+== Complex Queries
+=== 1
+=== 2
+=== 3
+
+== Software tools / Frameworks
+*Frontend* :
+
+*Platform* : Node.js
+
+*Framework* : Express.js
+
+*Database* : PostgreSQL [v?]
+
+*Languages used*
+
+* Javascript
+
+* SQL for database
+
+== Application Screenshot
+
+== Conclusion
