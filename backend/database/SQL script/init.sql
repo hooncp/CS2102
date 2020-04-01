@@ -600,7 +600,7 @@ SELECT O.orderId, O.userId, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as 
         getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
         O.usedRewardPoints, 
         calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
-        getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints)
+        getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
         
     FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
     GROUP BY O.orderId
