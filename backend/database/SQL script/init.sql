@@ -25,83 +25,77 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Restaurants (
-	rname 		VARCHAR(200),
-	minOrderAmt	NUMERIC(8, 2),
-	area 		VARCHAR(20),
-    	PRIMARY KEY (rname),
-	CHECK(area = 'central' OR
-		 area = 'west' OR
-		 area = 'east' OR
-		 area = 'north' OR
-		 area = 'south')
+                             rname 		VARCHAR(200),
+                             minOrderAmt	NUMERIC(8, 2),
+                             area 		VARCHAR(20),
+                             PRIMARY KEY (rname),
+                             CHECK(area = 'central' OR
+                                   area = 'west' OR
+                                   area = 'east' OR
+                                   area = 'north' OR
+                                   area = 'south')
 );
 
 CREATE TABLE Food (
-	fname 		VARCHAR(20),
-	category 	VARCHAR(20) NOT NULL,
-    	PRIMARY KEY (fname),
-	CHECK (category = 'western' OR
-		   category = 'chinese' OR
-		   category = 'japanese' OR
-		   category = 'korean' OR
-		   category = 'fusion')
+                      fname 		VARCHAR(20),
+                      category 	VARCHAR(20) NOT NULL,
+                      PRIMARY KEY (fname),
+                      CHECK (category = 'western' OR
+                             category = 'chinese' OR
+                             category = 'japanese' OR
+                             category = 'korean' OR
+                             category = 'fusion')
 );
 
 CREATE TABLE Sells (
-	rname 		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
-    fname 		VARCHAR(20) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
-    price 		NUMERIC(8, 2) NOT NULL,
-    availability 	INTEGER DEFAULT 10,
-    PRIMARY KEY (rname, fname) 
+                       rname 		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
+                       fname 		VARCHAR(20) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
+                       price 		NUMERIC(8, 2) NOT NULL,
+                       availability 	INTEGER DEFAULT 10,
+                       PRIMARY KEY (rname, fname)
 );
 
 CREATE TABLE Restaurant_Staff (
-	userId 		INTEGER,
-	rname		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
-	PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Users
-			on DELETE CASCADE
-			on UPDATE CASCADE
+                                  userId 		INTEGER,
+                                  rname		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
+                                  PRIMARY KEY (userId),
+                                  FOREIGN KEY (userId) REFERENCES Users
+                                      on DELETE CASCADE
+                                      on UPDATE CASCADE
 );
 
 
 CREATE TABLE Customers (
-	userId 		INTEGER,
-	creditCardInfo	VARCHAR(100),
-    PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Users
-		on DELETE CASCADE
-		on UPDATE CASCADE
+                           userId 		INTEGER,
+                           creditCardInfo	VARCHAR(100),
+                           PRIMARY KEY (userId),
+                           FOREIGN KEY (userId) REFERENCES Users
+                               on DELETE CASCADE
+                               on UPDATE CASCADE
 );
 
 CREATE TABLE Riders (
-	userId 		INTEGER,
-	area 		VARCHAR(20) NOT NULL,
-    PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Users
-			on DELETE CASCADE
-			on UPDATE CASCADE,
-	CHECK(area = 'central' OR
-		 area = 'west' OR
-		 area = 'east' OR
-		 area = 'north' OR
-		 area = 'south')
+                        userId 		INTEGER,
+                        area 		VARCHAR(20) NOT NULL,
+                        PRIMARY KEY (userId),
+                        FOREIGN KEY (userId) REFERENCES Users
+                            on DELETE CASCADE
+                            on UPDATE CASCADE,
+                        CHECK(area = 'central' OR
+                              area = 'west' OR
+                              area = 'east' OR
+                              area = 'north' OR
+                              area = 'south')
 );
 
-CREATE TABLE Part_Time (
-    userId 		INTEGER,
-    PRIMARY KEY (userId), 
-	FOREIGN KEY (userId) REFERENCES Riders
-			on DELETE CASCADE
-			on UPDATE CASCADE
-);
-
-CREATE TABLE Full_Time (
-    userId 		INTEGER,
+CREATE TABLE Part_Time
+(
+    userId INTEGER,
     PRIMARY KEY (userId),
-	FOREIGN KEY (userId) REFERENCES Riders 
-			on DELETE CASCADE
-			on UPDATE CASCADE
+    FOREIGN KEY (userId) REFERENCES Riders
+        on DELETE CASCADE
+        on UPDATE CASCADE
+--        DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE Weekly_Work_Schedules
@@ -157,65 +151,65 @@ CREATE TABLE Intervals
 
 --able to share the same promoCode
 CREATE TABLE Promotions (
-	promoCode	    VARCHAR(20),	
-	promoDesc 		VARCHAR(200),
-	createdBy	    VARCHAR(50), --?
-	applicableTo	VARCHAR(200) REFERENCES Restaurants(rname) ON DELETE CASCADE,
-	discUnit	    VARCHAR(20) NOT NULL,
-	discRate	    VARCHAR(20) NOT NULL,
-	startDate	    TIMESTAMP NOT NULL,
-	endDate	        TIMESTAMP NOT NULL,
-	PRIMARY KEY (promoCode, applicableTo)
+                            promoCode	    VARCHAR(20),
+                            promoDesc 		VARCHAR(200),
+                            createdBy	    VARCHAR(50), --?
+                            applicableTo	VARCHAR(200) REFERENCES Restaurants(rname) ON DELETE CASCADE,
+                            discUnit	    VARCHAR(20) NOT NULL,
+                            discRate	    VARCHAR(20) NOT NULL,
+                            startDate	    TIMESTAMP NOT NULL,
+                            endDate	        TIMESTAMP NOT NULL,
+                            PRIMARY KEY (promoCode, applicableTo)
 );
 
 CREATE TABLE Orders (
-	orderId 		INTEGER,
-	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
-	promoCode		VARCHAR(20),
-    applicableTo	VARCHAR(200),
-	modeOfPayment 	VARCHAR(10) NOT NULL,
-	timeOfOrder		TIMESTAMP NOT NULL,
-	deliveryLocation	VARCHAR(100) NOT NULL,
-	usedRewardPoints	INTEGER DEFAULT 0,
-	givenRewardPoints	INTEGER NOT NULL,
-	
-	PRIMARY KEY(orderId),
-	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
-	CHECK(modeOfPayment = 'cash' OR
-		 	modeOfPayment ='credit')
+                        orderId 		INTEGER,
+                        userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
+                        promoCode		VARCHAR(20),
+                        applicableTo	VARCHAR(200),
+                        modeOfPayment 	VARCHAR(10) NOT NULL,
+                        timeOfOrder		TIMESTAMP NOT NULL,
+                        deliveryLocation	VARCHAR(100) NOT NULL,
+                        usedRewardPoints	INTEGER DEFAULT 0,
+                        givenRewardPoints	INTEGER NOT NULL,
+
+                        PRIMARY KEY(orderId),
+                        FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
+                        CHECK(modeOfPayment = 'cash' OR
+                              modeOfPayment ='credit')
 );
 
 CREATE TABLE Contains (
-	orderId 		INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
-	rname			VARCHAR(100),
-	fname 			VARCHAR(100),
-	foodQty		    INTEGER NOT NULL,
-	reviewContent	VARCHAR(300),
+                          orderId 		INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
+                          rname			VARCHAR(100),
+                          fname 			VARCHAR(100),
+                          foodQty		    INTEGER NOT NULL,
+                          reviewContent	VARCHAR(300),
 
-	PRIMARY KEY(orderId, rname, fname),
-	FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
-	CHECK(foodQty >= 1)
+                          PRIMARY KEY(orderId, rname, fname),
+                          FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
+                          CHECK(foodQty >= 1)
 );
 
 CREATE TABLE Delivers (
-	orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
-	userId				        INTEGER NOT NULL, 
-	departTimeForRestaurant	    TIMESTAMP,
-	departTimeFromRestaurant    TIMESTAMP,
-	arrivalTimeAtRestaurant	    TIMESTAMP,
-	deliveryTimetoCustomer	    TIMESTAMP,
-	rating			    INTEGER,
-    PRIMARY KEY (orderId),
-	FOREIGN KEY (userId) REFERENCES Riders ON DELETE CASCADE,
-	CHECK(rating <= 5)
+                          orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
+                          userId				        INTEGER NOT NULL,
+                          departTimeForRestaurant	    TIMESTAMP,
+                          departTimeFromRestaurant    TIMESTAMP,
+                          arrivalTimeAtRestaurant	    TIMESTAMP,
+                          deliveryTimetoCustomer	    TIMESTAMP,
+                          rating			    INTEGER,
+                          PRIMARY KEY (orderId),
+                          FOREIGN KEY (userId) REFERENCES Riders ON DELETE CASCADE,
+                          CHECK(rating <= 5)
 );
 
 CREATE TABLE MinSpendingPromotions (
-	promoCode	    VARCHAR(20),	
-	applicableTo	VARCHAR(200),
-	minAmt	        NUMERIC(8, 2) DEFAULT 0,
-	PRIMARY KEY (promoCode, applicableTo),
-	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
+                                       promoCode	    VARCHAR(20),
+                                       applicableTo	VARCHAR(200),
+                                       minAmt	        NUMERIC(8, 2) DEFAULT 0,
+                                       PRIMARY KEY (promoCode, applicableTo),
+                                       FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE CustomerPromotions (

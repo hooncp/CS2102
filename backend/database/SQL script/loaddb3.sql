@@ -7,7 +7,7 @@ DELETE FROM Customers;
 DELETE FROM Riders;
 DELETE FROM Part_Time;
 DELETE FROM Full_Time;
-DELETE FROM Schedules;
+-- DELETE FROM Schedules;
 DELETE FROM Monthly_Work_Schedules;
 DELETE FROM Weekly_Work_Schedules;
 DELETE FROM Intervals;
@@ -27,8 +27,8 @@ INSERT INTO Users (userId) VALUES
 (4),
 (5),
 (6),
-(7), 
-(8), 
+(7),
+(8),
 (9),
 (10),
 (11),
@@ -50,10 +50,10 @@ INSERT INTO Part_Time (userId) VALUES
 (4),
 (5);
 
-INSERT INTO Full_Time (userId) VALUES
-(6),
-(7),
-(8);
+-- INSERT INTO Full_Time (userId) VALUES
+-- (6),
+-- (7),
+-- (8);
 
 INSERT INTO Restaurants (rname, minOrderAmt, area) VALUES
 ('JIT YONG RESTAURANT', 100.00, 'central'),
@@ -82,8 +82,8 @@ INSERT INTO Restaurant_Staff (userId, rname) VALUES
 (11, 'JIT YONG RESTAURANT1'),
 (12, 'JIT YONG RESTAURANT2');
 
-INSERT INTO Orders(orderId, userId, promoCode, applicableTo, 
-                modeOfPayment, timeOfOrder, deliveryLocation, 
+INSERT INTO Orders(orderId, userId, promoCode, applicableTo,
+                modeOfPayment, timeOfOrder, deliveryLocation,
                 usedRewardPoints, givenRewardPoints) VALUES
 (1, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', NULL, 3),
 (2, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', NULL, 3),
