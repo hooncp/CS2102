@@ -19,24 +19,24 @@ DELETE FROM CustomerPromotions;
 
 -- TESTING Order_details/delvery_details in depth.
 
-INSERT INTO Users (userId) VALUES
-(1),
-(2),
-(3),
-(4),
-(5),
-(6),
-(7), 
-(8), 
-(9),
-(10),
-(11),
-(12);
+INSERT INTO Users (name) VALUES
+('a'),
+('b'),
+('c'),
+('d'),
+('e'),
+('f'),
+('g'), 
+('h'), 
+('i'),
+('j'),
+('k'),
+('L');
 
-INSERT INTO Customers (userId) VALUES
-(1),
-(2),
-(3);
+INSERT INTO Customers (userId, creditCardInfo) VALUES
+(1, 112321),
+(2, 22141),
+(3, 351422);
 
 INSERT INTO Riders (userId, area) VALUES
 (4, 'north'),
@@ -130,3 +130,10 @@ INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRes
 (5, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:33:25', '2020-06-24 20:24:25', 2),
 (6, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 20:13:25', '2020-06-24 20:34:25', 2);
 
+SELECT (P.endDate::date -  P.startDate::date) as durationOfPromotion
+FROM Promotions P
+WHERE P.promoCode = 'A123' AND P.applicableTo = 'JIT YONG RESTAURANT';
+
+SELECT count(distinct O.orderId) as ordersReceivedDuringPromotion
+FROM Orders O
+WHERE O.promoCode = 'A123' AND O.applicableTo = 'JIT YONG RESTAURANT'
