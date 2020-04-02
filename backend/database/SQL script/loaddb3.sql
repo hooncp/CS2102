@@ -84,14 +84,16 @@ INSERT INTO Restaurant_Staff (userId, rname) VALUES
 
 
 INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, discUnit, discRate, startDate, endDate) VALUES
-('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT', 10, 10, '2020-06-22 19:10:25', '2020-06-25 19:11:25'),
-('A123', '10% OFF', NULL, 'JIT YONG RESTAURANT1', 15, 15, '2022-06-22 19:10:25', '2027-06-25 19:11:25');
+('A123', '10$ OFF if you order minimum 10 dollars', NULL, 'JIT YONG RESTAURANT', '$', 5, '2020-06-22 19:10:25', '2020-06-25 19:11:25'),
+('A123', '10% OFF if you have not ordered in last 10 days', NULL, 'JIT YONG RESTAURANT1', '%', 15, '2022-06-22 19:10:25', '2027-06-25 19:11:25'),
+('A122', 'FREE DELIVERY FOR ALL USERS', NULL, 'JIT YONG RESTAURANT', 'FD', NULL, '2022-06-22 19:10:25', '2027-06-25 19:11:25');
 
 INSERT INTO MinSpendingPromotions(promoCode, applicableTo, minAmt) VALUES
-('A123', 'JIT YONG RESTAURANT', 10);
+('A123', 'JIT YONG RESTAURANT', 10),
+('A122', 'JIT YONG RESTAURANT', 0);
 
-INSERT INTO CustomerPromotions(promoCode, applicableTo, amout, minTimeFromLastOrder) VALUES
-('A123', 'JIT YONG RESTAURANT1',5 , 10);
+INSERT INTO CustomerPromotions(promoCode, applicableTo, minTimeFromLastOrder) VALUES
+('A123', 'JIT YONG RESTAURANT1', 10);
 
 INSERT INTO Orders(orderId, userId, promoCode, applicableTo, 
                 modeOfPayment, timeOfOrder, deliveryLocation, 
@@ -102,7 +104,8 @@ INSERT INTO Orders(orderId, userId, promoCode, applicableTo,
 (4, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
 (5, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
 (6, 3, NULL, NULL, 'credit', '2020-06-22 19:10:25', 'blk 123', 0),
-(7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0);
+(7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+(8, 3, 'A122', 'JIT YONG RESTAURANT', 'credit', '2020-07-22 19:10:25', 'blk 123', 0);
 
 
 INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
@@ -113,7 +116,9 @@ INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
 (4, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD3'),
 (5, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD51'),
 (6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6'),
-(7, 'JIT YONG RESTAURANT1', 'DUCK', 1, 'GOOD1'); 
+(7, 'JIT YONG RESTAURANT1', 'DUCK', 1, 'GOOD1'),
+(8, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6');
+
 
 INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant
                             ,deliveryTimetoCustomer, arrivalTimeAtRestaurant, rating) VALUES

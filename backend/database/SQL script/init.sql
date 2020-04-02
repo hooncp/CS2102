@@ -12,7 +12,6 @@ DROP TABLE IF EXISTS Weekly_Work_Schedules CASCADE;
 DROP TABLE IF EXISTS Intervals CASCADE;
 DROP TABLE IF EXISTS Orders CASCADE;
 DROP TABLE IF EXISTS Contains CASCADE;
-DROP TABLE IF EXISTS Schedules CASCADE;
 DROP TABLE IF EXISTS Delivers CASCADE;
 DROP TABLE IF EXISTS Promotions CASCADE;
 DROP TABLE IF EXISTS MinSpendingPromotions CASCADE;
@@ -155,17 +154,18 @@ CREATE TABLE Intervals
 );
 
 
---able to share the same promoCode
+--able to share the same promoCode. FD = free delivery
 CREATE TABLE Promotions (
 	promoCode	    VARCHAR(20),	
 	promoDesc 		VARCHAR(200),
 	createdBy	    VARCHAR(50), --?
 	applicableTo	VARCHAR(200) REFERENCES Restaurants(rname) ON DELETE CASCADE,
 	discUnit	    VARCHAR(20) NOT NULL,
-	discRate	    VARCHAR(20) NOT NULL,
+	discRate	    INTEGER DEFAULT 0,
 	startDate	    TIMESTAMP NOT NULL,
 	endDate	        TIMESTAMP NOT NULL,
-	PRIMARY KEY (promoCode, applicableTo)
+	PRIMARY KEY (promoCode, applicableTo),
+    CHECK(discUnit = '$' OR discUnit = '%' OR discUnit = 'FD')
 );
 
 --TODO: TRIGGER FOR used reward Points make sure used reward points lesser than actual
@@ -224,7 +224,6 @@ CREATE TABLE MinSpendingPromotions (
 CREATE TABLE CustomerPromotions (
     promoCode		VARCHAR(20),	
 	applicableTo	VARCHAR(200),
-    amout           INTEGER,
 	minTimeFromLastOrder 	INTEGER, -- # of days
 	PRIMARY KEY (promoCode, applicableTo),
 	FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
@@ -576,31 +575,43 @@ CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
 RETURNS NUMERIC(4,2) AS $$
     DECLARE 
         amount NUMERIC(4,2);
+        discRate INTEGER;
     
     BEGIN 
+        SELECT P.discRate INTO discRate
+                    FROM PROMOTIONS P 
+                    WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1;
         CASE
             WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL)) 
                 THEN amount = 
                 (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
             WHEN EXISTS (
                 SELECT 1 
-                FROM CustomerPromotions P
-                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
+                FROM PROMOTIONS P
+                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = '$') 
 
-                THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - 
-                    (SELECT P.amout 
-                    FROM CustomerPromotions P 
-                    WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1) 
+                THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - discRate
                     + deliveryfee);
             WHEN EXISTS (
                 SELECT 1 
-                FROM MinSpendingPromotions P
-                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1)
+                FROM PROMOTIONS P
+                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = 'FD')
             THEN amount = (
-                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
+                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) 
             );
+            WHEN EXISTS (
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = '%'
+            ) THEN amount = getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) * (100-discRate) / 100 
+                    + deliveryfee;
             ELSE amount = -1.00;
         END CASE;
+
+        /*IF amount < 0 THEN
+            RAISE EXCEPTION 'final price should be more than or equal to 0';
+        END IF;*/   
+
         RETURN amount;
     END;
 $$ LANGUAGE PLPGSQL;
