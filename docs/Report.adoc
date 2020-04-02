@@ -33,8 +33,137 @@ The objective of the team project is to create a food delivery service applicati
 The following sections will attempt to mainly explain the design considerations for the aforementioned application.
 
 == Roles and Responsibilities
+
+*Leow Jit Yong* - Fullstack Developer
+
+*Lim Wei Dong* - Fullstack Developer
+
+*Hoon Chee Ping* - Fullstack Developer
+
+*Lee Ee Jian* - Fullstack Developer
+
 == Application
-=== Data Requirements
+=== Data Requirements and Constraints
+
+The following are the data requirements and constraints for the various entities / relations in our project:
+
+*Users* :
+
+* Each user entity stores the userId, the user's name, and date of creation of account
+* Each user is uniquely identifiable by userId (primary key)
+* Each user must be one of : (i) Customer (ii) Restaurant Staff (iii) Rider (iv) FDS Manager
+
+*Customers*
+
+* The customer entity is a user, and stores the userId, name, date of creation of account, and credit card information for payment of orders
+* Each customer is identified by userId (primary key) which is referenced from users (foreign key)
+
+*Riders*
+
+* The rider entity is a user, and stores the userId, name, date of creation of account, and the area he lives in
+* The area attribute is used to  facilitate the application's assignment of orders to riders based on locality
+* Each rider is identified by userId (primary key) which is referenced from users (foreign key)
+* Each rider must be either : (i) Full-Time Rider (ii) Part-Time Rider
+
+*Restaurant Staff*
+
+* The restaurant staff entity is a user and stores the userId, name, date of creation of account
+* Each restaurant staff is identified by userId (primary key) which is referenced from users (foreign key)
+* Every restaurant staff must work in exactly one restaurant
+
+*FDS Manager*
+
+* The FDS manager entity is a user and stores the userId, name, date of creation of account
+* Each FDS Manager is identified by userId (primary key) which is referenced from users (foreign key)
+
+*Part-Time Rider*
+
+* The part-time rider entity is a rider and stores the userId, name, date of creation of account
+* Each part-time rider works on a weekly work schedule
+* Each part-time rider is identified by userId (primary key) which is referenced from riders (foreign key)
+
+*Full-Time Rider* //still need?
+
+* The full-time rider entity is a rider and stores the userId, name, date of creation of account
+* Each full-time rider works on a monthly work schedule
+* Each full-time rider is identified by userId (primary key) which is referenced from riders (foreign key)
+
+*Weekly Work Schedule (WWS)*
+
+* The WWS entity stores the scheduleId, userId, start date and end date of the schedule.
+* Each WWS is uniquely identifiable by it's scheduleId (primary key), and belongs to a specific rider which is referenced by userId (foreign key)
+
+*Monthly Work Schedule (MWS)*
+
+* The MWS is a weak entity consisting of 4 WWS, and stores the scheduleId of each WWS (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
+* Each MWS is uniquely identifiable by the 4 scheduleId of the WWS it consists of (primary key), which is referenced from the WWS(foreign key)
+
+*Intervals*
+
+* The interval entity stores the intervalId, scheduleId, start time and end time of interval
+* Each interval is uniquely identifiable by intervalId
+* Each interval must belong to exactly one WWS that is referenced by scheduleId (foreign key)
+
+*Restaurant*
+
+* The restaurant entity stores the restaurant name, area of locality, and a minimum order amount of any order to go through
+* Each restaurant is uniquely identifiable by restaurant name
+* Restaurants with the same name will have their location appended to thier restaurant name (e.g. Mac@WestCoastPark)
+
+*Food*
+
+* The food entity stores the food name and category of the food
+* Each food is uniquely identified by its food name (primary key).
+// must belong to at least some restaurant?
+
+*Orders*
+
+* The order entity stores the orderId, userId of the customer, the promotional code used, the restaurant name that the promo code is applicable to, the mode of payment by the customer, time of order being placed, delivery location, and reward points being used to offset the price
+* Each order is uniquely identified by the orderId (primary key)
+* Each order references the userId of the customer who created the order (foreign key)
+* Each order references the promo code, together with the restaurant name that the promo code is applicable to (foreign key) to check if the promo code is valid
+* Each order must be delivered exactly once by a rider
+
+*Promotions*
+
+* Each promotion entity stores the promo code of the promotion, the description, the creator of the promotion, the restaurant name it is applicable to, the unit of measurement of the discount, the rate of discount, and the start and end date of the promotion
+* Each promotion is uniquely identifiable by the promo code coupled with the name of restaurant it is applicable to (primary key).
+* For the same promo code, every restaurant that it is applicable to will be recorded in the promotions table. This facilitates the checking of the validity of use of the promo code
+
+*CustomerPromotions* ?
+
+* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the (?)
+* Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
+
+*DeliveryPromotions* ?
+
+* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the (?)
+* Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
+
+*MinSpendingPromotions* ?
+
+* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the (?)
+* Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
+
+*Sells*
+
+* Sells is a relation between restaurants and food, and stores the restaurant name, food name, the price, as well as the quantity that is available for each food
+* Each sells relation is uniquely identified by the restaurant name coupled with the food name (primary key)
+* The restaurant name is referenced from restaurants (foreign key), while the food name is referenced from the food (foreign key)
+
+*Contains*
+
+* Contains is an aggregate relation between the sells relation and Orders entity, and stores the orderId it belongs to, the restaurant name and food name of the food, the quantity of the food ordered, as wells as the review of the ordered food item
+* For the same orderId, each food item being ordered will recorded in the contains table. This facilitates reviewing each food item individually, as well as keeping track of the quantity ordered per food item
+* Each contains entry is uniquely identified by orderId,the restaurant name and food name (primary key)
+* The restaurant and food name is referenced by the sells relation (foreign key), and the orderId is referenced from the orders entity
+
+*Delivers*
+
+* Delivers is a relation between riders and orders, and stores the orderId for the order being delivered, the userId of the rider, the time he departs for the restaurant, the time he arrives at the restaurant, the time he leaves the restaurant, the delivery time to the customer, and the rating received for the delivery
+* Each deliver is uniquely identified by orderId since every order must be delivered exactly once (primary key), and references rider for userId (foreign key)
+
+
 === Functionalities
 
 The FDS application fulfils the following functionalities:
@@ -98,11 +227,19 @@ hour for that location area.
 
 |========
 
-=== Interesting / Non-trivial aspects
-=== Constraints
+=== Interesting / Non-trivial Functions
+
+?
 
 == ER Model
-=== Justification for ER Model
+=== Design considerations
+
+(1) Promotions as an ISA relation to all sub promotions. By abstracting out attributes that are common to all promotions, we are able to achieve extensibility for promotions. This means it is easy to extend promotions and create more sub promotions. Restaurant Staff or the FDS Managers are able to create new types of sub promotions by identifying unique attributes which the sub promotion is based off.
+
+By abstracting out key attributes of the promotion, different restaurants can now also create the same type of promotion but with the ability to customise it to thier needs e.g. start and end date, rate of discount etc.
+
+(2)
+
 === Constraints not captured by ER Model
 
 == Database Relational Schema
@@ -374,7 +511,20 @@ CREATE TABLE CustomerPromotions (
                                             ON UPDATE CASCADE
 );
 ----
-=== Constraints not captured by ER Model
+=== Constraints not captured by Relational Schema
+
+*Intervals* - For the same rider, no intervals should overlap with one another. There must be at least 1 hour of break between any 2 consecutive intervals. Intervals must fall within the start and end date of the WWS they belong to.
+
+*Weekly Work Schedule* - For each worker, there should be no overlapping WWS. Each WWS must be at least 10 hours and at most 48 hours in total. Each WWS must be declared for exactly 7 consecutive days.
+
+*Monthly Work Schedule* - For each week in of the MWS, the 4 comprising WWS must be equivalent. Each WWS should have 5 consecutive work days, that comprise of intervals using the pre-defined shifts for full-time riders. Each MWS should last for 28 days exactly, and there should not be any overlapping MWS for the same rider.
+
+*Promotions* - Every promotion applied to an order has to be checked that it fulfils the promotions constraints such as the minAmount as well as timelastOrdered
+
+*Riders* - During the operation hours of the FDS, there should be at least five riders (part-time or full-time) working at each hourly interval.
+
+*Orders* - Quantity of food ordered for a particular food item cannot exceed it's availability. Total cost order must hit a certain minimum order amount set by the restaurant.
+
 === 3NF/BCNF
 
 == Triggers
