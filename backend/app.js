@@ -10,6 +10,7 @@ var testRouter = require('./routes/index');
 /* --------- Routers ---------- */
 var riderRouter = require('./routes/rider');
 var fdsRouter = require('./routes/fds');
+var rsRouter = require('./routes/restaurantStaff');
 
 /* ---------------------------- */
 var app = express();
@@ -30,6 +31,7 @@ app.use('/', testRouter);
 /* --- V4: Database Connect --- */
 app.use('/rider', riderRouter);
 app.use('/fds', fdsRouter);
+app.use('/rs', rsRouter);
 /* ---------------------------- */
 
 

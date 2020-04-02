@@ -611,12 +611,13 @@ CREATE VIEW OrderInfo AS
    
 SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
         getDeliveryFee(O.timeOfOrder) as deliveryfee,
+        O.timeOfOrder,
         getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
         O.usedRewardPoints, 
         calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
         getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
         
     FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
-    GROUP BY O.orderId, C.rname
+    GROUP BY O.orderId, C.rname, O.timeOfOrder
     ORDER BY O.orderId ASC;
 ---END OF ORDERS CALCULATION---
