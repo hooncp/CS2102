@@ -26,8 +26,8 @@ INSERT INTO Users (userId) VALUES
 (4),
 (5),
 (6),
-(7), 
-(8), 
+(7),
+(8),
 (9),
 (10),
 (11),
@@ -49,10 +49,10 @@ INSERT INTO Part_Time (userId) VALUES
 (4),
 (5);
 
-INSERT INTO Full_Time (userId) VALUES
-(6),
-(7),
-(8);
+-- INSERT INTO Full_Time (userId) VALUES
+-- (6),
+-- (7),
+-- (8);
 
 INSERT INTO Restaurants (rname, minOrderAmt, area) VALUES
 ('JIT YONG RESTAURANT', 100.00, 'central'),
@@ -80,8 +80,6 @@ INSERT INTO Restaurant_Staff (userId, rname) VALUES
 (10, 'JIT YONG PTE LTD'),
 (11, 'JIT YONG RESTAURANT1'),
 (12, 'JIT YONG RESTAURANT2');
-
-
 
 INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, discUnit, discRate, startDate, endDate) VALUES
 ('A123', '10$ OFF if you order minimum 10 dollars', NULL, 'JIT YONG RESTAURANT', '$', 5, '2020-06-22 19:10:25', '2020-06-25 19:11:25'),
