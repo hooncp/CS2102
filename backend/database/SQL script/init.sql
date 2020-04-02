@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS Restaurants CASCADE;
 DROP TABLE IF EXISTS Food CASCADE;
 DROP TABLE IF EXISTS Sells CASCADE;
 DROP TABLE IF EXISTS Restaurant_Staff CASCADE;
+DROP TABLE IF EXISTS FDS_Managers CASCADE;
 DROP TABLE IF EXISTS Customers CASCADE;
 DROP TABLE IF EXISTS Riders CASCADE;
 DROP TABLE IF EXISTS Part_Time CASCADE;
@@ -20,14 +21,14 @@ DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 CREATE TABLE Users (
 	userId 		SERIAL,
 	name		VARCHAR(100),
-    	PRIMARY KEY (userId)
+    PRIMARY KEY (userId)
 );
 
 CREATE TABLE Restaurants (
 	rname 		VARCHAR(200),
 	minOrderAmt	NUMERIC(8, 2),
 	area 		VARCHAR(20),
-    	PRIMARY KEY (rname),
+    PRIMARY KEY (rname),
 	CHECK(area = 'central' OR
 		 area = 'west' OR
 		 area = 'east' OR
@@ -36,7 +37,8 @@ CREATE TABLE Restaurants (
 );
 
 CREATE TABLE Food (
-	fname 		VARCHAR(20),
+
+	fname 		VARCHAR(200),
 	category 	VARCHAR(20) NOT NULL,
     	PRIMARY KEY (fname),
 	CHECK (category = 'western' OR
@@ -47,8 +49,8 @@ CREATE TABLE Food (
 );
 
 CREATE TABLE Sells (
-	rname 		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
-    fname 		VARCHAR(20) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
+	rname 		VARCHAR(200) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
+    fname 		VARCHAR(200) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
     price 		NUMERIC(8, 2) NOT NULL,
     availability 	INTEGER DEFAULT 10,
     PRIMARY KEY (rname, fname) 
@@ -56,13 +58,20 @@ CREATE TABLE Sells (
 
 CREATE TABLE Restaurant_Staff (
 	userId 		INTEGER,
-	rname		VARCHAR(20) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
+	rname		VARCHAR(200) REFERENCES Restaurants on DELETE CASCADE on UPDATE CASCADE,
 	PRIMARY KEY (userId),
 	FOREIGN KEY (userId) REFERENCES Users
 			on DELETE CASCADE
 			on UPDATE CASCADE
 );
 
+CREATE TABLE FDS_Managers (
+	userId 		INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+    			on DELETE CASCADE
+			    on UPDATE CASCADE
+);
 
 CREATE TABLE Customers (
 	userId 		INTEGER,
@@ -582,9 +591,11 @@ RETURNS NUMERIC(4,2) AS $$
                     FROM PROMOTIONS P 
                     WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1;
         CASE
+            -- NO PROMOTION
             WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL)) 
                 THEN amount = 
                 (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
+            -- $ PROMOTION
             WHEN EXISTS (
                 SELECT 1 
                 FROM PROMOTIONS P
@@ -592,6 +603,7 @@ RETURNS NUMERIC(4,2) AS $$
 
                 THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - discRate
                     + deliveryfee);
+            -- Free Delivery PROMOTION
             WHEN EXISTS (
                 SELECT 1 
                 FROM PROMOTIONS P
@@ -599,18 +611,20 @@ RETURNS NUMERIC(4,2) AS $$
             THEN amount = (
                 getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) 
             );
+            -- % PROMOTION
             WHEN EXISTS (
                 SELECT 1
                 FROM PROMOTIONS P
                 WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = '%'
             ) THEN amount = getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) * (100-discRate) / 100 
                     + deliveryfee;
+            --throw error.
             ELSE amount = -1.00;
         END CASE;
 
-        /*IF amount < 0 THEN
+        IF amount < 0 THEN
             RAISE EXCEPTION 'final price should be more than or equal to 0';
-        END IF;*/   
+        END IF;   
 
         RETURN amount;
     END;

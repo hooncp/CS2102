@@ -48,19 +48,19 @@ router.get('/getMonthlyCostofCompletedOrder', async (req, res) => {
     });
 })
 
-//returns an array of size starting from index 0 - 4 of top 5 food in pairs(fname, count)
+//returns an array of size starting from index 0 - 4 of top 5 food in pairs(fname, number of orders for the fname)
 router.get('/getMonthlyTop5Food', async (req, res) => {
     const month = req.body.month;
     const rname = req.body.rname;
     //console.log(month + " " + rname);
-    const query2 = `SELECT C.fname, count(O.orderId)
+    const query1 = `SELECT C.fname, count(O.orderId)
                     FROM Orders O JOIN Contains C ON O.orderId = C.orderId
                     WHERE C.rname = '${rname}' AND EXTRACT(month from O.timeOfOrder) = ${month}
                     GROUP BY C.fname
                     ORDER BY count(O.orderId) desc
                     LIMIT 5;`
     //console.log(query1);
-    pool.query(query2).then(result => {
+    pool.query(query1).then(result => {
         let sendResult = [];
         let resTop5 = result.rows;
         for (var i = 0; i < resTop5.length; i++) {
@@ -77,5 +77,56 @@ router.get('/getMonthlyTop5Food', async (req, res) => {
 		}
     });
 })
+
+router.get('/getPromotionDuration', async (req, res) => {
+    const promoCode = req.body.promoCode;
+    const applicableTo = req.body.applicableTo;
+    //console.log(promoCode + " " + applicableTo);
+    const query1 = `SELECT coalesce((P.endDate::date -  P.startDate::date), 0) as durationOfPromotion
+                    FROM Promotions P
+                    WHERE P.promoCode = '${promoCode}' AND P.applicableTo = '${applicableTo}';`
+    //console.log(query1);
+    pool.query(query1).then(result => {
+        let resDuration = result.rows;
+        console.log(resDuration[0]);
+        res.json(resDuration[0].durationofpromotion);
+    }).catch(err => {
+        if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+    });
+})
+
+router.get('/getOrdersReceivedDuringPromotion', async (req, res) => {
+    const promoCode = req.body.promoCode;
+    const applicableTo = req.body.applicableTo;
+    //console.log(promoCode + " " + applicableTo);
+    const query1 = `SELECT coalesce(count(distinct O.orderId),0) as ordersReceivedDuringPromotion
+                    FROM Orders O
+                    WHERE O.promoCode = '${promoCode}' AND O.applicableTo = '${applicableTo}'`
+    //console.log(query1);
+    pool.query(query1).then(result => {
+        let resOrders = result.rows;
+        console.log(resOrders[0]);
+        res.json(resOrders[0].ordersreceivedduringpromotion);
+    }).catch(err => {
+        if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+    });
+})
+
+/*
+
+
+
+*/
+
 
 module.exports = router;
