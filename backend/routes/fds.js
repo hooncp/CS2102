@@ -75,3 +75,7 @@ router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
 })
 
 module.exports = router;
+
+// For each for each month and for each customer who has placed some order for that month,
+// the total number of orders placed by the customer for that month and the total cost of all
+// these orders.
