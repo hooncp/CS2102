@@ -169,6 +169,7 @@ CREATE TABLE Intervals
 );
 
 
+
 --able to share the same promoCode. FD = free delivery
 CREATE TABLE Promotions (
 
@@ -190,7 +191,7 @@ CREATE TABLE Orders (
 	orderId 		SERIAL,
 	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
 	promoCode		VARCHAR(20),
-  applicableTo	VARCHAR(200),
+    applicableTo	VARCHAR(200),
 	modeOfPayment 	VARCHAR(10) NOT NULL,
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
@@ -220,7 +221,7 @@ CREATE TABLE Delivers (
                           orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
                           userId				        INTEGER NOT NULL,
                           departTimeForRestaurant	    TIMESTAMP,
-                          departTimeFromRestaurant    TIMESTAMP,
+                          departTimeFromRestaurant      TIMESTAMP,
                           arrivalTimeAtRestaurant	    TIMESTAMP,
                           deliveryTimetoCustomer	    TIMESTAMP,
                           rating			    INTEGER,
@@ -229,7 +230,6 @@ CREATE TABLE Delivers (
                           CHECK(rating <= 5)
 );
 
--- Free delivery
 CREATE TABLE MinSpendingPromotions (
                                        promoCode	    VARCHAR(20),
                                        applicableTo	VARCHAR(200),
@@ -238,7 +238,6 @@ CREATE TABLE MinSpendingPromotions (
                                        FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- a certain amount off
 CREATE TABLE CustomerPromotions (
     promoCode		VARCHAR(20),	
 	applicableTo	VARCHAR(200),
@@ -660,66 +659,57 @@ SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.food
     ORDER BY O.orderId ASC;
 ---END OF ORDERS CALCULATION---
 
-DELETE FROM Users;
-DELETE FROM Restaurants;
-DELETE FROM Food;
-DELETE FROM Sells;
-DELETE FROM Restaurant_Staff;
-DELETE FROM Customers;
-DELETE FROM Riders;
-DELETE FROM Part_Time;
-DELETE FROM Full_Time;
-DELETE FROM FDS_Managers;
-DELETE FROM Monthly_Work_Schedules;
-DELETE FROM Weekly_Work_Schedules;
-DELETE FROM Intervals;
-DELETE FROM Orders;
-DELETE FROM Contains;
-DELETE FROM Delivers;
-DELETE FROM Promotions;
-DELETE FROM MinSpendingPromotions;
-DELETE FROM CustomerPromotions;
 
+-- returns 1 if Rider is working and 0 if Rider is not working
+CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
+RETURNS INTEGER AS $$
+    DECLARE
+        currentDate DATE;
+        currentTime TIME;
+        result INTEGER;
+    
+    BEGIN
+        currentTime = current::time;
+        currentDate = current::date;
 
--- 100 user 40 customer 20 part time rider 25 full time rider 5 fds manager 10 restaurants
-\copy Users(name) from './CSVFILES/Users.csv' CSV HEADER; --100 user
+        CASE
+            WHEN EXISTS(
+                SELECT 1
+                FROM Intervals I
+                WHERE I.scheduleId IN (
+                    SELECT W.scheduleId
+                    FROM Weekly_Work_Schedules W
+                    WHERE W.startDate::date <= currentDate AND W.endDate::date >= currentDate AND W.userId = riderId
+                )
+                AND I.startTime::time <= currentTime AND I.endTime::time >= current::time
+            ) THEN result = 1;
+            ELSE result = 0;
+        END CASE;
+        RETURN result;
+    END;
+$$ LANGUAGE PLPGSQL;
 
-\copy Customers from './CSVFILES/Customers.csv' CSV HEADER; --40 user
-\copy Riders from './CSVFILES/Riders.csv' CSV HEADER;  --45 user
+--returns 1 if rider is available and 0 if not working and 2 if currently on delivery
+DROP FUNCTION IF EXISTS findStatusOfRider CASCADE;
+CREATE OR REPLACE FUNCTION findStatusOfRider(riderId INTEGER, current TIMESTAMP)
+RETURNS INTEGER AS $$
+    DECLARE    
+        latestDelivery TIMESTAMP;
+        result INTEGER;
 
-INSERT INTO Part_Time(userId)  -- 20 
-SELECT U.userId
-FROM Users U
-OFFSET 40
-LIMIT 20;
+    BEGIN
+        SELECT D.deliveryTimetoCustomer INTO latestDelivery
+        FROM Delivers D
+        WHERE D.userId = riderId
+        ORDER BY D.deliveryTimetoCustomer desc
+        LIMIT 1;
 
-INSERT INTO Full_Time(userId) -- 25
-SELECT U.userId
-FROM Users U
-OFFSET 60
-LIMIT 25;
-
-INSERT INTO FDS_Managers(userId) -- 5
-SELECT U.userId
-FROM Users U
-OFFSET 95
-LIMIT 5;
-
-\copy Restaurants from './CSVFILES/Restaurants.csv' CSV HEADER;  --10 res
-\copy Restaurant_Staff from './CSVFILES/RestaurantStaff.csv' CSV HEADER;  --10 res
-\copy Food from './CSVFILES/Food.csv' CSV HEADER;
-\copy Sells(fname, rname, price, availability) from './CSVFILES/Sells.csv' CSV HEADER;
-
-BEGIN;
---userId, startDate, endDate
-\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklywork.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervals.csv' CSV HEADER;
-COMMIT;
-
-BEGIN;
---userId, startDate, endDate
-\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklyworkFT.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervalsFT.csv' CSV HEADER;
-\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/monthlyworkFT.csv' CSV HEADER;
-COMMIT;
-
+        CASE
+            WHEN checkWorkingStatusHelperOfRider(riderId, current) = 0 then result = 0;
+            WHEN latestDelivery < current THEN result = 1;
+            WHEN current <= latestDelivery THEN result = 2;
+            ELSE result = -1;
+        END CASE;
+        RETURN result;
+    END;
+$$ LANGUAGE PLPGSQL;

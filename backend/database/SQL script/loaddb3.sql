@@ -96,34 +96,49 @@ INSERT INTO CustomerPromotions(promoCode, applicableTo, minTimeFromLastOrder) VA
 INSERT INTO Orders(orderId, userId, promoCode, applicableTo, 
                 modeOfPayment, timeOfOrder, deliveryLocation, 
                 usedRewardPoints) VALUES
-(1, 1, 'A123', 'JIT YONG RESTAURANT', 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
-(2, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
-(3, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 10),
-(4, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
-(5, 3, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
-(6, 3, NULL, NULL, 'credit', '2020-06-22 19:10:25', 'blk 123', 0),
-(7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
-(8, 3, 'A122', 'JIT YONG RESTAURANT', 'credit', '2020-07-22 19:10:25', 'blk 123', 0);
+--(1, 1, 'A123', 'JIT YONG RESTAURANT', 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
+--(2, 1, NULL, NULL, 'cash', '2020-06-22 19:05:25', 'blk singapore', 0),
+--(3, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 10),
+--(4, 2, NULL, NULL, 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+(5, 3, NULL, NULL, 'credit', '2020-11-12 11:00:00', 'blk 123', 0),
+(6, 3, NULL, NULL, 'credit', '2020-11-12 10:10:00', 'blk 123', 0);
+--(7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
+--(8, 3, 'A122', 'JIT YONG RESTAURANT', 'credit', '2020-07-22 19:10:25', 'blk 123', 0);
 
 
 INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
-(1, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD'),
-(2, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
-(3, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
-(4, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
-(4, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD3'),
+--(1, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD'),
+--(2, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
+--(3, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
+--(4, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
+--(4, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD3'),
 (5, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD51'),
-(6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6'),
-(7, 'JIT YONG RESTAURANT1', 'DUCK', 1, 'GOOD1'),
-(8, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6');
+(6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6');
+--(7, 'JIT YONG RESTAURANT1', 'DUCK', 1, 'GOOD1'),
+--(8, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6');
 
 
 INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant
                             ,deliveryTimetoCustomer, arrivalTimeAtRestaurant, rating) VALUES
-(1, 4, '2020-06-22 19:10:25', '2020-06-22 19:11:25', '2020-06-22 21:12:25', '2020-06-22 19:20:25', 5),
-(2, 5, '2020-06-23 19:10:25', '2020-06-23 19:11:25', '2020-06-23 19:32:25', '2020-06-23 19:43:22', NULL),
-(3, 5, '2020-06-24 19:10:25', '2020-06-24 19:11:25', '2020-06-24 19:22:25', '2020-06-24 19:13:22', 2),
-(4, 5, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:13:25', '2020-06-24 19:20:21', 3),
-(7, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:13:25', '2020-06-24 19:25:25', 4),
-(5, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:33:25', '2020-06-24 20:24:25', 2),
-(6, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 20:13:25', '2020-06-24 20:34:25', 2);
+--(1, 4, '2020-06-22 19:10:25', '2020-06-22 19:11:25', '2020-06-22 21:12:25', '2020-06-22 19:20:25', 5),
+---(2, 5, '2020-06-23 19:10:25', '2020-06-23 19:11:25', '2020-06-23 19:32:25', '2020-06-23 19:43:22', NULL),
+--(3, 5, '2020-06-24 19:10:25', '2020-06-24 19:11:25', '2020-06-24 19:22:25', '2020-06-24 19:13:22', 2),
+--(4, 5, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:13:25', '2020-06-24 19:20:21', 3),
+--(7, 4, '2020-06-24 19:11:25', '2020-06-24 19:12:25', '2020-06-24 19:13:25', '2020-06-24 19:25:25', 4),
+(5, 4, '2020-11-12 11:00:00', '2020-11-12 11:10:00', '2020-11-12 11:20:00', '2020-11-12 11:30:00', 2),
+(6, 4, '2020-11-12 10:00:00', '2020-11-12 10:00:00', '2020-11-12 10:00:00', '2020-11-12 10:00:00', 2);
+
+BEGIN;
+insert into Weekly_Work_Schedules values (10,4,'8 nov 2020', '14 nov 2020');
+
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-12 10:00','2020-11-12 14:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-12 15:00','2020-11-12 19:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-08 10:00','2020-11-08 14:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-08 15:00','2020-11-08 19:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-09 10:00','2020-11-09 14:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-09 15:00','2020-11-09 19:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-10 10:00','2020-11-10 14:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-10 15:00','2020-11-10 19:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-11 10:00','2020-11-11 14:00');
+insert into Intervals (scheduleId, startTime,endTime) values (10,'2020-11-11 15:00','2020-11-11 19:00');
+Commit;
