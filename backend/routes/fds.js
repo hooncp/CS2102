@@ -218,7 +218,7 @@ router.get('/viewMonthRidersSummary', (req, res) => {
     coalesce(salary, 0) + coalesce(Total_delivery_fee, 0) as TotalSalary
     from (Riders left join r1 using (userId)) left join r2 using (userId)
     order by userId;
-    `
+    `;
 
     const values = [month, year];
     pool
@@ -229,3 +229,4 @@ router.get('/viewMonthRidersSummary', (req, res) => {
         })
         .catch(e => console.error(e.stack))
 })
+module.exports = router;
