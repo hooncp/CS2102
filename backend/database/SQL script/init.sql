@@ -108,6 +108,16 @@ CREATE TABLE Part_Time
 --        DEFERRABLE INITIALLY DEFERRED
 );
 
+CREATE TABLE Full_Time
+(
+    userId INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Riders
+        on DELETE CASCADE
+        on UPDATE CASCADE
+--        DEFERRABLE INITIALLY DEFERRED
+);
+
 CREATE TABLE Weekly_Work_Schedules
 (
     scheduleId SERIAL,
@@ -546,7 +556,7 @@ $$ LANGUAGE SQL
 
 --nonpeak vs peak hour deliveryfee
 DROP FUNCTION IF EXISTS getDeliveryFee CASCADE;
-CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP)
+CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP, orderId1 INTEGER)
 RETURNS NUMERIC(4,2) AS $$
     DECLARE
         test time;
@@ -555,6 +565,10 @@ RETURNS NUMERIC(4,2) AS $$
     BEGIN
         test = orderTime::time;
         CASE
+            WHEN EXISTS(
+                SELECT 1 FROM Orders O JOIN Promotions P ON O.promoCode = P.promoCode AND O.applicableTo = P.applicableTo
+                WHERE O.orderId = orderId1 AND P.discUnit = 'FD' 
+            ) then amount = 0.00;
             WHEN test < '19:10:00' AND test > '17:00:00'then amount = 10.00;
             else amount = 5.00;
         END CASE;
@@ -634,14 +648,81 @@ DROP VIEW IF EXISTS OrderInfo CASCADE;
 CREATE VIEW OrderInfo AS
    
 SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
-        getDeliveryFee(O.timeOfOrder) as deliveryfee,
+        getDeliveryFee(O.timeOfOrder, O.orderId) as deliveryfee,
         O.timeOfOrder,
         getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
         O.usedRewardPoints, 
         calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
-        getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
+        getDeliveryFee(O.timeOfOrder, O.orderId), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
         
     FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
     GROUP BY O.orderId, C.rname, O.timeOfOrder
     ORDER BY O.orderId ASC;
 ---END OF ORDERS CALCULATION---
+
+DELETE FROM Users;
+DELETE FROM Restaurants;
+DELETE FROM Food;
+DELETE FROM Sells;
+DELETE FROM Restaurant_Staff;
+DELETE FROM Customers;
+DELETE FROM Riders;
+DELETE FROM Part_Time;
+DELETE FROM Full_Time;
+DELETE FROM FDS_Managers;
+DELETE FROM Monthly_Work_Schedules;
+DELETE FROM Weekly_Work_Schedules;
+DELETE FROM Intervals;
+DELETE FROM Orders;
+DELETE FROM Contains;
+DELETE FROM Delivers;
+DELETE FROM Promotions;
+DELETE FROM MinSpendingPromotions;
+DELETE FROM CustomerPromotions;
+
+/*
+\copy (SELECT Food.fname, Restaurants.rname 
+FROM Food, Restaurants) to 'C:\tmp\persons_client.csv' with csv HEADER;
+*/
+
+-- 100 user 40 customer 20 part time rider 25 full time rider 5 fds manager 10 restaurants
+\copy Users(name) from 'Users.csv' CSV HEADER; --100 user
+
+\copy Customers from 'Customers.csv' CSV HEADER; --40 user
+\copy Riders from 'Riders.csv' CSV HEADER;  --45 user
+
+INSERT INTO Part_Time(userId)  -- 20 
+SELECT U.userId
+FROM Users U
+OFFSET 40
+LIMIT 20;
+
+INSERT INTO Full_Time(userId) -- 25
+SELECT U.userId
+FROM Users U
+OFFSET 60
+LIMIT 25;
+
+INSERT INTO FDS_Managers(userId) -- 5
+SELECT U.userId
+FROM Users U
+OFFSET 95
+LIMIT 5;
+
+\copy Restaurants from 'Restaurants.csv' CSV HEADER;  --10 res
+\copy Restaurant_Staff from 'RestaurantStaff.csv' CSV HEADER;  --10 res
+\copy Food from 'Food.csv' CSV HEADER;
+\copy Sells(fname, rname, price, availability) from 'Sells.csv' CSV HEADER;
+
+BEGIN;
+--userId, startDate, endDate
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from 'weeklywork.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from 'intervals.csv' CSV HEADER;
+COMMIT;
+
+BEGIN;
+--userId, startDate, endDate
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from 'weeklyworkFT.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from 'intervalsFT.csv' CSV HEADER;
+\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from 'monthlyworkFT.csv' CSV HEADER;
+COMMIT;

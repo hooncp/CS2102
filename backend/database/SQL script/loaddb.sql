@@ -24,7 +24,8 @@ FROM Food, Restaurants) to 'C:\tmp\persons_client.csv' with csv HEADER;
 */
 
 -- 100 user 40 customer 20 part time rider 25 full time rider 5 fds manager 10 restaurants
-\copy Users from 'Users.csv' CSV HEADER; --100 user
+\copy Users(name) from 'Users.csv' CSV HEADER; --100 user
+
 \copy Customers from 'Customers.csv' CSV HEADER; --40 user
 \copy Riders from 'Riders.csv' CSV HEADER;  --45 user
 
@@ -51,10 +52,8 @@ LIMIT 5;
 \copy Food from 'Food.csv' CSV HEADER;
 \copy Sells(fname, rname, price, availability) from 'Sells.csv' CSV HEADER;
 
-CREATE TABLE TEMP(
-    t1 TIMESTAMP,
-    t2 TIMESTAMP,
-    primary key(t1,t2)
-)
-
-\copy Temp from 'timestamp.csv' csv header;
+BEGIN;
+--userId, startDate, endDate
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from 'weeklywork.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from 'intervals.csv' CSV HEADER;
+COMMIT;
