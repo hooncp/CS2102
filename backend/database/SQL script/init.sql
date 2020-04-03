@@ -115,7 +115,7 @@ CREATE TABLE Weekly_Work_Schedules
     startDate  TIMESTAMP,
     endDate    TIMESTAMP,
     PRIMARY KEY (scheduleId),
-    FOREIGN KEY (userId) REFERENCES Riders (userId),
+    FOREIGN KEY (userId) REFERENCES Riders (userId) ON DELETE CASCADE,
     check ((endDate::date - startDate::date) = 6)
 );
 
