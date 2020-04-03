@@ -19,7 +19,6 @@ DELETE FROM CustomerPromotions;
 
 -- TESTING Order_details/delvery_details in depth.
 
-<<<<<<< HEAD
 INSERT INTO Users (name) VALUES
 ('a'),
 ('b'),
@@ -38,26 +37,6 @@ INSERT INTO Customers (userId, creditCardInfo) VALUES
 (1, 112321),
 (2, 22141),
 (3, 351422);
-=======
-INSERT INTO Users (userId) VALUES
-(1),
-(2),
-(3),
-(4),
-(5),
-(6),
-(7),
-(8),
-(9),
-(10),
-(11),
-(12);
-
-INSERT INTO Customers (userId) VALUES
-(1),
-(2),
-(3);
->>>>>>> ac367015f0ba88c5555f8981ccc8de69bcc34ffe
 
 INSERT INTO Riders (userId, area) VALUES
 (4, 'north'),
