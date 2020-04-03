@@ -187,7 +187,7 @@ CREATE TABLE Promotions (
 
 --TODO: TRIGGER FOR used reward Points make sure used reward points lesser than actual
 CREATE TABLE Orders (
-	orderId 		INTEGER,
+	orderId 		SERIAL,
 	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
 	promoCode		VARCHAR(20),
   applicableTo	VARCHAR(200),
@@ -680,16 +680,12 @@ DELETE FROM Promotions;
 DELETE FROM MinSpendingPromotions;
 DELETE FROM CustomerPromotions;
 
-/*
-\copy (SELECT Food.fname, Restaurants.rname 
-FROM Food, Restaurants) to 'C:\tmp\persons_client.csv' with csv HEADER;
-*/
 
 -- 100 user 40 customer 20 part time rider 25 full time rider 5 fds manager 10 restaurants
-\copy Users(name) from 'Users.csv' CSV HEADER; --100 user
+\copy Users(name) from './CSVFILES/Users.csv' CSV HEADER; --100 user
 
-\copy Customers from 'Customers.csv' CSV HEADER; --40 user
-\copy Riders from 'Riders.csv' CSV HEADER;  --45 user
+\copy Customers from './CSVFILES/Customers.csv' CSV HEADER; --40 user
+\copy Riders from './CSVFILES/Riders.csv' CSV HEADER;  --45 user
 
 INSERT INTO Part_Time(userId)  -- 20 
 SELECT U.userId
@@ -709,20 +705,21 @@ FROM Users U
 OFFSET 95
 LIMIT 5;
 
-\copy Restaurants from 'Restaurants.csv' CSV HEADER;  --10 res
-\copy Restaurant_Staff from 'RestaurantStaff.csv' CSV HEADER;  --10 res
-\copy Food from 'Food.csv' CSV HEADER;
-\copy Sells(fname, rname, price, availability) from 'Sells.csv' CSV HEADER;
+\copy Restaurants from './CSVFILES/Restaurants.csv' CSV HEADER;  --10 res
+\copy Restaurant_Staff from './CSVFILES/RestaurantStaff.csv' CSV HEADER;  --10 res
+\copy Food from './CSVFILES/Food.csv' CSV HEADER;
+\copy Sells(fname, rname, price, availability) from './CSVFILES/Sells.csv' CSV HEADER;
 
 BEGIN;
 --userId, startDate, endDate
-\copy Weekly_Work_Schedules(userId, startDate, endDate) from 'weeklywork.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from 'intervals.csv' CSV HEADER;
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklywork.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervals.csv' CSV HEADER;
 COMMIT;
 
 BEGIN;
 --userId, startDate, endDate
-\copy Weekly_Work_Schedules(userId, startDate, endDate) from 'weeklyworkFT.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from 'intervalsFT.csv' CSV HEADER;
-\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from 'monthlyworkFT.csv' CSV HEADER;
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklyworkFT.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervalsFT.csv' CSV HEADER;
+\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/monthlyworkFT.csv' CSV HEADER;
 COMMIT;
+

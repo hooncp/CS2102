@@ -295,8 +295,8 @@ print(b)
 a = generateInterval(b)
 print(a)
 """
-
-scheduleId = generateAllWeeklyWorkSchedule(1,41) #20 parttime rider start from userid 40
+""" 
+scheduleId = generateAllWeeklyWorkSchedule(20,41) #20 parttime rider start from userid 40
 convert_to_csv(weeklywork, 'weeklywork.csv')
 convert_to_csv(intervals, 'intervals.csv')
 
@@ -305,3 +305,4 @@ generateAllWeeklyWorkScheduleFt(25,61, scheduleId) #25 fulltime rider start from
 convert_to_csv(weeklyworkFT, 'weeklyworkFT.csv')
 convert_to_csv(intervalsFT, 'intervalsFT.csv')
 convert_to_csv(monthlyworkFT, 'monthlyworkFT.csv')
+"""
