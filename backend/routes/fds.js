@@ -74,6 +74,28 @@ router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
 
 })
 
+//For each for each month and for each customer who has placed some order for that month,
+// the total number of orders placed by the customer for that month and the total cost of all these orders.
+router.get('/viewMonthlyCustomerSummary', (req, res) => {
+    const month = req.body.month;
+    const year = req.body.year;
+    const text = `SELECT userId, count(*) AS NumOrder, sum(finalprice) AS TotalOrderCost
+                    FROM OrderInfo O
+                    WHERE ((SELECT EXTRACT(MONTH FROM timeoforder::date))) = $1 
+                    AND ((SELECT EXTRACT(YEAR FROM timeoforder::date))) = $2
+                    GROUP BY userId`;
+
+    const values = [month, year];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
+
+
 module.exports = router;
 
 // For each for each month and for each customer who has placed some order for that month,

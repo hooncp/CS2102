@@ -29,6 +29,50 @@ router.post('/insertCustomer', async (req, res) => {
     }
 });
 
+//Support data access for Customer : view past orders for certain month
+router.get('/viewMonthOrders', (req, res) => {
+    const userId = req.body.userId;
+    const month = req.body.month;
+    const year = req.body.year;
+    const text = `SELECT * 
+                    FROM OrderInfo  
+                    WHERE userId = $1 
+                    AND ((SELECT EXTRACT(MONTH FROM timeoforder::date))) = $2
+                    AND ((SELECT EXTRACT(YEAR FROM timeoforder::date))) = $3;
+                    `;
+
+    const values = [userId, month, year];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
+
+//Support data access for Customer : view specific order in detail
+router.get('/viewOrderDetail', (req, res) => {
+    const orderId = req.body.orderId;
+    // const month = req.body.month;
+    // const year = req.body.year;
+    const text = ` SELECT C.orderId, C.rname, C.fname, C.foodqty, 
+                     (SELECT S.price FROM SELLS S WHERE S.fname = C.fname AND S.rname = C.rname) as price,
+                     calculatePrice(C.rname, C.fname, C.foodqty) as totalfoodprice, 
+                     C.reviewcontent
+                     FROM Contains C
+                     WHERE C.orderId = $1
+                    `;
+
+    const values = [orderId];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
 
 
 module.exports = router;
