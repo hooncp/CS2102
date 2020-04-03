@@ -58,7 +58,7 @@ https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-
 
 
 //8. averaged rating received by rider for orders delivered that month
-router.get('/getMonthlyAvgRating', async (req,res)=> {
+router.get('/getMonthlyAvgRating', async (req, res) => {
 	const month = req.body.month;
 	const userId = req.body.userId;
 	const query = `SELECT round(sum(rating)::numeric/count(rating),2) as avgRating
@@ -83,7 +83,7 @@ router.get('/getMonthlyAvgRating', async (req,res)=> {
 })
 
 //7. number of ratings received by rider for all orders delivered for that month
-router.get('/getMonthlyNumRating', async (req,res)=> {
+router.get('/getMonthlyNumRating', async (req, res) => {
 	const month = req.body.month;
 	const userId = req.body.userId;
 	const query = `SELECT count(rating) as numRating
@@ -93,7 +93,7 @@ router.get('/getMonthlyNumRating', async (req,res)=> {
 	HAVING userId = ${userId}
 	;`
 	pool.query(query).then(result => {
-		let numRating =  result.rows[0]
+		let numRating = result.rows[0]
 		console.log('num of ratings:', numRating);
 		res.json(numRating);
 	}).catch(err => {
@@ -110,7 +110,7 @@ router.get('/getMonthlyNumRating', async (req,res)=> {
 // 6. average delivery time by the rider for that month
 //departTimeForRestaurant - deliveryTimetoCustomer = delivery time
 // average delivery time = total delivery time / total num of orders [monthly]
-router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
+router.get('/getMonthlyAverageDeliveryTime', async (req, res) => {
 	const month = req.body.month;
 	const userId = req.body.userId;
 	const query = `select sum((extract(epoch from (deliveryTimetoCustomer - departTimeForRestaurant)))/60)
@@ -119,22 +119,22 @@ router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
 		WHERE DATE_PART('months',D.deliveryTimetoCustomer) = ${month}
 		GROUP BY userId
 		HAVING userId = ${userId};`
-		pool.query(query).then(result => {
-			if (typeof result.rows[0] == 'undefined') {
-				throw `rider ${userId} does not have any deliveries`;
-			} else {
-				let avgTime = result.rows[0]
-				console.log('result:', avgTime);
-				res.json(avgTime);
-			}
-		}).catch(err => {
-			if (err.constraint) {
-				console.error(err.constraint);
-			} else {
-				console.log(err);
-				res.json(err);
-			}
-		});
+	pool.query(query).then(result => {
+		if (typeof result.rows[0] == 'undefined') {
+			throw `rider ${userId} does not have any deliveries`;
+		} else {
+			let avgTime = result.rows[0]
+			console.log('result:', avgTime);
+			res.json(avgTime);
+		}
+	}).catch(err => {
+		if (err.constraint) {
+			console.error(err.constraint);
+		} else {
+			console.log(err);
+			res.json(err);
+		}
+	});
 
 })
 // 2. create a schedule -> choose start date, plan schedule for one week
@@ -150,23 +150,23 @@ router.post('/createWeeklySchedule', async (req, res) => {
 		const intervals = req.body.intervals;
 		let scheduleId = 0;
 		client.query('BEGIN').then(result => {
-				client.query(`INSERT INTO Weekly_Work_Schedules(userId,startDate,endDate) VALUES ($1,$2,$3) RETURNING scheduleId`,
-					[userId, startDate, endDate])
-					.then(result => {
-						scheduleId = result.rows[0].scheduleid;
-						console.log('scheduleid:', result.rows[0].scheduleid);
-						intervals.forEach(currInt => {
-							var currScheduleId = scheduleId;
-							var currentStartTime = currInt.startTime;
-							var currentEndTime = currInt.endTime;
-							client.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
-								[currScheduleId, currentStartTime, currentEndTime]).then(result => {
+			client.query(`INSERT INTO Weekly_Work_Schedules(userId,startDate,endDate) VALUES ($1,$2,$3) RETURNING scheduleId`,
+				[userId, startDate, endDate])
+				.then(result => {
+					scheduleId = result.rows[0].scheduleid;
+					console.log('scheduleid:', result.rows[0].scheduleid);
+					intervals.forEach(currInt => {
+						var currScheduleId = scheduleId;
+						var currentStartTime = currInt.startTime;
+						var currentEndTime = currInt.endTime;
+						client.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
+							[currScheduleId, currentStartTime, currentEndTime]).then(result => {
 							})
-						})
-						client.query('COMMIT');
-						client.release()
 					})
-			}
+					client.query('COMMIT');
+					client.release()
+				})
+		}
 		)
 		res.json(`${userId}'s schedule added`);
 	} catch (err) {
@@ -204,7 +204,7 @@ async function insertWeeklySchedule(client, schedules) {
 			})
 			return 0;
 		} catch
-			(err) {
+		(err) {
 			console.error("error triggered: ", err.message);
 			throw (err);
 		}
@@ -221,31 +221,31 @@ router.post('/createMonthlySchedule', async (req, res) => {
 		let scheduleId4 = 0;
 
 		client.query('BEGIN').then(result => {
-				insertWeeklySchedule(client, schedules[0])
-					.then(result => {
-						scheduleId1 = result;
-						return insertWeeklySchedule(client, schedules[1])
-							.then(result => {
-								scheduleId2 = result;
-								return insertWeeklySchedule(client, schedules[2])
-									.then(result => {
-										scheduleId3 = result;
-										return insertWeeklySchedule(client, schedules[3])
-											.then(result => {
-												scheduleId4 = result;
-												return client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
-													[scheduleId1, scheduleId2, scheduleId3, scheduleId4])
-													.then(result => {
-														client.query('COMMIT');
-														// client.release();
-													}).catch(err=> {
+			insertWeeklySchedule(client, schedules[0])
+				.then(result => {
+					scheduleId1 = result;
+					return insertWeeklySchedule(client, schedules[1])
+						.then(result => {
+							scheduleId2 = result;
+							return insertWeeklySchedule(client, schedules[2])
+								.then(result => {
+									scheduleId3 = result;
+									return insertWeeklySchedule(client, schedules[3])
+										.then(result => {
+											scheduleId4 = result;
+											return client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
+												[scheduleId1, scheduleId2, scheduleId3, scheduleId4])
+												.then(result => {
+													client.query('COMMIT');
+													// client.release();
+												}).catch(err => {
 													console.error(err);
 												})
-											})
-									})
-							})
-					})
-			}
+										})
+								})
+						})
+				})
+		}
 		)
 		return res.json(`schedule added`);
 	} catch (err) {
@@ -271,12 +271,12 @@ router.post('/insertPartTimeRider', async (req, res) => {
 				console.log('currId:', currId);
 				client.query(
 					`INSERT INTO riders VALUES ($1, $2)`, [currId, area]).then(result => {
-					client.query(
-						`INSERT INTO Part_Time VALUES  ($1)`, [currId]).then(result => {
-						client.query('COMMIT');
-						client.release()
+						client.query(
+							`INSERT INTO Part_Time VALUES  ($1)`, [currId]).then(result => {
+								client.query('COMMIT');
+								client.release()
+							})
 					})
-				})
 			})
 		})
 		return res.json(`${name} added as a Rider`);
@@ -299,12 +299,12 @@ router.post('/insertFullTimeRider', async (req, res) => {
 				console.log('currId:', currId);
 				client.query(
 					`INSERT INTO riders VALUES ($1, $2)`, [currId, area]).then(result => {
-					client.query(
-						`INSERT INTO Full_Time VALUES  ($1)`, [currId]).then(result => {
-						client.query('COMMIT');
-						client.release()
+						client.query(
+							`INSERT INTO Full_Time VALUES  ($1)`, [currId]).then(result => {
+								client.query('COMMIT');
+								client.release()
+							})
 					})
-				})
 			})
 		})
 		return res.json(`${name} added as a Rider`);
@@ -369,4 +369,92 @@ router.get('/test', function(req, res, next) {
 	});
 });
 */
+// 3. total number of orders delivered by rider for the month
+router.get('/viewMonthPastOrder', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `SELECT * FROM Delivers D      
+                    WHERE userId = $1
+                    AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
+                    AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3`
+
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
+
+// 4. total number of hours worked by rider for that month
+router.get('/viewMonthHoursWorked', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `with result as ( 
+    select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration 
+    from Weekly_Work_Schedules S join intervals I 
+        on (S.scheduleId = I.scheduleId) 
+        and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2 
+        and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3)   
+    select * from result`;
+	//select sum(duration) form result;
+
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
+
+// 5. total salary earned by the rider for that month
+router.get('/viewMonthSalary', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `
+    with result as (                                                                                                                      
+        select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration                                
+        from Weekly_Work_Schedules S join intervals I                                                                                                     
+        on (S.scheduleId = I.scheduleId)                                                                                                  
+        and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
+        and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
+    result2 as (
+        SELECT D.deliveryTimetoCustomer, case 
+                                        when ((deliveryTimetoCustomer::time >= '12:00' and deliveryTimetoCustomer::time <= '13:00')
+                                                OR (deliveryTimetoCustomer::time >= '18:00' and deliveryTimetoCustomer::time <= '20:00'))
+                                        then 4
+                                        else 2
+                                        end as delivery_fee
+        FROM Delivers D      
+        WHERE userId = $1
+        AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
+        AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3),
+    result3 as (
+        select coalesce((select sum(duration) from result R),0) as totalHoursWorked , coalesce(sum(delivery_fee),0) as totalFees
+        from result2 R2)
+    select R3.totalHoursWorked, R3.totalFees, case
+        when $1 not in (select PT.userId from Part_Time PT) then (R3.totalHoursWorked * 5 + totalFees)
+        else (R3.totalHoursWorked * 2 + totalFees) --part_time
+        end as pay
+    from result3 R3
+    `;
+
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
+
+
 module.exports = router;
