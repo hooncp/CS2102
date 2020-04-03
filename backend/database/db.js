@@ -1,11 +1,11 @@
-const Pool = require('pg').Pool;
+const Pool = require("pg").Pool;
 
 //change to your own database and password. check if got special characters. change to password with no special characters
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'project',
-  password: 'password',
+  user: "postgres",
+  host: "localhost",
+  database: "project",
+  password: "postgres",
   port: 5432,
 });
 
