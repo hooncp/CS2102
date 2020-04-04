@@ -661,6 +661,7 @@ SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.food
 
 
 -- returns 1 if Rider is working and 0 if Rider is not working
+DROP FUNCTION IF EXISTS checkWorkingStatusHelperOfRider CASCADE;
 CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
 RETURNS INTEGER AS $$
     DECLARE
@@ -676,10 +677,12 @@ RETURNS INTEGER AS $$
             WHEN EXISTS(
                 SELECT 1
                 FROM Intervals I
-                WHERE I.scheduleId IN (
-                    SELECT W.scheduleId
+                WHERE EXISTS (
+                    SELECT 1
                     FROM Weekly_Work_Schedules W
-                    WHERE W.startDate::date <= currentDate AND W.endDate::date >= currentDate AND W.userId = riderId
+                    WHERE W.startDate::date <= currentDate 
+                            AND W.endDate::date >= currentDate 
+                            AND W.userId = riderId
                 )
                 AND I.startTime::time <= currentTime AND I.endTime::time >= current::time
             ) THEN result = 1;
@@ -704,6 +707,9 @@ RETURNS INTEGER AS $$
         ORDER BY D.deliveryTimetoCustomer desc
         LIMIT 1;
 
+        IF latestDelivery IS NULL THEN latestDelivery = '1970-01-01 00:00:00';
+        END IF;
+
         CASE
             WHEN checkWorkingStatusHelperOfRider(riderId, current) = 0 then result = 0;
             WHEN latestDelivery < current THEN result = 1;
@@ -713,3 +719,57 @@ RETURNS INTEGER AS $$
         RETURN result;
     END;
 $$ LANGUAGE PLPGSQL;
+
+DROP FUNCTION IF EXISTS findRiderToDeliverOrder CASCADE;
+CREATE OR REPLACE FUNCTION findRiderToDeliverOrder(current TIMESTAMP)
+RETURNS INTEGER AS
+$$
+    SELECT R.userId
+    FROM Riders R
+    WHERE findStatusOfRider(R.userId, current) = 1
+    LIMIT 1;
+$$ LANGUAGE SQL;
+
+DROP FUNCTION IF EXISTS insertDelivers CASCADE;
+CREATE OR REPLACE FUNCTION insertDelivers()
+RETURNS TRIGGER AS
+$$
+    DECLARE    
+        assigneduserId      INTEGER; --integer
+        randomTime1 INTERVAL; -- departTimeForrestaurant 1
+        randomTime2 INTERVAL; -- arrivalTimeAtRestaurant 2
+        randomTime3 INTERVAL; -- departTimeFromRestaurant 3
+        randomTime4 INTERVAL; -- deliveryTimetoCustomer; 4
+        randomRating INTEGER; 
+
+    BEGIN
+        randomRating = floor(random() * 3 + 3)::INT;
+        randomTime1 = floor(random() * (5) + 1) * '1 minute'::INTERVAL; -- 1- 5 minutes?
+        randomTime2 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime1;-- 11- 15 minutes?
+        randomTime3 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime2;-- 11- 15 minutes?
+        randomTime4 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime3;-- 11- 15 minutes?
+
+        SELECT R.userId INTO assigneduserId
+        FROM Riders R
+        WHERE findStatusOfRider(R.userId, new.timeOfOrder) = 1
+        LIMIT 1;
+
+        IF assigneduserId IS NULL THEN 
+            RAISE EXCEPTION 'Unable to find rider for Order. ALl riders are not free';
+        END IF;
+
+        INSERT INTO Delivers(orderId, userId, departTimeForRestaurant,
+        departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer,
+        rating)
+        VALUES(new.orderId, assigneduserId, new.timeOfOrder + randomTime1, new.timeOfOrder + randomTime2,
+        new.timeOfOrder + randomTime3, new.timeOfOrder + randomTime4, randomRating);
+        RETURN new;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
+CREATE TRIGGER orders_insert_trigger
+    AFTER INSERT ON Orders
+    FOR EACH ROW
+    EXECUTE PROCEDURE insertDelivers();
+

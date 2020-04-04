@@ -73,26 +73,28 @@ router.get('/getMonthlyAverageDeliveryTime', async (req,res)=>{
     });
 
 })
+/*
+SELECT count(R.userId)
+FROM Riders R
+WHERE checkWorkingStatusHelperOfRider(R.userId, '2020-11-12 11:10:00') = 1;
 
+*/
 // not tested yet
 router.get('/checkStatus', async (req, res) => {
-    const timeArr = ["10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00"
+    const timeArr = ["10:00:00", '11:10:00', "12:00:00", "13:00:00", "14:00:00"
     , "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00", "20:00:00",
     "21:00:00", "22:00:00"]
     const day = req.body.day; //example 2020-11-12
-    let querytime = 0;
-    const query = `SELECT sum(R.userId)
-    FROM Riders R
-    WHERE checkWorkingStatusHelperOfRider(R.userId, ${querytime}) = 1;`
+    let querytime = "";
 
-    let result = [];
+    //console.log(querytime);
+    //console.log('2020-11-12 11:10:00');
 
-    for(let i = 0; i < timeArr.length; i++) {
-        querytime = day + " " + timeArr[i];
-        pool.query(query).then(result => {
-            let noOfriders = result.rows
-            console.log(result.rows)
-            result.push(result.rows[0].sum);
+    let resArr = [];
+/*
+    pool.query(query).then(result => {
+        console.log('result:', result.rows[0].count);
+        res.json(result.rows[0].count);
     }).catch(err => {
         if (err.constraint) {
             console.error(err.constraint);
@@ -101,8 +103,35 @@ router.get('/checkStatus', async (req, res) => {
             res.json(err);
         }
     });
+    */
+    
+    for(let i = 0; i < timeArr.length; i++) {
+
+        
+        querytime = day + " " + timeArr[i];
+        let query = `SELECT count(R.userId)
+        FROM Riders R
+        WHERE checkWorkingStatusHelperOfRider(R.userId, '${querytime}') = 1;`;
+
+        await pool.query(query).then(async result => {
+            
+            // let noOfriders = result.rows;
+            // console.log(result.rows);
+
+            console.log(resArr);
+            await resArr.push(result.rows[0].count);
+            }).catch(err => {
+                if (err.constraint) {
+                    console.error(err.constraint);
+                } else {
+                    console.log(err);
+                    res.json(err);
+                }
+        });
+
     }
-    res.json(result);
+    console.log("test" + resArr);
+    res.json({"data": resArr});
 })
 
 module.exports = router;
