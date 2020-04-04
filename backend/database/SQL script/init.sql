@@ -684,7 +684,7 @@ RETURNS INTEGER AS $$
                             AND W.endDate::date >= currentDate 
                             AND W.userId = riderId
                 )
-                AND I.startTime::time <= currentTime AND I.endTime::time >= current::time
+                AND I.startTime::time <= currentTime AND I.endTime::time > current::time
             ) THEN result = 1;
             ELSE result = 0;
         END CASE;

@@ -133,5 +133,4 @@ router.get('/checkStatus', async (req, res) => {
     console.log("test" + resArr);
     res.json({"data": resArr});
 })
-
 module.exports = router;
