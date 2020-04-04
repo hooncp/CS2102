@@ -108,6 +108,16 @@ CREATE TABLE Part_Time
 --        DEFERRABLE INITIALLY DEFERRED
 );
 
+CREATE TABLE Full_Time
+(
+    userId INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Riders
+        on DELETE CASCADE
+        on UPDATE CASCADE
+--        DEFERRABLE INITIALLY DEFERRED
+);
+
 CREATE TABLE Weekly_Work_Schedules
 (
     scheduleId SERIAL,
@@ -159,6 +169,7 @@ CREATE TABLE Intervals
 );
 
 
+
 --able to share the same promoCode. FD = free delivery
 CREATE TABLE Promotions (
 
@@ -177,10 +188,10 @@ CREATE TABLE Promotions (
 
 --TODO: TRIGGER FOR used reward Points make sure used reward points lesser than actual
 CREATE TABLE Orders (
-	orderId 		INTEGER,
+	orderId 		SERIAL,
 	userId 			INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
 	promoCode		VARCHAR(20),
-  applicableTo	VARCHAR(200),
+    applicableTo	VARCHAR(200),
 	modeOfPayment 	VARCHAR(10) NOT NULL,
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
@@ -210,7 +221,7 @@ CREATE TABLE Delivers (
                           orderId			        	INTEGER REFERENCES Orders ON DELETE CASCADE ON UPDATE CASCADE,
                           userId				        INTEGER NOT NULL,
                           departTimeForRestaurant	    TIMESTAMP,
-                          departTimeFromRestaurant    TIMESTAMP,
+                          departTimeFromRestaurant      TIMESTAMP,
                           arrivalTimeAtRestaurant	    TIMESTAMP,
                           deliveryTimetoCustomer	    TIMESTAMP,
                           rating			    INTEGER,
@@ -219,7 +230,6 @@ CREATE TABLE Delivers (
                           CHECK(rating <= 5)
 );
 
--- Free delivery
 CREATE TABLE MinSpendingPromotions (
                                        promoCode	    VARCHAR(20),
                                        applicableTo	VARCHAR(200),
@@ -228,7 +238,6 @@ CREATE TABLE MinSpendingPromotions (
                                        FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- a certain amount off
 CREATE TABLE CustomerPromotions (
     promoCode		VARCHAR(20),	
 	applicableTo	VARCHAR(200),
@@ -537,7 +546,7 @@ EXECUTE FUNCTION check_wws_overlap_deferred();
 ---FOR ORDERS CALCULATION---
 DROP FUNCTION IF EXISTS calculatePrice CASCADE;
 CREATE OR REPLACE FUNCTION calculatePrice(rname VARCHAR(20), fname VARCHAR(20), foodQty INTEGER) 
-RETURNS NUMERIC(4,2) AS $$
+RETURNS NUMERIC(6,2) AS $$
     SELECT S.price * foodQty
     FROM SELLS S
     WHERE S.fname = fname AND S.rname = rname
@@ -546,15 +555,19 @@ $$ LANGUAGE SQL
 
 --nonpeak vs peak hour deliveryfee
 DROP FUNCTION IF EXISTS getDeliveryFee CASCADE;
-CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP)
-RETURNS NUMERIC(4,2) AS $$
+CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP, orderId1 INTEGER)
+RETURNS NUMERIC(6,2) AS $$
     DECLARE
         test time;
-        amount NUMERIC(4,2);
+        amount NUMERIC(6,2);
     
     BEGIN
         test = orderTime::time;
         CASE
+            WHEN EXISTS(
+                SELECT 1 FROM Orders O JOIN Promotions P ON O.promoCode = P.promoCode AND O.applicableTo = P.applicableTo
+                WHERE O.orderId = orderId1 AND P.discUnit = 'FD' 
+            ) then amount = 0.00;
             WHEN test < '19:10:00' AND test > '17:00:00'then amount = 10.00;
             else amount = 5.00;
         END CASE;
@@ -563,26 +576,26 @@ RETURNS NUMERIC(4,2) AS $$
 $$ LANGUAGE PLPGSQL;
 
 DROP FUNCTION IF EXISTS getearnedRewardPts CASCADE;
-CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(4,2))
-RETURNS NUMERIC(4,0) AS $$
+CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(6,2))
+RETURNS NUMERIC(6,0) AS $$
     SELECT FLOOR(foodprice / 10.0)
 $$ LANGUAGE SQL;
 
 DROP FUNCTION IF EXISTS getTotalPriceAdjustedForRewards CASCADE;
-CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(4,2), rewardPt INTEGER)
-RETURNS NUMERIC(4,0) AS $$
+CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(6,2), rewardPt INTEGER)
+RETURNS NUMERIC(6,0) AS $$
     SELECT foodprice - (rewardPt/5)
 $$ LANGUAGE SQL;
 
 DROP FUNCTION IF EXISTS calculateTotalPriceAfterPromotionAndRewards CASCADE;
 CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
-    foodprice NUMERIC(4,2), deliveryfee NUMERIC(4,2), promoCode1 VARCHAR(20),
+    foodprice NUMERIC(6,2), deliveryfee NUMERIC(6,2), promoCode1 VARCHAR(20),
     applicableTo1 VARCHAR(200), usedRewardPoints INTEGER
 )
 
-RETURNS NUMERIC(4,2) AS $$
+RETURNS NUMERIC(6,2) AS $$
     DECLARE 
-        amount NUMERIC(4,2);
+        amount NUMERIC(6,2);
         discRate INTEGER;
     
     BEGIN 
@@ -634,14 +647,137 @@ DROP VIEW IF EXISTS OrderInfo CASCADE;
 CREATE VIEW OrderInfo AS
    
 SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
-        getDeliveryFee(O.timeOfOrder) as deliveryfee,
+        getDeliveryFee(O.timeOfOrder, O.orderId) as deliveryfee,
         O.timeOfOrder,
         getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
         O.usedRewardPoints, 
         calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
-        getDeliveryFee(O.timeOfOrder), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
+        getDeliveryFee(O.timeOfOrder, O.orderId), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
         
     FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
     GROUP BY O.orderId, C.rname, O.timeOfOrder
     ORDER BY O.orderId ASC;
 ---END OF ORDERS CALCULATION---
+
+
+-- returns 1 if Rider is working and 0 if Rider is not working
+DROP FUNCTION IF EXISTS checkWorkingStatusHelperOfRider CASCADE;
+CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
+RETURNS INTEGER AS $$
+    DECLARE
+        currentDate DATE;
+        currentTime TIME;
+        result INTEGER;
+    
+    BEGIN
+        currentTime = current::time;
+        currentDate = current::date;
+
+        CASE
+            WHEN EXISTS(
+                SELECT 1
+                FROM Intervals I
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM Weekly_Work_Schedules W
+                    WHERE W.startDate::date <= currentDate 
+                            AND W.endDate::date >= currentDate 
+                            AND W.userId = riderId
+                )
+                AND I.startTime::time <= currentTime AND I.endTime::time >= current::time
+            ) THEN result = 1;
+            ELSE result = 0;
+        END CASE;
+        RETURN result;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+--returns 1 if rider is available and 0 if not working and 2 if currently on delivery
+DROP FUNCTION IF EXISTS findStatusOfRider CASCADE;
+CREATE OR REPLACE FUNCTION findStatusOfRider(riderId INTEGER, current TIMESTAMP)
+RETURNS INTEGER AS $$
+    DECLARE    
+        latestDelivery TIMESTAMP;
+        result INTEGER;
+
+    BEGIN
+        SELECT D.deliveryTimetoCustomer INTO latestDelivery
+        FROM Delivers D
+        WHERE D.userId = riderId
+        ORDER BY D.deliveryTimetoCustomer desc
+        LIMIT 1;
+
+        IF latestDelivery IS NULL THEN latestDelivery = '1970-01-01 00:00:00';
+        END IF;
+
+        CASE
+            WHEN checkWorkingStatusHelperOfRider(riderId, current) = 0 then result = 0;
+            WHEN latestDelivery < current THEN result = 1;
+            WHEN current <= latestDelivery THEN result = 2;
+            ELSE result = -1;
+        END CASE;
+        RETURN result;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+
+
+/*
+DROP FUNCTION IF EXISTS findRiderToDeliverOrder CASCADE;
+DROP FUNCTION IF EXISTS insertDelivers CASCADE;
+DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
+
+CREATE OR REPLACE FUNCTION findRiderToDeliverOrder(current TIMESTAMP)
+RETURNS INTEGER AS
+$$
+    SELECT R.userId
+    FROM Riders R
+    WHERE findStatusOfRider(R.userId, current) = 1
+    LIMIT 1;
+$$ LANGUAGE SQL;
+
+
+
+CREATE OR REPLACE FUNCTION insertDelivers()
+RETURNS TRIGGER AS
+$$
+    DECLARE    
+        assigneduserId      INTEGER; --integer
+        randomTime1 INTERVAL; -- departTimeForrestaurant 1
+        randomTime2 INTERVAL; -- arrivalTimeAtRestaurant 2
+        randomTime3 INTERVAL; -- departTimeFromRestaurant 3
+        randomTime4 INTERVAL; -- deliveryTimetoCustomer; 4
+        randomRating INTEGER; 
+
+    BEGIN
+        randomRating = floor(random() * 3 + 3)::INT;
+        randomTime1 = floor(random() * (5) + 1) * '1 minute'::INTERVAL; -- 1- 5 minutes?
+        randomTime2 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime1;-- 11- 15 minutes?
+        randomTime3 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime2;-- 11- 15 minutes?
+        randomTime4 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime3;-- 11- 15 minutes?
+
+        SELECT R.userId INTO assigneduserId
+        FROM Riders R
+        WHERE findStatusOfRider(R.userId, new.timeOfOrder) = 1
+        ORDER BY random()
+        LIMIT 1;
+
+        IF assigneduserId IS NULL THEN 
+            RAISE EXCEPTION 'Unable to find rider for Order. ALl riders are not free';
+        END IF;
+
+        INSERT INTO Delivers(orderId, userId, departTimeForRestaurant,
+        departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer,
+        rating)
+        VALUES(new.orderId, assigneduserId, new.timeOfOrder + randomTime1, new.timeOfOrder + randomTime2,
+        new.timeOfOrder + randomTime3, new.timeOfOrder + randomTime4, randomRating);
+        RETURN new;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER orders_insert_trigger
+    AFTER INSERT ON Orders
+    FOR EACH ROW
+    EXECUTE PROCEDURE insertDelivers();
+
+*/
