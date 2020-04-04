@@ -677,14 +677,15 @@ RETURNS INTEGER AS $$
             WHEN EXISTS(
                 SELECT 1
                 FROM Intervals I
-                WHERE EXISTS (
-                    SELECT 1
+                WHERE 
+                I.startTime::time <= currentTime AND I.endTime::time > current::time
+                AND I.startTime::date <= current::date AND I.endTIme::date <=current::date
+                AND I.scheduleId = (SELECT W.scheduleId
                     FROM Weekly_Work_Schedules W
                     WHERE W.startDate::date <= currentDate 
                             AND W.endDate::date >= currentDate 
-                            AND W.userId = riderId
-                )
-                AND I.startTime::time <= currentTime AND I.endTime::time > current::time
+                            AND W.userId = riderId)
+                
             ) THEN result = 1;
             ELSE result = 0;
         END CASE;
