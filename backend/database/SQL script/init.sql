@@ -610,7 +610,7 @@ CREATE VIEW Customer_General_Info AS (
          SELECT COALESCE(MNC.numNewCustomers, 0) as newCustomers,
                 COALESCE(MOI.numOrder,0) as numOrder,
                 COALESCE(MOI.totalCost,0) as totalCost,
-                COALESCE(MNC.month, MOI.month) as month, COALESCE(MNC.year, MNC.year) as year
+                COALESCE(MNC.month, MOI.month) as month, COALESCE(MNC.year, MOI.year) as year
         FROM Monthly_New_Customer MNC full join Monthly_Orders_Info MOI
             on (MNC.month = MOI.month) and (MNC.year = MOI.year)
                                     );
@@ -621,7 +621,7 @@ CREATE VIEW Order_Hourly_Summary AS (
            DATE_PART('days',O.timeOfOrder) as days,
            DATE_PART('Months',O.timeOfOrder) as months,
            DATE_PART('Years',O.timeOfOrder) as years ,
-           O.deliveryLocation, COUNT(O.orderId) as numOrder,
+           O.deliveryLocation, COUNT(O.orderId) as numOrder
     FROM Orders O
     GROUP BY (O.deliveryLocation,EXTRACT(hour from O.timeOfOrder),
               DATE_PART('days',O.timeOfOrder),
