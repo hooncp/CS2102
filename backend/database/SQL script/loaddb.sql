@@ -67,20 +67,22 @@ Might take up to a minute to load. It is working fine.
 /*
 BEGIN;
 --userId, startDate, endDate
-\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklywork.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervals.csv' CSV HEADER;
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/Weeklywork.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/Intervals.csv' CSV HEADER;
 COMMIT;
 
 BEGIN;
 --userId, startDate, endDate
-\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklyworkFT.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervalsFT.csv' CSV HEADER;
-\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/monthlyworkFT.csv' CSV HEADER;
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/WeeklyworkFT.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/IntervalsFT.csv' CSV HEADER;
+\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/MonthlyworkFT.csv' CSV HEADER;
 COMMIT;
-\copy Orders(userId, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/orders.csv' CSV HEADER;
-\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/delivers.csv' CSV HEADER;
-*/
 
+\copy Orders(userId, promoCode, applicableTo, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/Orders.csv' CSV HEADER;
+\copy Contains(orderId, fname, rname, foodQty, reviewContent) from './CSVFILES/Contains.csv' CSV HEADER;
+\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/Delivers.csv' CSV HEADER;
+
+*/
 ------------------------------------------ END OF LARGE DATA SET ------------------------------------------
 
 
@@ -95,17 +97,17 @@ Might have to change if more triggers are added.
 
 BEGIN;
 \copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/smallweeklywork.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/smallintervals.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/Smallintervals.csv' CSV HEADER;
 COMMIT;
 
 BEGIN;
 \copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/smallweeklyworkFT.csv' CSV HEADER;
-\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/smallintervalsFT.csv' CSV HEADER;
-\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/smallmonthlyworkFT.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/SmallintervalsFT.csv' CSV HEADER;
+\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/SmallmonthlyworkFT.csv' CSV HEADER;
 COMMIT;
 
 \copy Orders(userId, promoCode, applicableTo, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/Orders.csv' CSV HEADER;
 \copy Contains(orderId, fname, rname, foodQty, reviewContent) from './CSVFILES/Contains.csv' CSV HEADER;
-\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/delivers.csv' CSV HEADER;
+\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/Delivers.csv' CSV HEADER;
 
 ------------------------------------------ END OF SMALL DATA SET ------------------------------------------
