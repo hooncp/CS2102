@@ -74,5 +74,68 @@ router.get('/viewOrderDetail', (req, res) => {
         .catch(e => console.error(e.stack))
 })
 
+router.get('/viewPastReviews', (req,res) => {
+    const fname = req.body.fname;
+    const rname = req.body.rname;
+    const text = `
+        SELECT C.reviewContent 
+        FROM Contains C
+        WHERE C.rname = $1
+        AND C.fname = $2
+        ;
+       `
+    const values = [rname,fname];
+    pool.query(text,values).then(result => {
+        res.json(result.rows);
+    })
+    .catch(e => console.error(e.stack))
+
+})
+//gets restaurants that sell for food
+router.get('/searchForFood', (req,res) => {
+    const fname = req.body.fname;
+    const text = `
+        SELECT S.rname 
+        FROM Sells S
+        WHERE S.fname = $1
+        ;
+       `
+    const values = [fname];
+    pool.query(text,values).then(result => {
+        res.json(result.rows);
+    })
+        .catch(e => console.error(e.stack))
+
+})
+
+router.get('/browseForFood', (req,res) => {
+    const text = `
+        SELECT DISTINCT S.fname 
+        FROM Sells S
+        ;
+       `
+    const values = [];
+    pool.query(text,values).then(result => {
+        res.json(result.rows);
+    })
+        .catch(e => console.error(e.stack))
+
+})
+
+router.get('/RestaurantSellingFood', (req,res) => {
+    const fname = req.body.fname;
+    const text = `
+        SELECT DISTINCT S.rname 
+        FROM Sells S
+        WHERE S.fname = $1
+        ;
+       `
+    const values = [fname];
+    pool.query(text,values).then(result => {
+        res.json(result.rows);
+    })
+        .catch(e => console.error(e.stack))
+
+})
 
 module.exports = router;

@@ -31,7 +31,7 @@ app.use(cors());
 app.use('/', testRouter);
 /* --- V4: Database Connect --- */
 app.use('/rider', riderRouter);
-app.use('/customers', customerRouter);
+app.use('/customer', customerRouter);
 app.use('/fds', fdsRouter);
 app.use('/rs', rsRouter);
 /* ---------------------------- */
