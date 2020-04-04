@@ -123,7 +123,7 @@ insert into Intervals (scheduleId, startTime,endTime) values (11,'2020-11-11 10:
 insert into Intervals (scheduleId, startTime,endTime) values (11,'2020-11-11 15:00','2020-11-11 19:00');
 COMMIT;
 
-
+/*
 INSERT INTO Orders(orderId, userId, promoCode, applicableTo, 
                 modeOfPayment, timeOfOrder, deliveryLocation, 
                 usedRewardPoints) VALUES
@@ -136,7 +136,7 @@ INSERT INTO Orders(orderId, userId, promoCode, applicableTo,
 --(7, 3, 'A123', 'JIT YONG RESTAURANT1', 'credit', '2020-06-22 19:15:25', 'blk 123', 0),
 --(8, 3, 'A122', 'JIT YONG RESTAURANT', 'credit', '2020-07-22 19:10:25', 'blk 123', 0);
 
-
+*/
 /*
 
 BEGIN;
@@ -167,7 +167,7 @@ INSERT INTO Orders(orderId, userId, promoCode, applicableTo,
 (11, 3, NULL, NULL, 'credit', '2020-11-12 10:10:00', 'blk 123', 0),
 (12, 3, NULL, NULL, 'credit', '2020-11-12 10:10:00', 'blk 123', 0);
 */
-
+/*
 INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
 --(1, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD'),
 --(2, 'JIT YONG RESTAURANT', 'CHICKEN', 2, 'GOOD2'),
@@ -178,7 +178,7 @@ INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES
 (6, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6');
 --(7, 'JIT YONG RESTAURANT1', 'DUCK', 1, 'GOOD1'),
 --(8, 'JIT YONG RESTAURANT', 'DUCK', 1, 'GOOD6');
-
+*/
 /*
 INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant
                             ,deliveryTimetoCustomer, arrivalTimeAtRestaurant, rating) VALUES

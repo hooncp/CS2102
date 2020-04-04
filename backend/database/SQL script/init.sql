@@ -720,7 +720,12 @@ RETURNS INTEGER AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
+
+
 DROP FUNCTION IF EXISTS findRiderToDeliverOrder CASCADE;
+DROP FUNCTION IF EXISTS insertDelivers CASCADE;
+DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
+/*
 CREATE OR REPLACE FUNCTION findRiderToDeliverOrder(current TIMESTAMP)
 RETURNS INTEGER AS
 $$
@@ -730,7 +735,8 @@ $$
     LIMIT 1;
 $$ LANGUAGE SQL;
 
-DROP FUNCTION IF EXISTS insertDelivers CASCADE;
+
+
 CREATE OR REPLACE FUNCTION insertDelivers()
 RETURNS TRIGGER AS
 $$
@@ -752,6 +758,7 @@ $$
         SELECT R.userId INTO assigneduserId
         FROM Riders R
         WHERE findStatusOfRider(R.userId, new.timeOfOrder) = 1
+        ORDER BY random()
         LIMIT 1;
 
         IF assigneduserId IS NULL THEN 
@@ -767,9 +774,9 @@ $$
     END;
 $$ LANGUAGE PLPGSQL;
 
-DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
 CREATE TRIGGER orders_insert_trigger
     AFTER INSERT ON Orders
     FOR EACH ROW
     EXECUTE PROCEDURE insertDelivers();
 
+*/

@@ -175,7 +175,8 @@ def generateAllWeeklyWorkSchedule(totalPartTimeRider, startingUserIdPartTimeRide
 
     for i in range(totalPartTimeRider):
         randomIntervalsBetweenWeeksTotal = 0
-        numberOfTimes = random.randrange(10,20)
+        #numberOfTimes = random.randrange(10,20)
+        numberOfTimes = 1
         for a in range(numberOfTimes):
 
             startDate = commonStartDate + timedelta(days = randomIntervalsBetweenWeeksTotal)
@@ -226,7 +227,8 @@ def generateAllWeeklyWorkScheduleFt(totalFullTimeRider, startingUserIdFullTimeRi
 
     for i in range(totalFullTimeRider):
         randomIntervalsBetweenWeeksTotal = 0
-        numberOfTimes = 3
+        numberOfTimes = 1
+        #numberOfTimes = 3
         for a in range(numberOfTimes):
             
             arr = create_arrayFT()
@@ -277,6 +279,15 @@ def convert_to_csv(data, filename):
             writer.writerow(['scheduleId', 'startTime', 'endTime'])
         if(filename == 'monthlyworkFT.csv'):
             writer.writerow(['scheduleId1', 'scheduleId2', 'scheduleId3', 'scheduleId4'])
+
+        #For smaller test set
+        if(filename == 'smallweeklywork.csv' or filename == 'smallweeklyworkFT.csv'):
+            writer.writerow(['userId', 'startDate', 'endDate'])
+        if(filename == 'smallintervals.csv' or filename == 'smallintervalsFT.csv'):
+            writer.writerow(['scheduleId', 'startTime', 'endTime'])
+        if(filename == 'smallmonthlyworkFT.csv'):
+            writer.writerow(['scheduleId1', 'scheduleId2', 'scheduleId3', 'scheduleId4'])
+
         for row in data:
             writer.writerow(row)
 """
@@ -294,15 +305,15 @@ b = create_arrayFT()
 print(b)
 a = generateInterval(b)
 print(a)
-"""
-""" 
+
 scheduleId = generateAllWeeklyWorkSchedule(20,41) #20 parttime rider start from userid 40
-convert_to_csv(weeklywork, 'weeklywork.csv')
-convert_to_csv(intervals, 'intervals.csv')
+convert_to_csv(weeklywork, 'smallweeklywork.csv')
+convert_to_csv(intervals, 'smallintervals.csv')
 
 
 generateAllWeeklyWorkScheduleFt(25,61, scheduleId) #25 fulltime rider start from userid 40
-convert_to_csv(weeklyworkFT, 'weeklyworkFT.csv')
-convert_to_csv(intervalsFT, 'intervalsFT.csv')
-convert_to_csv(monthlyworkFT, 'monthlyworkFT.csv')
+convert_to_csv(weeklyworkFT, 'smallweeklyworkFT.csv')
+convert_to_csv(intervalsFT, 'smallintervalsFT.csv')
+convert_to_csv(monthlyworkFT, 'smallmonthlyworkFT.csv')
+
 """

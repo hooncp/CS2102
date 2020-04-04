@@ -19,6 +19,9 @@ DELETE FROM MinSpendingPromotions;
 DELETE FROM CustomerPromotions;
 
 
+--\copy (SELECT * FROM Delivers) to 'C:\tmp\delivers.csv' with csv header;
+--\copy (SELECT * FROM Delivers) to 'C:\tmp\smalldelivers.csv' with csv header;
+
 -- 100 user 40 customer 20 part time rider 25 full time rider 5 fds manager 10 restaurants
 \copy Users(name) from './CSVFILES/Users.csv' CSV HEADER; --100 user
 
@@ -48,6 +51,9 @@ LIMIT 5;
 \copy Food from './CSVFILES/Food.csv' CSV HEADER;
 \copy Sells(fname, rname, price, availability) from './CSVFILES/Sells.csv' CSV HEADER;
 
+
+/*
+--SLOW LOADING TIME
 BEGIN;
 --userId, startDate, endDate
 \copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/weeklywork.csv' CSV HEADER;
@@ -60,4 +66,25 @@ BEGIN;
 \copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/intervalsFT.csv' CSV HEADER;
 \copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/monthlyworkFT.csv' CSV HEADER;
 COMMIT;
+\copy Orders(userId, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/orders.csv' CSV HEADER;
+\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/delivers.csv' CSV HEADER;
+*/
+
+-- SMALL TESTSET
+BEGIN;
+--userId, startDate, endDate
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/smallweeklywork.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/smallintervals.csv' CSV HEADER;
+COMMIT;
+
+BEGIN;
+--userId, startDate, endDate
+\copy Weekly_Work_Schedules(userId, startDate, endDate) from './CSVFILES/smallweeklyworkFT.csv' CSV HEADER;
+\copy Intervals(scheduleId, startTime, endTime) from './CSVFILES/smallintervalsFT.csv' CSV HEADER;
+\copy Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) from './CSVFILES/smallmonthlyworkFT.csv' CSV HEADER;
+COMMIT;
+
+
+\copy Orders(userId, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/smallorders.csv' CSV HEADER;
+\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/smalldelivers.csv' CSV HEADER;
 
