@@ -545,12 +545,19 @@ EXECUTE FUNCTION check_wws_overlap_deferred();
 
 ---FOR ORDERS CALCULATION---
 DROP FUNCTION IF EXISTS calculatePrice CASCADE;
-CREATE OR REPLACE FUNCTION calculatePrice(rname VARCHAR(20), fname VARCHAR(20), foodQty INTEGER) 
-RETURNS NUMERIC(6,2) AS $$
-    SELECT S.price * foodQty
-    FROM SELLS S
-    WHERE S.fname = fname AND S.rname = rname
-$$ LANGUAGE SQL
+CREATE OR REPLACE FUNCTION calculatePrice(rname1 VARCHAR(20), fname1 VARCHAR(20), foodQty INTEGER) 
+RETURNS NUMERIC(6,2) AS $$ 
+    DECLARE 
+        price NUMERIC(6,2);
+
+    BEGIN
+        SELECT S.price into price
+        FROM SELLS S
+        WHERE S.fname = fname1 AND S.rname = rname1;
+        RETURN price * foodQty;
+    END;
+
+$$ LANGUAGE PLPGSQL
 ;
 
 --nonpeak vs peak hour deliveryfee
@@ -677,14 +684,15 @@ RETURNS INTEGER AS $$
             WHEN EXISTS(
                 SELECT 1
                 FROM Intervals I
-                WHERE EXISTS (
-                    SELECT 1
+                WHERE 
+                I.startTime::time <= currentTime AND I.endTime::time > currentTime
+                AND I.startTime::date <= currentDate AND I.endTIme::date <=currentDate
+                AND I.scheduleId = (SELECT W.scheduleId
                     FROM Weekly_Work_Schedules W
                     WHERE W.startDate::date <= currentDate 
                             AND W.endDate::date >= currentDate 
-                            AND W.userId = riderId
-                )
-                AND I.startTime::time <= currentTime AND I.endTime::time >= current::time
+                            AND W.userId = riderId)
+                
             ) THEN result = 1;
             ELSE result = 0;
         END CASE;
