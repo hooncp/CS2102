@@ -190,3 +190,35 @@ INSERT INTO Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRes
 (5, 4, '2020-11-12 11:00:00', '2020-11-12 11:10:00', '2020-11-12 11:20:00', '2020-11-12 11:30:00', 2),
 (6, 5, '2020-11-12 10:00:00', '2020-11-12 10:00:00', '2020-11-12 10:00:00', '2020-11-12 10:00:00', 2);
 */
+/*
+INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, discUnit, discRate, startDate, endDate) VALUES
+('A121', '$5 OFF if you order for a minimum of 10 dollars', NULL, 'Lacus Inc.', '$', 5, '2019-01-01 10:00:00', '2019-01-08 23:59:59'),
+('A122', '15% OFF if first order', NULL, 'Curabitur LLP', '%', 15, '2019-01-01 10:00:00', '2019-01-08 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Lacus Inc.', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Curabitur LLP', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Ornare Ltd', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Egestas Urna Ltd', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Convallis In Limited', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Dignissim Company', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Libero Dui PC', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Ligula PC', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Amet Consectetuer Corp.', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59'),
+('A123', 'Free Delivery for all users', 'FDS', 'Nulla Semper Industries', 'FD', NULL, '2019-01-10 10:00:00', '2019-01-10 23:59:59');
+
+INSERT INTO MinSpendingPromotions(promoCode, applicableTo, minAmt) VALUES
+('A121', 'Lacus Inc.', 10),
+('A123', 'Lacus Inc.', 0),
+('A123', 'Curabitur LLP', 0),
+('A123', 'Ornare Ltd', 0),
+('A123', 'Egestas Urna Ltd', 0),
+('A123', 'Convallis In Limited', 0),
+('A123', 'Dignissim Company', 0),
+('A123', 'Libero Dui PC', 0),
+('A123', 'Amet Consectetuer Corp.', 0),
+('A123', 'Nulla Semper Industries', 0),
+('A123', 'Ligula PC', 0);
+
+--might be an issue here cause i put -1, depends on implementation of trigger
+INSERT INTO CustomerPromotions(promoCode, applicableTo, minTimeFromLastOrder) VALUES
+('A122', 'Curabitur LLP', -1);
+*/

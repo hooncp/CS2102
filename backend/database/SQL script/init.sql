@@ -546,7 +546,7 @@ EXECUTE FUNCTION check_wws_overlap_deferred();
 ---FOR ORDERS CALCULATION---
 DROP FUNCTION IF EXISTS calculatePrice CASCADE;
 CREATE OR REPLACE FUNCTION calculatePrice(rname VARCHAR(20), fname VARCHAR(20), foodQty INTEGER) 
-RETURNS NUMERIC(4,2) AS $$
+RETURNS NUMERIC(6,2) AS $$
     SELECT S.price * foodQty
     FROM SELLS S
     WHERE S.fname = fname AND S.rname = rname
@@ -556,10 +556,10 @@ $$ LANGUAGE SQL
 --nonpeak vs peak hour deliveryfee
 DROP FUNCTION IF EXISTS getDeliveryFee CASCADE;
 CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP, orderId1 INTEGER)
-RETURNS NUMERIC(4,2) AS $$
+RETURNS NUMERIC(6,2) AS $$
     DECLARE
         test time;
-        amount NUMERIC(4,2);
+        amount NUMERIC(6,2);
     
     BEGIN
         test = orderTime::time;
@@ -576,26 +576,26 @@ RETURNS NUMERIC(4,2) AS $$
 $$ LANGUAGE PLPGSQL;
 
 DROP FUNCTION IF EXISTS getearnedRewardPts CASCADE;
-CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(4,2))
-RETURNS NUMERIC(4,0) AS $$
+CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(6,2))
+RETURNS NUMERIC(6,0) AS $$
     SELECT FLOOR(foodprice / 10.0)
 $$ LANGUAGE SQL;
 
 DROP FUNCTION IF EXISTS getTotalPriceAdjustedForRewards CASCADE;
-CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(4,2), rewardPt INTEGER)
-RETURNS NUMERIC(4,0) AS $$
+CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(6,2), rewardPt INTEGER)
+RETURNS NUMERIC(6,0) AS $$
     SELECT foodprice - (rewardPt/5)
 $$ LANGUAGE SQL;
 
 DROP FUNCTION IF EXISTS calculateTotalPriceAfterPromotionAndRewards CASCADE;
 CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
-    foodprice NUMERIC(4,2), deliveryfee NUMERIC(4,2), promoCode1 VARCHAR(20),
+    foodprice NUMERIC(6,2), deliveryfee NUMERIC(6,2), promoCode1 VARCHAR(20),
     applicableTo1 VARCHAR(200), usedRewardPoints INTEGER
 )
 
-RETURNS NUMERIC(4,2) AS $$
+RETURNS NUMERIC(6,2) AS $$
     DECLARE 
-        amount NUMERIC(4,2);
+        amount NUMERIC(6,2);
         discRate INTEGER;
     
     BEGIN 
