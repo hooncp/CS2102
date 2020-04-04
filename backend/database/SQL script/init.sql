@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 CREATE TABLE Users (
 	userId 		SERIAL,
 	name		VARCHAR(100),
+	dateCreated TIMESTAMP,
     	PRIMARY KEY (userId)
 );
 
@@ -581,5 +582,49 @@ CREATE VIEW Rider_Schedule_Summary_Info AS (
     GROUP BY userId, work_month, work_year
 );
 
+---FOR ORDERS CALCULATION---
+DROP FUNCTION IF EXISTS calculatePrice CASCADE;
+CREATE OR REPLACE FUNCTION calculatePrice(rname VARCHAR(20), fname VARCHAR(20), foodQty INTEGER)
+    RETURNS NUMERIC(4,2) AS $$
+SELECT S.price * foodQty
+FROM SELLS S
+WHERE S.fname = fname AND S.rname = rname
+$$ LANGUAGE SQL
+;
 
+CREATE VIEW Customer_General_Info AS (
+    WITH Monthly_New_Customer AS (
+        SELECT COUNT(C.userId) as numNewCustomers,
+               DATE_PART('Months',U.dateCreated) as month,
+               DATE_PART('Years',U.dateCreated) as year
+        FROM Customers C join Users U using (userId)
+        GROUP BY DATE_PART('Months',U.dateCreated),DATE_PART('Years',U.dateCreated)
+    ),
+         Monthly_Orders_Info AS (
+             SELECT COUNT(O.orderId) as numOrder,
+                    sum(calculatePrice(C.rname, C.fname,C.foodQty)) as totalCost,
+                    DATE_PART('Months',O.timeOfOrder) as month, DATE_PART('Years',O.timeOfOrder) as year
+             FROM Orders O join Contains C using (orderId)
+             GROUP BY  DATE_PART('Months',O.timeOfOrder), DATE_PART('Years',O.timeOfOrder)
+         )
+         SELECT COALESCE(MNC.numNewCustomers, 0) as newCustomers,
+                COALESCE(MOI.numOrder,0) as numOrder,
+                COALESCE(MOI.totalCost,0) as totalCost,
+                COALESCE(MNC.month, MOI.month) as month, COALESCE(MNC.year, MNC.year) as year
+        FROM Monthly_New_Customer MNC full join Monthly_Orders_Info MOI
+            on (MNC.month = MOI.month) and (MNC.year = MOI.year)
+                                    );
 
+CREATE VIEW Order_Hourly_Summary AS (
+
+    SELECT EXTRACT(hour from O.timeOfOrder) as hours,
+           DATE_PART('days',O.timeOfOrder) as days,
+           DATE_PART('Months',O.timeOfOrder) as months,
+           DATE_PART('Years',O.timeOfOrder) as years ,
+           O.deliveryLocation, COUNT(O.orderId) as numOrder,
+    FROM Orders O
+    GROUP BY (O.deliveryLocation,EXTRACT(hour from O.timeOfOrder),
+              DATE_PART('days',O.timeOfOrder),
+              DATE_PART('Months',O.timeOfOrder),
+              DATE_PART('Years',O.timeOfOrder))
+                             );

@@ -6,7 +6,7 @@ DELETE FROM Restaurant_Staff;
 DELETE FROM Customers;
 DELETE FROM Riders;
 DELETE FROM Part_Time;
-DELETE FROM Full_Time;
+-- DELETE FROM Full_Time;
 -- DELETE FROM Schedules;
 DELETE FROM Monthly_Work_Schedules;
 DELETE FROM Weekly_Work_Schedules;
@@ -20,19 +20,19 @@ DELETE FROM CustomerPromotions;
 
 -- TESTING Order_details/delvery_details in depth.
 
-INSERT INTO Users (userId) VALUES
-(1),
-(2),
-(3),
-(4),
-(5),
-(6),
-(7),
-(8),
-(9),
-(10),
-(11),
-(12);
+INSERT INTO Users (userId, dateCreated) VALUES
+(1,'2020-05-05 00:00:00'),
+(2,'2020-05-05 00:00:00'),
+(3,'2020-05-05 00:00:00'),
+(4,'2020-05-05 00:00:00'),
+(5,'2020-05-05 00:00:00'),
+(6,'2020-05-05 00:00:00'),
+(7,'2020-05-05 00:00:00'),
+(8,'2020-05-05 00:00:00'),
+(9,'2020-05-05 00:00:00'),
+(10,'2020-05-05 00:00:00'),
+(11,'2020-05-05 00:00:00'),
+(12,'2020-05-05 00:00:00');
 
 INSERT INTO Customers (userId) VALUES
 (1),
