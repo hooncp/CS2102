@@ -457,4 +457,38 @@ router.get('/viewMonthSalary', (req, res) => {
 })
 
 
+// view summary of Rider information
+router.get('/viewMonthSummary', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `with r1 as (
+    select * from Rider_Delivery_Summary_Info D where D.work_month = $2 and D.work_year = $3
+    ), 
+    r2 as (
+    select * from Rider_Schedule_Summary_Info S where S.work_month = $2 and S.work_year = $3
+    )
+    select userId, 
+    coalesce(r1.work_month, $2) as work_month,
+    coalesce(r1.work_year, $3) as work_year,
+    coalesce(NumDelivery, 0) as NumDelivery,
+    coalesce(AvgTimeDelivery, 0) as AvgTimeDelivery,
+    coalesce(numRating, 0) as numRating,
+    coalesce(avgRating, NULL) as avgRating,
+    coalesce(numHoursWorked, 0) as numHoursWorked,
+    coalesce(Total_delivery_fee, 0) as Total_delivery_fee,
+    coalesce(salary, 0) + coalesce(Total_delivery_fee, 0) as TotalSalary
+    from (Riders left join r1 using (userId)) left join r2 using (userId)
+    where userId = $1
+    `;
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
+
 module.exports = router;

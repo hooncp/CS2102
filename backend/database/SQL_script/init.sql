@@ -125,7 +125,7 @@ CREATE TABLE Weekly_Work_Schedules
     startDate  TIMESTAMP,
     endDate    TIMESTAMP,
     PRIMARY KEY (scheduleId),
-    FOREIGN KEY (userId) REFERENCES Riders (userId),
+    FOREIGN KEY (userId) REFERENCES Riders (userId) ON DELETE CASCADE,
     check ((endDate::date - startDate::date) = 6)
 );
 
@@ -541,6 +541,72 @@ CREATE CONSTRAINT TRIGGER wws_overlap_trigger
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
 EXECUTE FUNCTION check_wws_overlap_deferred();
+
+DROP VIEW IF EXISTS Rider_Schedule_Summary_Info;
+DROP VIEW IF EXISTS Rider_Schedule_Info;
+DROP VIEW IF EXISTS Rider_Delivery_Summary_Info;
+DROP VIEW IF EXISTS Rider_Delivery_Info;
+
+CREATE VIEW Rider_Delivery_Info AS (
+    SELECT D.userId,
+           ((SELECT EXTRACT(MONTH FROM O.timeoforder::date))) AS work_month,
+           ((SELECT EXTRACT(YEAR FROM O.timeoforder::date))) AS work_year,
+           O.timeoforder,
+           D.deliveryTimetoCustomer,
+           D.departTimeForRestaurant,
+           D.rating,
+           case --  determine delivery fee based on peak hours
+               when ((O.timeoforder::time >= '12:00' and O.timeoforder::time <= '13:00')
+                   OR (O.timeoforder::time >= '18:00' and O.timeoforder::time <= '20:00'))
+                   then 4
+               else 2
+               end as delivery_fee
+
+    FROM delivers D join Orders O on (D.orderId = O.OrderId)
+);
+
+/* VIEWS FOR RIDER INFORMATION */
+CREATE VIEW Rider_Delivery_Summary_Info AS (
+    --userId, month, year, #ofDeliveries, AvgTimeDelivery, #rating, avgRating, total_del_fee
+    SELECT userId, work_month, work_year,
+           count(*) as NumDelivery,
+           sum((extract(epoch from (deliveryTimetoCustomer - departTimeForRestaurant)))/60)
+               /count(userId) as avgTimeDelivery,
+           count(rating) as numRating,
+           round(sum(rating)::numeric/count(rating),2) as avgRating,
+           sum(delivery_fee) as Total_delivery_fee
+    FROM Rider_Delivery_Info R1
+    GROUP BY userId, work_month, work_year
+
+);
+
+
+CREATE VIEW Rider_Schedule_Info AS (
+    SELECT userId,
+           ((SELECT EXTRACT(MONTH FROM S.startDate::date))) AS work_month,
+           ((SELECT EXTRACT(YEAR FROM S.endDate::date))) AS work_year,
+           I.startTime,
+           I.endTime,
+           date_part('hours', I.endTime) - date_part('hours', I.startTime) as intervalDuration
+    FROM Weekly_Work_Schedules S join intervals I on (S.scheduleId = I.scheduleId)
+);
+
+
+CREATE VIEW Rider_Schedule_Summary_Info AS (
+    --userId, #ofDeliveries, AvgTimeDelivery, #rating
+    SELECT userId,
+           work_month,
+           work_year,
+           sum(intervalDuration) as numHoursWorked,
+           case --  determine salary based on FT/PT status
+               when userId not in (select distinct PT.userId from Part_Time PT)
+                   then (sum(intervalDuration)) * 5 --FT rate
+               else (sum(intervalDuration)) * 2 --PT rate
+               end as Salary
+    FROM Rider_Schedule_Info
+    GROUP BY userId, work_month, work_year
+);
+
 
 
 ---FOR ORDERS CALCULATION---
