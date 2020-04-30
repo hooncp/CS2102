@@ -122,11 +122,29 @@ router.get('/getOrdersReceivedDuringPromotion', async (req, res) => {
     });
 })
 
-/*
+// Create a Sells r/s
+router.post("/insertSells", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const rname = req.body.rname;
+        const fname = req.body.fname;
+        const price = req.body.price;
+        const availability = req.body.availability;
+        client
+            .query(`INSERT INTO sells (rname, fname, price, availability) VALUES ($1, $2, $3, $4)`, [
+                rname,
+                fname,
+                price,
+                availability,
+            ])
+            .catch((err) => console.log(err));
+        return res.json(`${rname} and ${fname} added`);
+    } catch (err) {
+        console.error("error triggered: ", err.message);
+    }
+});
 
 
-
-*/
 
 
 module.exports = router;
