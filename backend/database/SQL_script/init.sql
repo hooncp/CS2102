@@ -18,6 +18,8 @@ DROP TABLE IF EXISTS Promotions CASCADE;
 DROP TABLE IF EXISTS MinSpendingPromotions CASCADE;
 DROP TABLE IF EXISTS CustomerPromotions CASCADE;
 
+SET datestyle = "ISO, DMY";
+
 CREATE TABLE Users (
 	userId 		SERIAL,
 	name		VARCHAR(100),
