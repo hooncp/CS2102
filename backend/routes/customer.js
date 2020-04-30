@@ -137,5 +137,64 @@ router.get('/RestaurantSellingFood', (req,res) => {
         .catch(e => console.error(e.stack))
 
 })
-
+router.post("/createOrder", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const userId = req.body.userId;
+        const promoCode = req.body.promoCode;
+        const applicableTo = req.body.applicableTo;
+        const modeOfPayment = req.body.modeOfPayment;
+        const timeOfOrder = req.body.timeOfOrder;
+        const deliveryLocation = req.body.deliveryLocation;
+        const usedRewardPoints = req.body.usedRewardPoints;
+        const contains = req.body.contains;
+        let orderId = 0;
+        client.query("BEGIN").then((result) => {
+            client
+                .query(
+                    `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
+                    VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId`,
+                    [
+                        userId,
+                        promoCode,
+                        applicableTo,
+                        modeOfPayment,
+                        timeOfOrder,
+                        deliveryLocation,
+                        usedRewardPoints,
+                    ]
+                )
+                .then((result) => {
+                    orderId = result.rows[0].orderid;
+                    console.log("orderid:", result.rows[0].orderid);
+                    contains.forEach((currInt) => {
+                        var currOrderId = orderId;
+                        var currentRname = currInt.rname;
+                        var currentFname = currInt.fname;
+                        var currentFoodQty = currInt.foodQty;
+                        var currentReviewContent = currInt.reviewContent;
+                        client
+                            .query(
+                                `INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES ($1,$2,$3,$4,$5)`,
+                                [
+                                    currOrderId,
+                                    currentRname,
+                                    currentFname,
+                                    currentFoodQty,
+                                    currentReviewContent,
+                                ]
+                            )
+                            .catch(e => console.error(e.stack));
+                    });
+                    client.query("COMMIT");
+                    client.release();
+                });
+        });
+        res.json(`${userId}'s order added`);
+    } catch (err) {
+        client.query(`ROLLBACK`);
+        client.release();
+        console.error("error triggered: ", err.message);
+    }
+});
 module.exports = router;

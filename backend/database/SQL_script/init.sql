@@ -893,3 +893,65 @@ CREATE VIEW Order_Hourly_Summary AS (
               DATE_PART('Months',O.timeOfOrder),
               DATE_PART('Years',O.timeOfOrder))
                              );
+CREATE OR REPLACE FUNCTION check_Restaurant_MinOrderAmt () RETURNS
+    TRIGGER AS $$
+DECLARE
+    checkTotalAmt		NUMERIC(8,2);
+    minRestaurantAmount	NUMERIC(8, 2);
+BEGIN
+    SELECT minorderamt INTO minRestaurantAmount
+    FROM Restaurants R
+    WHERE R.rname = (SELECT C.rname FROM Contains C WHERE C.orderId = NEW.orderId)
+    ;
+
+    SELECT sum(calculatePrice(C.rname, C.fname, C.foodQty)) INTO checkTotalAmt
+    FROM Contains C
+    WHERE C.orderId = NEW.orderId
+    ;
+
+    IF minRestaurantAmount > checkTotalAmt THEN
+        RAISE EXCEPTION 'Did not hit the total amount of food to be bought at the restaurant';
+    END IF;
+    RETURN NULL;
+END;
+
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS orders_trigger ON Orders CASCADE;
+CREATE CONSTRAINT TRIGGER order_trigger
+    AFTER INSERT ON Orders
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW EXECUTE FUNCTION check_Restaurant_MinOrderAmt();
+
+CREATE OR REPLACE FUNCTION check_Promo_minAmt () RETURNS
+    TRIGGER AS $$
+DECLARE
+    checkTotalAmt		NUMERIC(8,2);
+    minPromoAmount	NUMERIC(8, 2);
+BEGIN
+    SELECT minAmt INTO minPromoAmount
+    FROM MinSpendingPromotions M
+    WHERE M.promocode = NEW.promocode
+    ;
+
+    SELECT sum(calculatePrice(C.rname, C.fname, C.foodQty)) INTO checkTotalAmt
+    FROM Contains C
+    WHERE C.orderId = NEW.orderId
+    ;
+
+    IF (minPromoAmount is not null) and minPromoAmount > checkTotalAmt THEN
+        RAISE EXCEPTION 'Did not hit the total amount spent to use this promo';
+    END IF;
+    RETURN NULL;
+END;
+
+$$ LANGUAGE PLPGSQL;
+
+
+DROP TRIGGER IF EXISTS orders_minAmt_trigger ON Orders CASCADE;
+CREATE CONSTRAINT TRIGGER order_minAmt_trigger
+    AFTER INSERT ON Orders
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW EXECUTE FUNCTION check_Promo_minAmt();
+

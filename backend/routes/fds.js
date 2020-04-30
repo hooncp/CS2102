@@ -397,6 +397,45 @@ router.get('/checkStatus', async (req, res) => {
     console.log("test" + resArr);
     res.json({ "data": resArr });
 })
+
+// Create a Restaurant
+router.post("/insertRestaurant", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const rname = req.body.rname;
+        const minorderamt = req.body.minorderamt;
+        const area = req.body.area;
+        client
+            .query(
+                `INSERT INTO restaurants (rname, minorderamt, area) VALUES ($1, $2, $3)`,
+                [rname, minorderamt, area]
+            )
+            .catch((err) => console.log(err));
+        return res.json(`${rname} added as a Restaurant`);
+    } catch (err) {
+        console.error("error triggered: ", err.message);
+    }
+});
+
+
+// Create a Food
+router.post("/insertFood", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const fname = req.body.fname;
+        const category = req.body.category;
+        client
+            .query(`INSERT INTO food (fname, category) VALUES ($1, $2)`, [
+                fname,
+                category,
+            ])
+            .catch((err) => console.log(err));
+        return res.json(`${fname} added as a Food`);
+    } catch (err) {
+        console.error("error triggered: ", err.message);
+    }
+});
+
 module.exports = router;
 
 
