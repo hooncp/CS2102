@@ -196,7 +196,44 @@ const pool = require('../database/db');
 //         .catch(e => console.error(e.stack))
 // })
 
+
 //view entire summary statistics
+router.get('/viewCustomerGeneralInfo', (req,res) => {
+    const month = req.body.month;
+    const year = req.body.year;
+    const query = `
+    SELECT newCustomers, numOrder ,totalCost, C.month, C.year
+    FROM Customer_General_Info C
+    WHERE month = $1
+    AND year = $2;
+    `
+    const fields = [month,year];
+    pool.query(query,fields)
+        .then(result => {
+        res.json(result.rows);
+    })
+})
+
+router.get('/viewHourlyOrderInfo', (req,res) => {
+    const hour = req.body.hour;
+    const day = req.body.day;
+    const month = req.body.month;
+    const year = req.body.year;
+    const query = `
+    SELECT *
+    FROM Order_Hourly_Summary C
+    WHERE hours = $1 
+    AND days = $2 
+    AND months = $3
+    AND years = $4;
+    `
+    const fields = [hour,day,month,year];
+    pool.query(query,fields)
+        .then(result => {
+            res.json(result.rows);
+        })
+})
+
 router.get('/viewMonthRidersSummary', (req, res) => {
     const month = req.body.month;
     const year = req.body.year;
@@ -361,4 +398,5 @@ router.get('/checkStatus', async (req, res) => {
     res.json({ "data": resArr });
 })
 module.exports = router;
+
 

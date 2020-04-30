@@ -23,7 +23,8 @@ SET datestyle = "ISO, DMY";
 CREATE TABLE Users (
 	userId 		SERIAL,
 	name		VARCHAR(100),
-    PRIMARY KEY (userId)
+	dateCreated TIMESTAMP,
+    	PRIMARY KEY (userId)
 );
 
 CREATE TABLE Restaurants (
@@ -56,7 +57,7 @@ CREATE TABLE Sells (
     fname 		VARCHAR(200) REFERENCES Food on DELETE CASCADE on UPDATE CASCADE,
     price 		NUMERIC(8, 2) NOT NULL,
     availability 	INTEGER DEFAULT 10,
-    PRIMARY KEY (rname, fname) 
+    PRIMARY KEY (rname, fname)
 );
 
 CREATE TABLE Restaurant_Staff (
@@ -175,7 +176,7 @@ CREATE TABLE Intervals
 --able to share the same promoCode. FD = free delivery
 CREATE TABLE Promotions (
 
-	promoCode	    VARCHAR(20),	
+	promoCode	    VARCHAR(20),
 	promoDesc 		VARCHAR(200),
 	createdBy	    VARCHAR(50), --?
 	applicableTo	VARCHAR(200) REFERENCES Restaurants(rname) ON DELETE CASCADE,
@@ -198,7 +199,7 @@ CREATE TABLE Orders (
 	timeOfOrder		TIMESTAMP NOT NULL,
 	deliveryLocation	VARCHAR(100) NOT NULL,
 	usedRewardPoints	INTEGER NOT NULL DEFAULT 0,
-	
+
 	PRIMARY KEY(orderId),
 	FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
 	CHECK(modeOfPayment = 'cash' OR
@@ -241,7 +242,7 @@ CREATE TABLE MinSpendingPromotions (
 );
 
 CREATE TABLE CustomerPromotions (
-    promoCode		VARCHAR(20),	
+    promoCode		VARCHAR(20),
 	applicableTo	VARCHAR(200),
 	minTimeFromLastOrder 	INTEGER, -- # of days
 	PRIMARY KEY (promoCode, applicableTo),
@@ -582,40 +583,11 @@ CREATE VIEW Rider_Delivery_Summary_Info AS (
 
 );
 
-
-CREATE VIEW Rider_Schedule_Info AS (
-    SELECT userId,
-           ((SELECT EXTRACT(MONTH FROM S.startDate::date))) AS work_month,
-           ((SELECT EXTRACT(YEAR FROM S.endDate::date))) AS work_year,
-           I.startTime,
-           I.endTime,
-           date_part('hours', I.endTime) - date_part('hours', I.startTime) as intervalDuration
-    FROM Weekly_Work_Schedules S join intervals I on (S.scheduleId = I.scheduleId)
-);
-
-
-CREATE VIEW Rider_Schedule_Summary_Info AS (
-    --userId, #ofDeliveries, AvgTimeDelivery, #rating
-    SELECT userId,
-           work_month,
-           work_year,
-           sum(intervalDuration) as numHoursWorked,
-           case --  determine salary based on FT/PT status
-               when userId not in (select distinct PT.userId from Part_Time PT)
-                   then (sum(intervalDuration)) * 5 --FT rate
-               else (sum(intervalDuration)) * 2 --PT rate
-               end as Salary
-    FROM Rider_Schedule_Info
-    GROUP BY userId, work_month, work_year
-);
-
-
-
 ---FOR ORDERS CALCULATION---
 DROP FUNCTION IF EXISTS calculatePrice CASCADE;
-CREATE OR REPLACE FUNCTION calculatePrice(rname1 VARCHAR(20), fname1 VARCHAR(20), foodQty INTEGER) 
-RETURNS NUMERIC(6,2) AS $$ 
-    DECLARE 
+CREATE OR REPLACE FUNCTION calculatePrice(rname1 VARCHAR(20), fname1 VARCHAR(20), foodQty INTEGER)
+RETURNS NUMERIC(6,2) AS $$
+    DECLARE
         price NUMERIC(6,2);
 
     BEGIN
@@ -635,13 +607,13 @@ RETURNS NUMERIC(6,2) AS $$
     DECLARE
         test time;
         amount NUMERIC(6,2);
-    
+
     BEGIN
         test = orderTime::time;
         CASE
             WHEN EXISTS(
                 SELECT 1 FROM Orders O JOIN Promotions P ON O.promoCode = P.promoCode AND O.applicableTo = P.applicableTo
-                WHERE O.orderId = orderId1 AND P.discUnit = 'FD' 
+                WHERE O.orderId = orderId1 AND P.discUnit = 'FD'
             ) then amount = 0.00;
             WHEN test < '19:10:00' AND test > '17:00:00'then amount = 10.00;
             else amount = 5.00;
@@ -669,41 +641,41 @@ CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
 )
 
 RETURNS NUMERIC(6,2) AS $$
-    DECLARE 
+    DECLARE
         amount NUMERIC(6,2);
         discRate INTEGER;
-    
-    BEGIN 
+
+    BEGIN
         SELECT P.discRate INTO discRate
-                    FROM PROMOTIONS P 
+                    FROM PROMOTIONS P
                     WHERE P.promoCode = promoCode1 AND P.applicableTo = applicableTo1;
         CASE
             -- NO PROMOTION
-            WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL)) 
-                THEN amount = 
+            WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL))
+                THEN amount =
                 (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
             -- $ PROMOTION
             WHEN EXISTS (
-                SELECT 1 
+                SELECT 1
                 FROM PROMOTIONS P
-                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = '$') 
+                WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = '$')
 
                 THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - discRate
                     + deliveryfee);
             -- Free Delivery PROMOTION
             WHEN EXISTS (
-                SELECT 1 
+                SELECT 1
                 FROM PROMOTIONS P
                 WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = 'FD')
             THEN amount = (
-                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) 
+                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
             );
             -- % PROMOTION
             WHEN EXISTS (
                 SELECT 1
                 FROM PROMOTIONS P
                 WHERE  P.promoCode = promoCode1 AND P.applicableTo = applicableTo1 AND P.discUnit = '%'
-            ) THEN amount = getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) * (100-discRate) / 100 
+            ) THEN amount = getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) * (100-discRate) / 100
                     + deliveryfee;
             --throw error.
             ELSE amount = -1.00;
@@ -711,7 +683,7 @@ RETURNS NUMERIC(6,2) AS $$
 
         IF amount < 0 THEN
             RAISE EXCEPTION 'final price should be more than or equal to 0';
-        END IF;   
+        END IF;
 
         RETURN amount;
     END;
@@ -720,15 +692,15 @@ $$ LANGUAGE PLPGSQL;
 
 DROP VIEW IF EXISTS OrderInfo CASCADE;
 CREATE VIEW OrderInfo AS
-   
-SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice, 
+
+SELECT O.orderId, O.userId, C.rname, sum(calculatePrice(C.rname, C.fname, C.foodQty)) as totalFoodPrice,
         getDeliveryFee(O.timeOfOrder, O.orderId) as deliveryfee,
         O.timeOfOrder,
-        getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts, 
-        O.usedRewardPoints, 
+        getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty))) as earnedRewardPts,
+        O.usedRewardPoints,
         calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
         getDeliveryFee(O.timeOfOrder, O.orderId), O.promoCode, O.applicableTo, O.usedRewardPoints) as finalPrice
-        
+
     FROM ORDERS O JOIN CONTAINS C ON O.orderId = C.orderId
     GROUP BY O.orderId, C.rname, O.timeOfOrder
     ORDER BY O.orderId ASC;
@@ -743,7 +715,7 @@ RETURNS INTEGER AS $$
         currentDate DATE;
         currentTime TIME;
         result INTEGER;
-    
+
     BEGIN
         currentTime = current::time;
         currentDate = current::date;
@@ -752,15 +724,15 @@ RETURNS INTEGER AS $$
             WHEN EXISTS(
                 SELECT 1
                 FROM Intervals I
-                WHERE 
+                WHERE
                 I.startTime::time <= currentTime AND I.endTime::time > currentTime
                 AND I.startTime::date <= currentDate AND I.endTIme::date <=currentDate
                 AND I.scheduleId = (SELECT W.scheduleId
                     FROM Weekly_Work_Schedules W
-                    WHERE W.startDate::date <= currentDate 
-                            AND W.endDate::date >= currentDate 
+                    WHERE W.startDate::date <= currentDate
+                            AND W.endDate::date >= currentDate
                             AND W.userId = riderId)
-                
+
             ) THEN result = 1;
             ELSE result = 0;
         END CASE;
@@ -772,7 +744,7 @@ $$ LANGUAGE PLPGSQL;
 DROP FUNCTION IF EXISTS findStatusOfRider CASCADE;
 CREATE OR REPLACE FUNCTION findStatusOfRider(riderId INTEGER, current TIMESTAMP)
 RETURNS INTEGER AS $$
-    DECLARE    
+    DECLARE
         latestDelivery TIMESTAMP;
         result INTEGER;
 
@@ -817,13 +789,13 @@ $$ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION insertDelivers()
 RETURNS TRIGGER AS
 $$
-    DECLARE    
+    DECLARE
         assigneduserId      INTEGER; --integer
         randomTime1 INTERVAL; -- departTimeForrestaurant 1
         randomTime2 INTERVAL; -- arrivalTimeAtRestaurant 2
         randomTime3 INTERVAL; -- departTimeFromRestaurant 3
         randomTime4 INTERVAL; -- deliveryTimetoCustomer; 4
-        randomRating INTEGER; 
+        randomRating INTEGER;
 
     BEGIN
         randomRating = floor(random() * 3 + 3)::INT;
@@ -838,7 +810,7 @@ $$
         ORDER BY random()
         LIMIT 1;
 
-        IF assigneduserId IS NULL THEN 
+        IF assigneduserId IS NULL THEN
             RAISE EXCEPTION 'Unable to find rider for Order. ALl riders are not free';
         END IF;
 
@@ -857,3 +829,67 @@ CREATE TRIGGER orders_insert_trigger
     EXECUTE PROCEDURE insertDelivers();
 
 */
+CREATE VIEW Rider_Schedule_Info AS (
+    SELECT userId,
+           ((SELECT EXTRACT(MONTH FROM S.startDate::date))) AS work_month,
+           ((SELECT EXTRACT(YEAR FROM S.endDate::date))) AS work_year,
+           I.startTime,
+           I.endTime,
+           date_part('hours', I.endTime) - date_part('hours', I.startTime) as intervalDuration
+    FROM Weekly_Work_Schedules S join intervals I on (S.scheduleId = I.scheduleId)
+);
+
+
+CREATE VIEW Rider_Schedule_Summary_Info AS (
+    --userId, #ofDeliveries, AvgTimeDelivery, #rating
+    SELECT userId,
+           work_month,
+           work_year,
+           sum(intervalDuration) as numHoursWorked,
+           case --  determine salary based on FT/PT status
+               when userId not in (select distinct PT.userId from Part_Time PT)
+                   then (sum(intervalDuration)) * 5 --FT rate
+               else (sum(intervalDuration)) * 2 --PT rate
+               end as Salary
+    FROM Rider_Schedule_Info
+    GROUP BY userId, work_month, work_year
+);
+
+
+
+CREATE VIEW Customer_General_Info AS (
+    WITH Monthly_New_Customer AS (
+        SELECT COUNT(C.userId) as numNewCustomers,
+               DATE_PART('Months',U.dateCreated) as month,
+               DATE_PART('Years',U.dateCreated) as year
+        FROM Customers C join Users U using (userId)
+        GROUP BY DATE_PART('Months',U.dateCreated),DATE_PART('Years',U.dateCreated)
+    ),
+         Monthly_Orders_Info AS (
+             SELECT COUNT(O.orderId) as numOrder,
+                    sum(calculatePrice(C.rname, C.fname,C.foodQty)) as totalCost,
+                    DATE_PART('Months',O.timeOfOrder) as month, DATE_PART('Years',O.timeOfOrder) as year
+             FROM Orders O join Contains C using (orderId)
+             GROUP BY  DATE_PART('Months',O.timeOfOrder), DATE_PART('Years',O.timeOfOrder)
+         )
+         SELECT COALESCE(MNC.numNewCustomers, 0) as newCustomers,
+                COALESCE(MOI.numOrder,0) as numOrder,
+                COALESCE(MOI.totalCost,0) as totalCost,
+                COALESCE(MNC.month, MOI.month) as month, COALESCE(MNC.year, MOI.year) as year
+        FROM Monthly_New_Customer MNC full join Monthly_Orders_Info MOI
+            on (MNC.month = MOI.month) and (MNC.year = MOI.year)
+                                    );
+
+CREATE VIEW Order_Hourly_Summary AS (
+
+    SELECT EXTRACT(hour from O.timeOfOrder) as hours,
+           DATE_PART('days',O.timeOfOrder) as days,
+           DATE_PART('Months',O.timeOfOrder) as months,
+           DATE_PART('Years',O.timeOfOrder) as years ,
+           O.deliveryLocation, COUNT(O.orderId) as numOrder
+    FROM Orders O
+    GROUP BY (O.deliveryLocation,EXTRACT(hour from O.timeOfOrder),
+              DATE_PART('days',O.timeOfOrder),
+              DATE_PART('Months',O.timeOfOrder),
+              DATE_PART('Years',O.timeOfOrder))
+                             );
