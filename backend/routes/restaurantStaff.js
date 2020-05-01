@@ -3,12 +3,63 @@ var router = express.Router();
 
 const pool = require('../database/db');
 
+async function selectRname(data, table, condition, userId) {
+    try {
+        const res = await pool.query(
+            `SELECT ${data} FROM ${table} ${condition}`, [userId]
+        );
+        return res.rows[0][data];
+    } catch (err) {
+        return err.stack;
+    }
+}
+
+router.post('/createMinSpendingPromotion', async (req, res) => {
+    const client = await pool.connect();
+    try {
+        console.log(req.body);
+        const userId = req.body.userId;
+        const promoCode = req.body.promoCode;
+        const promoType = req.body.promoType;
+        const startDate = req.body.startDate; //user input
+        const endDate = req.body.endDate;
+        const minSpendingAmt = req.body.minSpendingAmt;
+        const discAmt = req.body.discAmt;
+        const discUnit = req.body.discUnit;
+        const description = req.body.description;
+        var rname = '';
+        await client.query('BEGIN').then(async (result) => {
+            rname = await selectRname('rname', 'restaurant_staff', `WHERE userId = $1`, userId);
+            console.log(rname);
+            client.query(`INSERT INTO Promotions(promoCode, promoDesc, createdBy, applicableTo, 
+            discUnit, discRate, startDate, endDate) VALUES ($1,$2,$3,$3,$4,$5,$6,$7)`,
+                [promoCode, description, rname, discUnit, discAmt, startDate, endDate])
+                .then(result => {
+                    client.query(`INSERT INTO MinSpendingPromotions(promoCode, applicableTo, minAmt) VALUES ($1,$2,$3)`,
+                        [promoCode, rname, minSpendingAmt]).then(result => {
+                        })
+
+                    client.query('COMMIT');
+                    client.release()
+                })
+        }
+        )
+        console.log('Added');
+        res.json(`Promo Code: ${promoCode} added to ${rname} successfully! `);
+    } catch (err) {
+        client.query(`ROLLBACK`);
+        client.release()
+        console.error("error triggered: ", err.message);
+    }
+})
+
+
 
 router.get('/getMonthlyCompletedOrder', async (req, res) => {
     const month = req.body.month;
     const rname = req.body.rname;
     //console.log(month + " " + rname);
-    
+
     const query1 = `SELECT COUNT(O.orderId) 
                     FROM OrderInfo O
                     WHERE O.rname = '${rname}' AND EXTRACT(month from O.timeOfOrder) = ${month};`
@@ -19,11 +70,11 @@ router.get('/getMonthlyCompletedOrder', async (req, res) => {
         res.json(rescount.count);
     }).catch(err => {
         if (err.constraint) {
-			console.error(err.constraint);
-		} else {
-			console.log(err);
-			res.json(err);
-		}
+            console.error(err.constraint);
+        } else {
+            console.log(err);
+            res.json(err);
+        }
     });
 })
 
@@ -40,11 +91,11 @@ router.get('/getMonthlyCostofCompletedOrder', async (req, res) => {
         res.json(rescost.monthlycost);
     }).catch(err => {
         if (err.constraint) {
-			console.error(err.constraint);
-		} else {
-			console.log(err);
-			res.json(err);
-		}
+            console.error(err.constraint);
+        } else {
+            console.log(err);
+            res.json(err);
+        }
     });
 })
 
@@ -70,11 +121,11 @@ router.get('/getMonthlyTop5Food', async (req, res) => {
         res.json(sendResult);
     }).catch(err => {
         if (err.constraint) {
-			console.error(err.constraint);
-		} else {
-			console.log(err);
-			res.json(err);
-		}
+            console.error(err.constraint);
+        } else {
+            console.log(err);
+            res.json(err);
+        }
     });
 })
 
@@ -92,11 +143,11 @@ router.get('/getPromotionDuration', async (req, res) => {
         res.json(resDuration[0].durationofpromotion);
     }).catch(err => {
         if (err.constraint) {
-			console.error(err.constraint);
-		} else {
-			console.log(err);
-			res.json(err);
-		}
+            console.error(err.constraint);
+        } else {
+            console.log(err);
+            res.json(err);
+        }
     });
 })
 
@@ -114,11 +165,11 @@ router.get('/getOrdersReceivedDuringPromotion', async (req, res) => {
         res.json(resOrders[0].ordersreceivedduringpromotion);
     }).catch(err => {
         if (err.constraint) {
-			console.error(err.constraint);
-		} else {
-			console.log(err);
-			res.json(err);
-		}
+            console.error(err.constraint);
+        } else {
+            console.log(err);
+            res.json(err);
+        }
     });
 })
 

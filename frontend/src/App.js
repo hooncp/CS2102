@@ -1,4 +1,8 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Routes from './Routes';
+
 
 export default class App extends Component {
     constructor(props) {
@@ -11,7 +15,7 @@ export default class App extends Component {
 
         };
     }
-
+    /*
     getData() {
         return fetch("http://localhost:5000/rider/getData")
             .then(res => res.text())
@@ -69,26 +73,19 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-      /* does not happen in order, can test one by one*/
-      /* if insert dup keys into table, backend will return error and stop running*/
+      /* does not happen in order, can test one by one
+      /* if insert dup keys into table, backend will return error and stop running
 
         // this.testInsertData("pizza2")
         // this.testUpdateData("pizza1","pizza2")
         // this.testDeleteData("pizza2")
         this.getData();
     }
-
+    */
     render() {
         return (
-            <div>
-                <p>Test Insert data:{this.state.testInsertData}</p>
-                <br/>
-                <p>Test Update data:{this.state.testUpdateData}</p>
-                <br/>
-                <p>Test Delete data:{this.state.testDeleteData}</p>
-                <br/>
-                <p>Data: {this.state.data} </p>
-                <br/>
+            <div className="App">
+                <Routes />
             </div>
         );
     }
