@@ -118,7 +118,8 @@ class Login extends React.Component {
 
     handleRedirect = () => {
         let userType = this.state.userType;
-        if (userType == "customer") {
+        switch (userType) {
+            case "customer":
             this.props.history.push({
                 pathname: '/customerActions',
                 state:
@@ -127,14 +128,10 @@ class Login extends React.Component {
                         userType: userType
                     }
             });
-            // } else if (userType === "rider") {
-            //     return <Redirect to="/customerActions"/>
-            // } else if (userType === "RS") {
-            //     return <Redirect to="/RSActions"/>
-            // } else if (userType === "FM") {
-            //     return <Redirect to="/FMActions"/>
-        } else {
-            console.log(userType);
+            // case "rider":
+            // case "RS":
+            // case "FM":
+            default:
         }
     }
     // checkUserType = () => {
@@ -145,6 +142,7 @@ class Login extends React.Component {
 
     existingUserInput =
         <Grid container spacing={2} direction="row" justify="center" alignItems="center">
+            <Grid item style={{width: "100%"}}>
             <TextField
                 required
                 name="userId"
@@ -155,9 +153,12 @@ class Login extends React.Component {
                 value={this.state.userId}
                 onChange={this.handleChange}
             />
-            <Button onClick={this.handleLogin}>
+            </Grid>
+            <Grid item style={{width: "100%"}}>
+            <Button variant="contained" color="primary" onClick={this.handleLogin}>
                 Login
             </Button>
+            </Grid>
         </Grid>
     ;
 
