@@ -9,19 +9,26 @@ router.post('/insertCustomer', async (req, res) => {
         let currId = 0;
         const name = req.body.name;
         const creditcardinfo = req.body.creditcardinfo;
-        client.query('BEGIN').then(res => {
+        //https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
+        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+        console.log(dateCreated);
+        client.query('BEGIN').then(result => {
             console.log('creditcard:', creditcardinfo);
-            client.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name]).then(result => {
+            client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name,dateCreated])
+                .then(result => {
                 currId = result.rows[0].userid;
                 console.log('currId:', currId);
                 client.query(
                     `INSERT INTO Customers VALUES ($1, $2)`, [currId, creditcardinfo]).then(result => {
                     client.query('COMMIT');
                     client.release()
+                }).then(result=> {
+                   return res.json(currId);
                 })
             })
         })
-    return res.json(`${name} added as a Customer`);
+    console.log("userid:", currId);
+    // return res.json(`${name} added as a Customer`);
     } catch (err) {
         client.query(`ROLLBACK`);
         client.release()

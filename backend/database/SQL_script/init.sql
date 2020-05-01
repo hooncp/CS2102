@@ -23,7 +23,7 @@ SET datestyle = "ISO, DMY";
 CREATE TABLE Users (
 	userId 		SERIAL,
 	name		VARCHAR(100),
-	dateCreated TIMESTAMP,
+	dateCreated TIMESTAMPTZ,
     	PRIMARY KEY (userId)
 );
 

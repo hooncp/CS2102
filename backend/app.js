@@ -12,7 +12,7 @@ var riderRouter = require('./routes/rider');
 var fdsRouter = require('./routes/fds');
 var rsRouter = require('./routes/restaurantStaff');
 var customerRouter = require('./routes/customer');
-
+var generalRouter = require('./routes/general');
 /* ---------------------------- */
 var app = express();
 // app.set('views', 'pug');
@@ -34,6 +34,8 @@ app.use('/rider', riderRouter);
 app.use('/customer', customerRouter);
 app.use('/fds', fdsRouter);
 app.use('/rs', rsRouter);
+app.use('/general', generalRouter);
+
 /* ---------------------------- */
 
 
