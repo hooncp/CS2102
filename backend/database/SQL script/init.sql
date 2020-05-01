@@ -247,7 +247,14 @@ CREATE TABLE CustomerPromotions (
 );	
 
 /* Trigger functions */
+DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCADE;
+DROP TRIGGER IF EXISTS mws_5days_trigger ON Monthly_Work_Schedules CASCADE;
+DROP FUNCTION IF EXISTS check_mws_28days_constraint_deferred() CASCADE;
+DROP FUNCTION IF EXISTS check_mws_intervals_constraint_deferred() CASCADE;
+DROP TRIGGER IF EXISTS mws_predefined_interval_trigger ON Monthly_Work_Schedules CASCADE;
 
+
+/*
 DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCADE;
 CREATE OR REPLACE FUNCTION check_mws_5days_consecutive_constraint_deferred() RETURNS TRIGGER AS
 $$
@@ -541,7 +548,7 @@ CREATE CONSTRAINT TRIGGER wws_overlap_trigger
     DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW
 EXECUTE FUNCTION check_wws_overlap_deferred();
-
+*/
 
 ---FOR ORDERS CALCULATION---
 DROP FUNCTION IF EXISTS calculatePrice CASCADE;
@@ -729,12 +736,7 @@ RETURNS INTEGER AS $$
 $$ LANGUAGE PLPGSQL;
 
 
-
-/*
 DROP FUNCTION IF EXISTS findRiderToDeliverOrder CASCADE;
-DROP FUNCTION IF EXISTS insertDelivers CASCADE;
-DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
-
 CREATE OR REPLACE FUNCTION findRiderToDeliverOrder(current TIMESTAMP)
 RETURNS INTEGER AS
 $$
@@ -745,7 +747,7 @@ $$
 $$ LANGUAGE SQL;
 
 
-
+DROP FUNCTION IF EXISTS insertDelivers CASCADE;
 CREATE OR REPLACE FUNCTION insertDelivers()
 RETURNS TRIGGER AS
 $$
@@ -783,9 +785,8 @@ $$
     END;
 $$ LANGUAGE PLPGSQL;
 
+DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
 CREATE TRIGGER orders_insert_trigger
     AFTER INSERT ON Orders
     FOR EACH ROW
     EXECUTE PROCEDURE insertDelivers();
-
-*/
