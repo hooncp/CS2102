@@ -103,7 +103,8 @@ export class customerActions extends React.Component {
                 {
                     userId: this.state.userId,
                     area: this.state.area,
-                    chosenLocation: this.state.chosenLocation
+                    chosenLocation: this.state.chosenLocation,
+                    orderDetails: this.state.foodDetails
                 }
         });
     }

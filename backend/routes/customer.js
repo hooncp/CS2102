@@ -250,4 +250,61 @@ router.get('/getPrevDeliveryLoc', async (req, res) => {
     ;
 });
 
+router.get('/getSameAreaFood', async (req, res) => {
+
+    var parts = url.parse(req.url, true);
+    var area = parts.query.area;
+    const query = `SELECT distinct S.fname, F.category
+                    FROM Sells S join Restaurants R using (rname) join Food F using (fname)
+                    WHERE R.area = $1`;
+    values = [area];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
+router.get('/getSameAreaRestaurantAndFood', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var area = parts.query.area;
+    const query = `SELECT distinct S.rname, S.fname, F.category
+                    FROM Sells S join Restaurants R using (rname) join Food F using (fname)
+                    WHERE R.area = $1`;
+    values = [area];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+router.get('/getSameAreaRestaurant', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var area = parts.query.area;
+    const query = `SELECT distinct S.rname
+                    FROM Sells S join Restaurants R using (rname) 
+                    WHERE R.area = $1`;
+    values = [area];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+// router.get('/getSameAreaRestaurantWithFood', async (req, res) => {
+//     var parts = url.parse(req.url, true);
+//     var area = parts.query.area;
+//     var fname = parts.query.fname;
+//     console.log(fname);
+//     const query = `SELECT distinct rname
+//                     FROM Sells S join Restaurants R using (rname)
+//                     WHERE R.area = $1
+//                     AND S.fname = $2
+//                     `;
+//     values = [area,fname];
+//     pool.query(query,values)
+//         .then(result => res.json(result.rows))
+//         .catch(e => console.error(e.stack))
+//
+// });
+
+
 module.exports = router;
