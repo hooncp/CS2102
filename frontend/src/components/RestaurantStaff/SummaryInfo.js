@@ -7,6 +7,7 @@ export class SummaryInfo extends Component {
         step: 1,
         month: '',
         year: '',
+        userId: 86
     };
 
     // Proceed to next step
@@ -32,8 +33,8 @@ export class SummaryInfo extends Component {
 
     render() {
         const { step } = this.state;
-        const { month, year } = this.state;
-        const values = { month, year };
+        const { month, year, userId } = this.state;
+        const values = { month, year, userId };
 
         switch (step) {
             case 1:

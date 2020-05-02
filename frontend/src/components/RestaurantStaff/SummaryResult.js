@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 export class SummaryResult extends Component {
     state = {
-        data: null
+        monthlyCompletedOrder: null
     };
 
 
@@ -18,7 +18,7 @@ export class SummaryResult extends Component {
             .then(response => { response.json() })
             .then(result => {
                 console.log(result);
-                this.setState({ data: result })
+                this.setState({ monthlyCompletedOrder: result })
             });
     }
 
