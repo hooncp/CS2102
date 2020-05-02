@@ -56,26 +56,30 @@ router.post('/createMinSpendingPromotion', async (req, res) => {
 
 
 router.get('/getMonthlyCompletedOrder', async (req, res) => {
-    const month = req.body.month;
-    const rname = req.body.rname;
-    //console.log(month + " " + rname);
-
-    const query1 = `SELECT COUNT(O.orderId) 
-                    FROM OrderInfo O
-                    WHERE O.rname = '${rname}' AND EXTRACT(month from O.timeOfOrder) = ${month};`
-    //console.log(query1);
-    pool.query(query1).then(result => {
-        let rescount = result.rows[0];
-        //console.log(result);
-        res.json(rescount.count);
-    }).catch(err => {
-        if (err.constraint) {
-            console.error(err.constraint);
-        } else {
-            console.log(err);
-            res.json(err);
-        }
-    });
+    console.log("trying...");
+    var parts = url.parse(req.url, true);
+    const userId = req.query.userId;
+    const month = req.query.month;
+    const rname = req.query.rname;
+    console.log(userId + "\n" + month + "\n" + year);
+    /*
+        const query1 = `SELECT COUNT(O.orderId) 
+                        FROM OrderInfo O
+                        WHERE O.rname = '${rname}' AND EXTRACT(month from O.timeOfOrder) = ${month};`
+        //console.log(query1);
+        pool.query(query1).then(result => {
+            let rescount = result.rows[0];
+            //console.log(result);
+            res.json(rescount.count);
+        }).catch(err => {
+            if (err.constraint) {
+                console.error(err.constraint);
+            } else {
+                console.log(err);
+                res.json(err);
+            }
+        });
+        */
 })
 
 router.get('/getMonthlyCostofCompletedOrder', async (req, res) => {
