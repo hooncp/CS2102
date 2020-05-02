@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const pool = require('../database/db');
+var url = require('url');
 
 router.post('/insertCustomer', async (req, res) => {
     //console.log("succeed");
@@ -10,25 +11,25 @@ router.post('/insertCustomer', async (req, res) => {
         const name = req.body.name;
         const creditcardinfo = req.body.creditcardinfo;
         //https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
-        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         console.log(dateCreated);
         client.query('BEGIN').then(result => {
             console.log('creditcard:', creditcardinfo);
-            client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name,dateCreated])
+            client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name, dateCreated])
                 .then(result => {
-                currId = result.rows[0].userid;
-                console.log('currId:', currId);
-                client.query(
-                    `INSERT INTO Customers VALUES ($1, $2)`, [currId, creditcardinfo]).then(result => {
-                    client.query('COMMIT');
-                    client.release()
-                }).then(result=> {
-                   return res.json(currId);
+                    currId = result.rows[0].userid;
+                    console.log('currId:', currId);
+                    client.query(
+                            `INSERT INTO Customers VALUES ($1, $2)`, [currId, creditcardinfo]).then(result => {
+                        client.query('COMMIT');
+                        client.release()
+                    }).then(result => {
+                        return res.json(currId);
+                    })
                 })
-            })
         })
-    console.log("userid:", currId);
-    // return res.json(`${name} added as a Customer`);
+        console.log("userid:", currId);
+        // return res.json(`${name} added as a Customer`);
     } catch (err) {
         client.query(`ROLLBACK`);
         client.release()
@@ -57,7 +58,24 @@ router.get('/viewMonthOrders', (req, res) => {
         })
         .catch(e => console.error(e.stack))
 })
+router.get('/viewPastOrders', (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const text = `SELECT * 
+                    FROM OrderInfo  
+                    WHERE userId = $1
+                    ORDER BY orderId DESC                
+                    `;
 
+    const values = [userId];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
 //Support data access for Customer : view specific order in detail
 router.get('/viewOrderDetail', (req, res) => {
     const orderId = req.body.orderId;
@@ -81,7 +99,19 @@ router.get('/viewOrderDetail', (req, res) => {
         .catch(e => console.error(e.stack))
 })
 
-router.get('/viewPastReviews', (req,res) => {
+router.get('/viewAllContainsDetail', (req, res) => {
+    const text = ` SELECT * FROM CONTAINS`;
+    const values = [];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
+
+router.get('/viewPastReviews', (req, res) => {
     const fname = req.body.fname;
     const rname = req.body.rname;
     const text = `
@@ -91,15 +121,15 @@ router.get('/viewPastReviews', (req,res) => {
         AND C.fname = $2
         ;
        `
-    const values = [rname,fname];
-    pool.query(text,values).then(result => {
+    const values = [rname, fname];
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
-    .catch(e => console.error(e.stack))
+        .catch(e => console.error(e.stack))
 
 })
 //gets restaurants that sell for food
-router.get('/searchForFood', (req,res) => {
+router.get('/searchForFood', (req, res) => {
     const fname = req.body.fname;
     const text = `
         SELECT S.rname 
@@ -108,28 +138,28 @@ router.get('/searchForFood', (req,res) => {
         ;
        `
     const values = [fname];
-    pool.query(text,values).then(result => {
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
         .catch(e => console.error(e.stack))
 
 })
 
-router.get('/browseForFood', (req,res) => {
+router.get('/browseForFood', (req, res) => {
     const text = `
         SELECT DISTINCT S.fname 
         FROM Sells S
         ;
        `
     const values = [];
-    pool.query(text,values).then(result => {
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
         .catch(e => console.error(e.stack))
 
 })
 
-router.get('/RestaurantSellingFood', (req,res) => {
+router.get('/RestaurantSellingFood', (req, res) => {
     const fname = req.body.fname;
     const text = `
         SELECT DISTINCT S.rname 
@@ -138,7 +168,7 @@ router.get('/RestaurantSellingFood', (req,res) => {
         ;
        `
     const values = [fname];
-    pool.query(text,values).then(result => {
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
         .catch(e => console.error(e.stack))
@@ -159,7 +189,7 @@ router.post("/createOrder", async (req, res) => {
         client.query("BEGIN").then((result) => {
             client
                 .query(
-                    `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
+                        `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
                     VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId`,
                     [
                         userId,
@@ -182,7 +212,7 @@ router.post("/createOrder", async (req, res) => {
                         var currentReviewContent = currInt.reviewContent;
                         client
                             .query(
-                                `INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES ($1,$2,$3,$4,$5)`,
+                                    `INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES ($1,$2,$3,$4,$5)`,
                                 [
                                     currOrderId,
                                     currentRname,
@@ -204,4 +234,20 @@ router.post("/createOrder", async (req, res) => {
         console.error("error triggered: ", err.message);
     }
 });
+
+router.get('/getPrevDeliveryLoc', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const query = `select deliverylocation 
+                    from PastFiveDeliveryLoc
+                    where userid = $1 
+                    order by orderId DESC
+                    limit 5;`
+    values = [userId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+    ;
+});
+
 module.exports = router;

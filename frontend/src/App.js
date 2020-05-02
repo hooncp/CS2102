@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Login from "./pages/Login";
 import customerActions from "./pages/customerActions";
+import {customerBrowse} from "./pages/customerBrowse";
 
 export default class App extends Component {
     // constructor(props) {
@@ -86,6 +87,7 @@ export default class App extends Component {
                     <Switch>
                         <Route path="/" exact component={Login}/>
                         <Route path="/customerActions" exact component={customerActions}/>
+                        <Route path="/customerBrowse" exact component={customerBrowse}/>
                     </Switch>
                 </div>
             </Router>
