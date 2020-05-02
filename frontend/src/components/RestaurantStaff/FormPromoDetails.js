@@ -6,10 +6,20 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 export class FormPromoDetails extends Component {
+
+    state = {
+        showDialog: true
+    };
+
     continue = e => {
         e.preventDefault();
         this.props.nextStep();
     };
+    toggleDialogClose = e => {
+        this.setState({ showDialog: false });
+        //TODO : reset state of parent 
+
+    }
 
 
     render() {
@@ -18,9 +28,10 @@ export class FormPromoDetails extends Component {
             <MuiThemeProvider >
                 <React.Fragment>
                     <Dialog
-                        open="true"
+                        open={this.state.showDialog}
                         fullWidth="true"
                         maxWidth='sm'
+                        onClose={this.toggleDialogClose}
                     >
                         <h1>Enter Promotion Details</h1>
                         <TextField

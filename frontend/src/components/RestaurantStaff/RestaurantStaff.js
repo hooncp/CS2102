@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import history from './../../history';
 import "./RestaurantStaff.css";
 import { FormCreatePromoPage } from './FormCreatePromoPage';
+import { SummaryInfo } from './SummaryInfo';
 
 export default class RestaurantStaff extends Component {
 
@@ -16,7 +17,7 @@ export default class RestaurantStaff extends Component {
         switch (this.state.curDivIndex) {
             case 1: return <div>         <FormCreatePromoPage />    </div>
             case 2: return <div>       <h6>VIEW PROMOTION CAMPAIGN</h6>   </div>
-            case 3: return <div>       <h6>CREATE PROMOTION CAMPAIGN</h6>   </div>
+            case 3: return <div>       <SummaryInfo />   </div>
         }
         return null
     }
@@ -32,7 +33,7 @@ export default class RestaurantStaff extends Component {
                     <h1>CHOOSE YOUR ACTION</h1>
                     <Button variant="contained" color="primary"
                         onClick={() => { this.setVisibleDiv(1) }}>
-                        VIEW SUMMARY INFORMATION
+                        CREATE PROMOTION CAMPAIGN
                     </Button>
                     <Button variant="contained" color="primary"
                         onClick={() => { this.setVisibleDiv(2) }}>
@@ -40,7 +41,7 @@ export default class RestaurantStaff extends Component {
                     </Button>
                     <Button variant="contained" color="primary"
                         onClick={() => { this.setVisibleDiv(3) }}>
-                        CREATE PROMOTION CAMPAIGN
+                        VIEW SUMMARY INFORMATION
                     </Button>
                     {this.renderDiv()}
                 </div>

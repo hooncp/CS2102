@@ -11,8 +11,15 @@ export class FormMinSpendingPromoDetails extends Component {
         discAmt: '',
         discUnit: '',
         description: '',
-        showAlert: false
+        showDialog: true
     };
+
+    toggleDialogClose = e => {
+        this.setState({ showDialog: false });
+        //TODO : reset state of parent 
+
+    }
+
 
     submit = e => {
         e.preventDefault();
@@ -36,7 +43,7 @@ export class FormMinSpendingPromoDetails extends Component {
         })
             .then(res => {
                 console.log('Success');
-                this.props.nextStep();
+                this.toggleDialog(false);
             })
             .catch(err => err);
     };
@@ -57,7 +64,8 @@ export class FormMinSpendingPromoDetails extends Component {
             <MuiThemeProvider >
                 <React.Fragment>
                     <Dialog
-                        open="true"
+                        open={this.state.showDialog}
+                        onClose={this.toggleDialogClose}
                         fullWidth="true"
                         maxWidth='sm'
                     >
