@@ -3,21 +3,19 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Grid";
 import Grid from "@material-ui/core/Grid";
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
 
 
 export class restaurantOrder extends React.Component {
@@ -29,12 +27,363 @@ export class restaurantOrder extends React.Component {
             area: this.props.location.state.area,
             chosenLocation: this.props.location.state.chosenLocation,
             rname: this.props.location.state.rname,
-
+            foodToQty: {},
+            allFoodAndRes: this.props.location.state.allFoodAndRes,
+            modeOfPayment: "cash",
+            creditCardInfo: "",
+            promoCode: [],
+            selectedPromoCode: null,
+            availableRewardPts: "",
+            usedRewardPts: 0,
+            orderId: "",
+            orderedFood:[],
         }
     }
+
+    componentDidMount() {
+        const filteredArr = this.state.allFoodAndRes.filter(res => {
+            return res.rname === this.state.rname
+        });
+        let temp = {};
+        filteredArr.forEach(item => {
+            const tempfname = item.fname;
+            temp = Object.assign({[tempfname]: 0}, temp);
+        })
+        this.setState({foodToQty: temp});
+        this.getCreditCardInfo();
+        this.getPromoCode();
+        this.getAvailableRewardPts();
+    }
+
+    getAvailableRewardPts = () => {
+        fetch(`http://localhost:5000/customer/customerRewardPoints?userId=${this.state.userId}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept':
+                        'application/json',
+                    'Content-Type':
+                        'application/json',
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(json => {
+                this.setState({availableRewardPts: json[0].availablerewardpts})
+                console.log('availableRewardPts', this.state.availableRewardPts)
+            })
+            .catch(err => err);
+    }
+    getPromoCode = () => {
+        fetch(`http://localhost:5000/general/getPromoCode?rname=${this.state.rname}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept':
+                        'application/json',
+                    'Content-Type':
+                        'application/json',
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(json => {
+                this.setState({promoCode: json})
+                console.log('promocode', this.state.promoCode)
+            })
+            .catch(err => err);
+    }
+    getCreditCardInfo = () => {
+        fetch(`http://localhost:5000/customer/getCreditCardInfo?userId=${this.state.userId}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept':
+                        'application/json',
+                    'Content-Type':
+                        'application/json',
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(json => {
+                this.setState({creditCardInfo: json[0].creditcardinfo})
+                console.log('cc info', this.state.creditCardInfo)
+            })
+            .catch(err => err);
+    }
+    handleInputQty = (event) => {
+        const {name, value} = event.target;
+        let temp = this.state.foodToQty;
+        temp[name] = value;
+        this.setState({foodToQty: temp});
+    }
+    handleChange = (event) => {
+        const {name, value} = event.target;
+        return this.setState({[name]: value});
+    }
+    handleRewardPts = (event) => {
+        const {name, value} = event.target;
+        if (value > this.state.availableRewardPts) {
+            alert("you don't have enough points!");
+        } else {
+            return this.setState({[name]: value});
+        }
+    }
+    handleSubmitOrder = () => {
+        const arrLen = Object.keys(this.state.foodToQty).length;
+        const temp = new Array(arrLen);
+        const foodToQtyCopy = this.state.foodToQty;
+        let i = 0;
+        for (var key in foodToQtyCopy) {
+            temp[i] = {
+                "fname": key,
+                "rname": this.state.rname,
+                "foodQty": foodToQtyCopy[key]
+            }
+            i++;
+        }
+        const arr = temp.filter(res => {
+            return res.foodQty !== 0
+        });
+        console.log("arr:", arr);
+        let param = {
+            "userId": this.state.userId,
+            "promoCode": this.state.promoCode,
+            "applicableTo": this.state.rname,
+            "deliveryLocation": this.state.chosenLocation,
+            "usedRewardPoints": this.state.usedRewardPts,
+            "contains": arr
+        };
+        console.log("param", param);
+        fetch(`http://localhost:5000/customer/createOrder`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "userId": this.state.userId,
+                "promoCode": this.state.selectedPromoCode,
+                "applicableTo": this.state.rname,
+                "modeOfPayment": this.state.modeOfPayment,
+                "deliveryLocation": this.state.chosenLocation,
+                "usedRewardPoints": this.state.usedRewardPts,
+                "contains": arr,
+            })
+        })
+            .then(res => res.json())
+            .then(json => {
+                this.setState({orderId: json, orderedFood: arr}, this.handleRedirect)
+            })
+            .catch(err => err);
+
+    }
+    handleRedirect = () => {
+        this.props.history.push({
+            pathname: '/afterSubmitOrder',
+            state:
+                {
+                    userId: this.state.userId,
+                    orderId: this.state.orderId,
+                    orderedFood: this.state.orderedFood,
+                    rname: this.state.rname
+
+                }
+        })
+    }
+    handleUpdateCCinfo = () => {
+        fetch(`http://localhost:5000/customer/updateCreditCardInfo`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: this.state.userId,
+                ccinfo: this.state.creditCardInfo
+            })
+        })
+            .then(res => res.json())
+            .catch(err => err);
+    }
+
     render() {
+        const foodToQtyCopy = this.state.foodToQty;
+        const rname = this.state.rname;
+        const promoCodeCopy = this.state.promoCode.slice();
+        console.log('qtyCopy', foodToQtyCopy);
+        console.log("f&r", this.state.allFoodAndRes)
+        const orderDetailsTemp = this.state.orderDetails.slice();
+        const allFoodCopy = this.state.allFoodAndRes.slice();
+        console.log('foodCopy', allFoodCopy);
         return (
-            <div>test</div>
+            <div>
+                <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
+                    <Toolbar>
+                        <Typography variant="h6" color="inherit" noWrap>
+                            Ordering From Restaurant : {this.state.rname}
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                {allFoodCopy.filter(res => {
+                    return res.rname === this.state.rname;
+                }).map(res => {
+                    const currFname = res.fname;
+                    return (
+                        <ExpansionPanel style={{width: "95%"}}>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon/>}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Grid container spacing={2} direction="row" justify="space-between"
+                                      alignItems="flex-start">
+                                    <Grid item>
+                                        <Typography style={{fontWeight: "bold"}}>
+                                            {res.fname}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography style={{fontWeight: "bold"}}>
+                                            ${res.price}
+                                        </Typography>
+                                        <FormControl>
+                                            <Input
+                                                id="qty"
+                                                name={currFname}
+                                                value={foodToQtyCopy[currFname]}
+                                                onChange={this.handleInputQty}
+                                                endAdornment={<InputAdornment position="end">qty</InputAdornment>}
+                                                aria-describedby="qty"
+                                                inputProps={{
+                                                    'aria-label': 'qty',
+                                                }}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <Grid container spacing={2} direction="column" justify="center"
+                                      alignItems="flex-start">
+                                    <span style={{fontStyle: "italic"}}>past reviews:</span>
+                                    {orderDetailsTemp
+                                        .filter(result => {
+                                            return result.fname === res.fname
+                                                && result.rname === this.state.rname
+                                                && result.reviewcontent !== null
+                                        })
+                                        .map(result => {
+                                            return (
+                                                <div>{result.reviewcontent}</div>
+                                            )
+                                        })
+                                    }
+                                </Grid>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                    )
+                })
+                }
+                <Paper style={{color: "green", fontWeight: 'bold', height: "50%"}}>
+                    Total Cost:
+                    ${
+                    (Object.keys(foodToQtyCopy).reduce(function (previous, key) {
+                        return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
+                    }, 0))
+                }
+                    {this.state.usedRewardPts > 0
+                    &&
+                    (Object.keys(foodToQtyCopy).reduce(function (previous, key) {
+                        return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
+                    }, 0)) > 0
+                    &&
+                    (<span style={{color: "red"}}> - ${this.state.usedRewardPts / 5}
+                        {" "} = {" "}
+                        ${(Object.keys(foodToQtyCopy).reduce(function (previous, key) {
+                            return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
+                        }, 0)) - this.state.usedRewardPts / 5}
+                    </span>)}
+
+                    <br/><br/>
+                    <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
+                        <FormControl variant="filled" style={{width: "20%"}}>
+                            <InputLabel>Mode Of Payment</InputLabel>
+                            <Select
+                                required
+                                name="modeOfPayment"
+                                value={this.state.modeOfPayment}
+                                onChange={this.handleChange}
+
+                            >
+                                <MenuItem value="cash">Cash</MenuItem>
+                                <MenuItem value="creditcard">Credit Card</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <br/>
+                        <Grid item>
+                            {this.state.modeOfPayment === "creditcard" &&
+                            <React.Fragment>
+                                <FormControl variant="contained" style={{width: "100%"}}>
+                                    <TextField
+                                        name="creditCardInfo"
+                                        label="creditCardInfo"
+                                        placeholder="search for ... "
+                                        value={this.state.creditCardInfo}
+                                        onChange={this.handleChange}
+                                    />
+                                </FormControl>
+                                <Button variant="outlined" color="primary" onClick={this.handleUpdateCCinfo}
+                                        size="small">
+                                    Update
+                                </Button>
+                            </React.Fragment>
+                            }
+                        </Grid>
+                        <br/>
+                        <br/>
+                        <FormControl variant="outlined" style={{width: "50%"}}>
+                            <InputLabel>Promo Code</InputLabel>
+                            <Select
+                                required
+                                name="selectedPromoCode"
+                                value={this.state.selectedPromoCode}
+                                onChange={this.handleChange}
+                            >
+                                {promoCodeCopy.map(res => {
+                                    return (
+                                        <MenuItem value={res.promocode}>{res.promocode} - {res.promodesc}</MenuItem>
+                                    )
+                                })}
+                            </Select>
+                        </FormControl>
+                        <br/>
+                        <FormControl variant="filled" style={{width: "20%"}}>
+                            <InputLabel>Use Reward Points</InputLabel>
+                            <Select
+                                required
+                                name="usedRewardPts"
+                                value={this.state.usedRewardPts}
+                                onChange={this.handleRewardPts}
+
+                            >
+                                <MenuItem value={0}>0</MenuItem>
+                                <MenuItem value={5}>5</MenuItem>
+                                <MenuItem value={10}>10</MenuItem>
+                                <MenuItem value={15}>15</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <br/>
+                    </Grid>
+                </Paper>
+                <br/><br/>
+                <Button variant="contained" color="primary" onClick={this.handleSubmitOrder} size="small">
+                    Submit Order
+                </Button>
+                <br/>
+                <br/>
+            </div>
         )
     }
 }

@@ -34,6 +34,17 @@ router.get('/getUserType', async (req, res) => {
     })
 })
 
+router.get('/getPromoCode', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var rname = parts.query.rname;
+    const query = `SELECT DISTINCT promoCode, promoDesc FROM Promotions P WHERE P.applicableTo = $1`
+    const values = [rname];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
+
 module.exports = router;
 
 

@@ -1050,3 +1050,4 @@ FROM CustomerLatestOIDDeliveryLoc C
 ORDER BY C.orderId DESC
 )
 ;
+

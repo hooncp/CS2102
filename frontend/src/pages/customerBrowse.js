@@ -124,8 +124,9 @@ export class customerBrowse extends React.Component {
                     userId: this.state.userId,
                     area: this.state.area,
                     chosenLocation: this.state.chosenLocation,
-                    orderDetails: this.state.foodDetails,
+                    orderDetails: this.state.orderDetails,
                     rname: rname,
+                    allFoodAndRes : this.state.allFoodAndRes,
                 }
         });
     }

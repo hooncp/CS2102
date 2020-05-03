@@ -181,7 +181,7 @@ router.post("/createOrder", async (req, res) => {
         const promoCode = req.body.promoCode;
         const applicableTo = req.body.applicableTo;
         const modeOfPayment = req.body.modeOfPayment;
-        const timeOfOrder = req.body.timeOfOrder;
+        const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');;
         const deliveryLocation = req.body.deliveryLocation;
         const usedRewardPoints = req.body.usedRewardPoints;
         const contains = req.body.contains;
@@ -190,7 +190,7 @@ router.post("/createOrder", async (req, res) => {
             client
                 .query(
                         `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
-                    VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId`,
+                    VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId `,
                     [
                         userId,
                         promoCode,
@@ -205,33 +205,32 @@ router.post("/createOrder", async (req, res) => {
                     orderId = result.rows[0].orderid;
                     console.log("orderid:", result.rows[0].orderid);
                     contains.forEach((currInt) => {
-                        var currOrderId = orderId;
                         var currentRname = currInt.rname;
                         var currentFname = currInt.fname;
                         var currentFoodQty = currInt.foodQty;
-                        var currentReviewContent = currInt.reviewContent;
-                        client
-                            .query(
-                                    `INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES ($1,$2,$3,$4,$5)`,
+                        client.query(
+                                    `INSERT INTO Contains(orderId, rname, fname, foodQty) VALUES ($1,$2,$3,$4)`,
                                 [
-                                    currOrderId,
+                                    orderId,
                                     currentRname,
                                     currentFname,
                                     currentFoodQty,
-                                    currentReviewContent,
+                                    // currentReviewContent,
                                 ]
                             )
                             .catch(e => console.error(e.stack));
                     });
                     client.query("COMMIT");
                     client.release();
-                });
-        });
-        res.json(`${userId}'s order added`);
+                }).then (result=> {res.json(orderId)}).catch(e => console.error(e.stack));
+            ;
+        })
+            .catch(e => console.error(e.stack));
+        ;
     } catch (err) {
         client.query(`ROLLBACK`);
         client.release();
-        console.error("error triggered: ", err.message);
+        console.error("error triggered in create order: ", err.message);
     }
 });
 
@@ -266,7 +265,7 @@ router.get('/getSameAreaFood', async (req, res) => {
 router.get('/getSameAreaRestaurantAndFood', async (req, res) => {
     var parts = url.parse(req.url, true);
     var area = parts.query.area;
-    const query = `SELECT distinct S.rname, S.fname, F.category
+    const query = `SELECT distinct S.rname, S.fname, F.category, S.price
                     FROM Sells S join Restaurants R using (rname) join Food F using (fname)
                     WHERE R.area = $1`;
     values = [area];
@@ -286,6 +285,60 @@ router.get('/getSameAreaRestaurant', async (req, res) => {
     pool.query(query,values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
+
+});
+router.get('/getCreditCardInfo', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const query = `SELECT distinct creditCardInfo
+                    FROM Customers C 
+                    WHERE C.userId = $1`;
+    values = [userId];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+router.put('/updateCreditCardInfo', async (req, res) => {
+    const userId = req.body.userId;
+    const ccinfo = req.body.ccinfo;
+    const query = `UPDATE Customers SET creditcardinfo = $2 WHERE userId = $1`;
+    values = [userId,ccinfo];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
+router.get('/customerRewardPoints', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const query = `SELECT DISTINCT SUM(OI.earnedRewardpts) - SUM(OI.usedRewardPoints) as availableRewardPts
+                    FROM orderinfo OI 
+                    WHERE OI.userId = $1`;
+    values = [userId];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+
+router.post('/submitReview', async (req, res) => {
+    const client = await pool.connect();
+    const reviews = req.body.reviews;
+    reviews.forEach(result => {
+        const orderId = res.orderId;
+        const fname = res.fname;
+        const rname = res.rname;
+        const reviewContent = res.reviewContent;
+        const query = `UPDATE Contains SET reviewContent = $4 WHERE orderId = $1 AND rname=$2 AND fname=$3`
+        const values = [orderId, rname, fname, reviewContent];
+        client.query(query,values)
+            .catch(e => console.error(e.stack))
+    })
+    client.release();
+    await res.json("successfully submitted review");
 
 });
 

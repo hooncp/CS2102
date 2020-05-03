@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import customerActions from "./pages/customerActions";
 import {customerBrowse} from "./pages/customerBrowse";
 import {restaurantOrder} from "./pages/restaurantOrder";
+import {afterSubmitOrder} from "./pages/afterSubmitOrder";
 
 
 export default class App extends Component {
@@ -91,6 +92,8 @@ export default class App extends Component {
                         <Route path="/customerActions" exact component={customerActions}/>
                         <Route path="/customerBrowse" exact component={customerBrowse}/>
                         <Route path="/restaurantOrder" exact component={restaurantOrder}/>
+                        <Route path="/afterSubmitOrder" exact component={afterSubmitOrder}/>
+
                     </Switch>
                 </div>
             </Router>
