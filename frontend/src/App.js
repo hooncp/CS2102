@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Login from "./pages/Login";
-import customerActions from "./pages/customerActions";
-import {customerBrowse} from "./pages/customerBrowse";
-import {restaurantOrder} from "./pages/restaurantOrder";
-import {afterSubmitOrder} from "./pages/afterSubmitOrder";
+import customerActions from "./pages/customer/customerActions";
+import {customerBrowse} from "./pages/customer/customerBrowse";
+import {restaurantOrder} from "./pages/customer/restaurantOrder";
+import {afterSubmitOrder} from "./pages/customer/afterSubmitOrder";
+import {summary} from "./pages/fdsManager/summary";
 
 
 export default class App extends Component {
@@ -93,6 +94,7 @@ export default class App extends Component {
                         <Route path="/customerBrowse" exact component={customerBrowse}/>
                         <Route path="/restaurantOrder" exact component={restaurantOrder}/>
                         <Route path="/afterSubmitOrder" exact component={afterSubmitOrder}/>
+                        <Route path="/summary" exact component={summary}/>
 
                     </Switch>
                 </div>

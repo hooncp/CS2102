@@ -1,5 +1,4 @@
 import React from "react";
-import {Redirect} from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Grid";
@@ -120,17 +119,24 @@ class Login extends React.Component {
         let userType = this.state.userType;
         switch (userType) {
             case "customer":
-            this.props.history.push({
-                pathname: '/customerActions',
-                state:
-                    {
-                        userId: this.state.userId,
-                        userType: userType
-                    }
-            });
+                this.props.history.push({
+                    pathname: '/customerActions',
+                    state:
+                        {
+                            userId: this.state.userId,
+                            userType: userType
+                        }
+                });
             // case "rider":
             // case "RS":
-            // case "FM":
+            case "FM":
+                this.props.history.push({
+                    pathname: '/summary',
+                    state:
+                        {
+                            userId: this.state.userId,
+                        }
+                });
             default:
         }
     }
@@ -143,21 +149,21 @@ class Login extends React.Component {
     existingUserInput =
         <Grid container spacing={2} direction="row" justify="center" alignItems="center">
             <Grid item style={{width: "100%"}}>
-            <TextField
-                required
-                name="userId"
-                label="Required"
-                helperText="Enter your User ID"
-                placeholder="User ID"
-                variant="outlined"
-                value={this.state.userId}
-                onChange={this.handleChange}
-            />
+                <TextField
+                    required
+                    name="userId"
+                    label="Required"
+                    helperText="Enter your User ID"
+                    placeholder="User ID"
+                    variant="outlined"
+                    value={this.state.userId}
+                    onChange={this.handleChange}
+                />
             </Grid>
             <Grid item style={{width: "100%"}}>
-            <Button variant="contained" color="primary" onClick={this.handleLogin}>
-                Login
-            </Button>
+                <Button variant="contained" color="primary" onClick={this.handleLogin}>
+                    Login
+                </Button>
             </Grid>
         </Grid>
     ;

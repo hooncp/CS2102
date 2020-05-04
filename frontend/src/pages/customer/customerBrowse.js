@@ -185,7 +185,6 @@ export class customerBrowse extends React.Component {
                                         name="browsePref"
                                         value={this.state.browsepref}
                                         onChange={this.handleChange}
-
                                 >
                                     <MenuItem value=""> --- Please select one ---</MenuItem>
                                     <MenuItem value="food">Browse by Food</MenuItem>

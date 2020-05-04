@@ -975,7 +975,7 @@ BEGIN
     SELECT DISTINCT minorderamt
     INTO minRestaurantAmount
     FROM Restaurants R
-    WHERE R.rname = (SELECT DISTINCT C.rname FROM Contains C WHERE C.orderId = NEW.orderId)
+    WHERE R.rname = (SELECT DISTINCT C.rname FROM Contains C WHERE C.orderId = NEW.orderId limit 1)
     limit 1;
 
     SELECT sum(calculatePrice(C.rname, C.fname, C.foodQty))
@@ -1051,6 +1051,24 @@ WITH CustomerLatestOIDDeliveryLoc AS (
 SELECT C.userId, C.deliveryLocation, C.orderId
 FROM CustomerLatestOIDDeliveryLoc C
 ORDER BY C.orderId DESC
+    )
+;
+
+DROP VIEW IF EXISTS RiderSummary;
+CREATE VIEW RiderSummary AS
+(
+select userId,
+       coalesce(r1.work_month, r2.work_month) as work_month,
+       coalesce(r1.work_year, r2.work_month) as work_year,
+       coalesce(NumDelivery, 0) as NumDelivery,
+       coalesce(AvgTimeDelivery, 0) as AvgTimeDelivery,
+       coalesce(numRating, 0) as numRating,
+       coalesce(avgRating, NULL) as avgRating,
+       coalesce(numHoursWorked, 0) as numHoursWorked,
+       coalesce(Total_delivery_fee, 0) as Total_delivery_fee,
+       coalesce(salary, 0) + coalesce(Total_delivery_fee, 0) as TotalSalary
+from (Riders left join Rider_Delivery_Summary_Info r1 using (userId)) left join Rider_Schedule_Summary_Info r2 using (userId, work_month, work_year)
+order by userId
 )
 ;
 

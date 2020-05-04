@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const pool = require('../database/db');
+var url = require('url');
+
 /* DEPRECATED */
 // //8. averaged rating received by rider for orders delivered that month
 // router.get('/getMonthlyAvgRating', async (req,res)=> {
@@ -198,27 +200,29 @@ const pool = require('../database/db');
 
 
 //view entire summary statistics
-router.get('/viewCustomerGeneralInfo', (req,res) => {
-    const month = req.body.month;
-    const year = req.body.year;
+router.get('/viewCustomerGeneralInfo', (req, res) => {
+    var parts = url.parse(req.url, true);
+    var month = parts.query.month;
+    var year = parts.query.year;
     const query = `
     SELECT newCustomers, numOrder ,totalCost, C.month, C.year
     FROM Customer_General_Info C
     WHERE month = $1
     AND year = $2;
     `
-    const fields = [month,year];
-    pool.query(query,fields)
+    const fields = [month, year];
+    pool.query(query, fields)
         .then(result => {
-        res.json(result.rows);
-    })
+            res.json(result.rows);
+        })
 })
 
-router.get('/viewHourlyOrderInfo', (req,res) => {
-    const hour = req.body.hour;
-    const day = req.body.day;
-    const month = req.body.month;
-    const year = req.body.year;
+router.get('/viewHourlyOrderInfo', (req, res) => {
+    var parts = url.parse(req.url, true);
+    const hour = parts.query.hour;
+    const day = parts.query.day;
+    const month = parts.query.month;
+    const year = parts.query.year;
     const query = `
     SELECT *
     FROM Order_Hourly_Summary C
@@ -227,45 +231,61 @@ router.get('/viewHourlyOrderInfo', (req,res) => {
     AND months = $3
     AND years = $4;
     `
-    const fields = [hour,day,month,year];
-    pool.query(query,fields)
-        .then(result => {
-            res.json(result.rows);
-        })
-})
-
-router.get('/viewMonthRidersSummary', (req, res) => {
-    const month = req.body.month;
-    const year = req.body.year;
-    const text = `with r1 as (
-    select * from Rider_Delivery_Summary_Info D where D.work_month = $1 and D.work_year = $2
-    ), 
-    r2 as (
-    select * from Rider_Schedule_Summary_Info S where S.work_month = $1 and S.work_year = $2
-    )
-    select userId, 
-    coalesce(r1.work_month, $1) as work_month,
-    coalesce(r1.work_year, $2) as work_year,
-    coalesce(NumDelivery, 0) as NumDelivery,
-    coalesce(AvgTimeDelivery, 0) as AvgTimeDelivery,
-    coalesce(numRating, 0) as numRating,
-    coalesce(avgRating, NULL) as avgRating,
-    coalesce(numHoursWorked, 0) as numHoursWorked,
-    coalesce(Total_delivery_fee, 0) as Total_delivery_fee,
-    coalesce(salary, 0) + coalesce(Total_delivery_fee, 0) as TotalSalary
-    from (Riders left join r1 using (userId)) left join r2 using (userId)
-    order by userId;
-    `;
-
-    const values = [month, year];
-    pool
-        .query(text, values)
+    const fields = [hour, day, month, year];
+    pool.query(query, fields)
         .then(result => {
             console.log(result.rows);
             res.json(result.rows);
         })
-        .catch(e => console.error(e.stack))
 })
+
+// router.get('/viewMonthRidersSummary', (req, res) => {
+//     var parts = url.parse(req.url, true);
+//     var month = parts.query.month;
+//     var year = parts.query.year;
+//     const text = `with r1 as (
+//     select * from Rider_Delivery_Summary_Info D where D.work_month = $1 and D.work_year = $2
+//     ),
+//     r2 as (
+//     select * from Rider_Schedule_Summary_Info S where S.work_month = $1 and S.work_year = $2
+//     )
+//     select userId,
+//     coalesce(r1.work_month, $1) as work_month,
+//     coalesce(r1.work_year, $2) as work_year,
+//     coalesce(NumDelivery, 0) as NumDelivery,
+//     coalesce(AvgTimeDelivery, 0) as AvgTimeDelivery,
+//     coalesce(numRating, 0) as numRating,
+//     coalesce(avgRating, NULL) as avgRating,
+//     coalesce(numHoursWorked, 0) as numHoursWorked,
+//     coalesce(Total_delivery_fee, 0) as Total_delivery_fee,
+//     coalesce(salary, 0) + coalesce(Total_delivery_fee, 0) as TotalSalary
+//     from (Riders left join r1 using (userId)) left join r2 using (userId)
+//     order by userId;
+//     `;
+//
+//     const values = [month, year];
+//     pool
+//         .query(text, values)
+//         .then(result => {
+//             console.log(result.rows);
+//             res.json(result.rows);
+//         })
+//         .catch(e => console.error(e.stack))
+// })
+
+router.get('/viewMonthRidersSummary', (req, res) => {
+    var parts = url.parse(req.url, true);
+    var month = parts.query.month;
+    var year = parts.query.year;
+    const query = `SELECT * FROM RiderSummary WHERE work_month = $1 AND work_year = $2`;
+    values = [month, year];
+    pool.query(query, values)
+        .then(result => {
+            // console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+});
 
 //7. number of ratings received by rider for all orders delivered for that month
 router.get('/getMonthlyNumRating', async (req, res) => {
@@ -318,8 +338,9 @@ router.get('/getMonthlyAverageDeliveryTime', async (req, res) => {
 //For each for each month and for each customer who has placed some order for that month,
 // the total number of orders placed by the customer for that month and the total cost of all these orders.
 router.get('/viewMonthlyCustomerSummary', (req, res) => {
-    const month = req.body.month;
-    const year = req.body.year;
+    var parts = url.parse(req.url, true);
+    var month = parts.query.month;
+    var year = parts.query.year;
     const text = `SELECT userId, count(*) AS NumOrder, sum(finalprice) AS TotalOrderCost
                     FROM OrderInfo O
                     WHERE ((SELECT EXTRACT(MONTH FROM timeoforder::date))) = $1 
@@ -395,7 +416,7 @@ router.get('/checkStatus', async (req, res) => {
 
     }
     console.log("test" + resArr);
-    res.json({ "data": resArr });
+    res.json({"data": resArr});
 })
 
 // Create a Restaurant
@@ -407,7 +428,7 @@ router.post("/insertRestaurant", async (req, res) => {
         const area = req.body.area;
         client
             .query(
-                `INSERT INTO restaurants (rname, minorderamt, area) VALUES ($1, $2, $3)`,
+                    `INSERT INTO restaurants (rname, minorderamt, area) VALUES ($1, $2, $3)`,
                 [rname, minorderamt, area]
             )
             .catch((err) => console.log(err));
