@@ -268,7 +268,7 @@ router.post('/insertPartTimeRider', async (req, res) => {
 		let currId = 0;
 		const name = req.body.name;
 		const area = req.body.area;
-		const dateCreated = req.body.dateCreated;
+		let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
 		client.query('BEGIN').then(res => {
 			client.query(`INSERT INTO users(name,datecreated) VALUES ($1,$2) returning userId`, [name, dateCreated]).then(result => {
 				currId = result.rows[0].userid;
@@ -299,8 +299,9 @@ router.post('/insertFullTimeRider', async (req, res) => {
 		let currId = 0;
 		const name = req.body.name;
 		const area = req.body.area;
+		let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
 		client.query('BEGIN').then(res => {
-			client.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name]).then(result => {
+			client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name,dateCreated]).then(result => {
 				currId = result.rows[0].userid;
 				console.log('currId:', currId);
 				client.query(

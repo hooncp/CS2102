@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const pool = require('../database/db');
+var url = require('url');
 
 router.post('/insertCustomer', async (req, res) => {
     //console.log("succeed");
@@ -9,19 +10,26 @@ router.post('/insertCustomer', async (req, res) => {
         let currId = 0;
         const name = req.body.name;
         const creditcardinfo = req.body.creditcardinfo;
-        client.query('BEGIN').then(res => {
+        //https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
+        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        console.log(dateCreated);
+        client.query('BEGIN').then(result => {
             console.log('creditcard:', creditcardinfo);
-            client.query(`INSERT INTO users(name) VALUES ($1) returning userId`, [name]).then(result => {
-                currId = result.rows[0].userid;
-                console.log('currId:', currId);
-                client.query(
-                    `INSERT INTO Customers VALUES ($1, $2)`, [currId, creditcardinfo]).then(result => {
-                    client.query('COMMIT');
-                    client.release()
+            client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name, dateCreated])
+                .then(result => {
+                    currId = result.rows[0].userid;
+                    console.log('currId:', currId);
+                    client.query(
+                            `INSERT INTO Customers VALUES ($1, $2)`, [currId, creditcardinfo]).then(result => {
+                        client.query('COMMIT');
+                        client.release()
+                    }).then(result => {
+                        return res.json(currId);
+                    })
                 })
-            })
         })
-    return res.json(`${name} added as a Customer`);
+        console.log("userid:", currId);
+        // return res.json(`${name} added as a Customer`);
     } catch (err) {
         client.query(`ROLLBACK`);
         client.release()
@@ -50,7 +58,24 @@ router.get('/viewMonthOrders', (req, res) => {
         })
         .catch(e => console.error(e.stack))
 })
+router.get('/viewPastOrders', (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const text = `SELECT * 
+                    FROM OrderInfo  
+                    WHERE userId = $1
+                    ORDER BY orderId DESC                
+                    `;
 
+    const values = [userId];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
 //Support data access for Customer : view specific order in detail
 router.get('/viewOrderDetail', (req, res) => {
     const orderId = req.body.orderId;
@@ -74,7 +99,19 @@ router.get('/viewOrderDetail', (req, res) => {
         .catch(e => console.error(e.stack))
 })
 
-router.get('/viewPastReviews', (req,res) => {
+router.get('/viewAllContainsDetail', (req, res) => {
+    const text = ` SELECT * FROM CONTAINS`;
+    const values = [];
+    pool
+        .query(text, values)
+        .then(result => {
+            console.log(result.rows);
+            res.json(result.rows);
+        })
+        .catch(e => console.error(e.stack))
+})
+
+router.get('/viewPastReviews', (req, res) => {
     const fname = req.body.fname;
     const rname = req.body.rname;
     const text = `
@@ -84,15 +121,15 @@ router.get('/viewPastReviews', (req,res) => {
         AND C.fname = $2
         ;
        `
-    const values = [rname,fname];
-    pool.query(text,values).then(result => {
+    const values = [rname, fname];
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
-    .catch(e => console.error(e.stack))
+        .catch(e => console.error(e.stack))
 
 })
 //gets restaurants that sell for food
-router.get('/searchForFood', (req,res) => {
+router.get('/searchForFood', (req, res) => {
     const fname = req.body.fname;
     const text = `
         SELECT S.rname 
@@ -101,28 +138,28 @@ router.get('/searchForFood', (req,res) => {
         ;
        `
     const values = [fname];
-    pool.query(text,values).then(result => {
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
         .catch(e => console.error(e.stack))
 
 })
 
-router.get('/browseForFood', (req,res) => {
+router.get('/browseForFood', (req, res) => {
     const text = `
         SELECT DISTINCT S.fname 
         FROM Sells S
         ;
        `
     const values = [];
-    pool.query(text,values).then(result => {
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
         .catch(e => console.error(e.stack))
 
 })
 
-router.get('/RestaurantSellingFood', (req,res) => {
+router.get('/RestaurantSellingFood', (req, res) => {
     const fname = req.body.fname;
     const text = `
         SELECT DISTINCT S.rname 
@@ -131,7 +168,7 @@ router.get('/RestaurantSellingFood', (req,res) => {
         ;
        `
     const values = [fname];
-    pool.query(text,values).then(result => {
+    pool.query(text, values).then(result => {
         res.json(result.rows);
     })
         .catch(e => console.error(e.stack))
@@ -144,57 +181,212 @@ router.post("/createOrder", async (req, res) => {
         const promoCode = req.body.promoCode;
         const applicableTo = req.body.applicableTo;
         const modeOfPayment = req.body.modeOfPayment;
-        const timeOfOrder = req.body.timeOfOrder;
+        const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         const deliveryLocation = req.body.deliveryLocation;
         const usedRewardPoints = req.body.usedRewardPoints;
         const contains = req.body.contains;
         let orderId = 0;
-        client.query("BEGIN").then((result) => {
-            client
-                .query(
+        client.query("BEGIN").then(result => {
+            return client.query(
                     `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
-                    VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId`,
-                    [
-                        userId,
-                        promoCode,
-                        applicableTo,
-                        modeOfPayment,
-                        timeOfOrder,
-                        deliveryLocation,
-                        usedRewardPoints,
-                    ]
-                )
-                .then((result) => {
+                    VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId `,
+                [
+                    userId,
+                    promoCode,
+                    applicableTo,
+                    modeOfPayment,
+                    timeOfOrder,
+                    deliveryLocation,
+                    usedRewardPoints,
+                ]
+            )
+                .then(result => {
                     orderId = result.rows[0].orderid;
-                    console.log("orderid:", result.rows[0].orderid);
+                    console.log("orderid:", result.rows);
                     contains.forEach((currInt) => {
-                        var currOrderId = orderId;
                         var currentRname = currInt.rname;
                         var currentFname = currInt.fname;
+                        console.log(currInt.fname);
+                        console.log(currInt.rname);
                         var currentFoodQty = currInt.foodQty;
-                        var currentReviewContent = currInt.reviewContent;
-                        client
-                            .query(
-                                `INSERT INTO Contains(orderId, rname, fname, foodQty, reviewContent) VALUES ($1,$2,$3,$4,$5)`,
-                                [
-                                    currOrderId,
-                                    currentRname,
-                                    currentFname,
-                                    currentFoodQty,
-                                    currentReviewContent,
-                                ]
-                            )
-                            .catch(e => console.error(e.stack));
+                        const reviewContent = null;
+                        return client.query(
+                                `INSERT INTO Contains(orderId, rname, fname, foodQty,reviewContent) VALUES ($1,$2,$3,$4,$5)`,
+                            [
+                                orderId,
+                                currentRname,
+                                currentFname,
+                                currentFoodQty,
+                                reviewContent,
+                            ]
+                        ).then(result => {
+                        })
+                            // .catch(e => console.error(e.stack));
                     });
                     client.query("COMMIT");
                     client.release();
-                });
-        });
-        res.json(`${userId}'s order added`);
+                }).then(result => {
+                    console.log('orderid', orderId);
+                    res.json(orderId);
+                }).catch(e => console.error(e.stack));
+            ;
+        })
+            .catch(e => console.error(e.stack));
     } catch (err) {
         client.query(`ROLLBACK`);
         client.release();
-        console.error("error triggered: ", err.message);
+        console.error("error triggered in create order: ", err.message);
     }
 });
+
+router.get('/getPrevDeliveryLoc', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const query = `select deliverylocation 
+                    from PastFiveDeliveryLoc
+                    where userid = $1 
+                    order by orderId DESC
+                    limit 5;`
+    values = [userId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+    ;
+});
+
+router.get('/getSameAreaFood', async (req, res) => {
+
+    var parts = url.parse(req.url, true);
+    var area = parts.query.area;
+    const query = `SELECT distinct S.fname, F.category
+                    FROM Sells S join Restaurants R using (rname) join Food F using (fname)
+                    WHERE R.area = $1`;
+    values = [area];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
+router.get('/getSameAreaRestaurantAndFood', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var area = parts.query.area;
+    const query = `SELECT distinct S.rname, S.fname, F.category, S.price
+                    FROM Sells S join Restaurants R using (rname) join Food F using (fname)
+                    WHERE R.area = $1`;
+    values = [area];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+router.get('/getSameAreaRestaurant', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var area = parts.query.area;
+    const query = `SELECT distinct S.rname
+                    FROM Sells S join Restaurants R using (rname) 
+                    WHERE R.area = $1`;
+    values = [area];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+router.get('/getCreditCardInfo', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const query = `SELECT distinct creditCardInfo
+                    FROM Customers C 
+                    WHERE C.userId = $1`;
+    values = [userId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+router.put('/updateCreditCardInfo', async (req, res) => {
+    const userId = req.body.userId;
+    const ccinfo = req.body.ccinfo;
+    const query = `UPDATE Customers SET creditcardinfo = $2 WHERE userId = $1`;
+    values = [userId, ccinfo];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
+router.get('/customerRewardPoints', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var userId = parts.query.userId;
+    const query = `SELECT DISTINCT SUM(OI.earnedRewardpts) - SUM(OI.usedRewardPoints) as availableRewardPts
+                    FROM orderinfo OI 
+                    WHERE OI.userId = $1`;
+    values = [userId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+
+router.post('/submitReview', async (req, res) => {
+    const client = await pool.connect();
+    const reviews = req.body.reviews;
+    reviews.forEach(result => {
+        const orderId = result.orderId;
+        const fname = result.fname;
+        const rname = result.rname;
+        const reviewContent = result.reviewContent;
+        const query = `UPDATE Contains SET reviewContent = $4 WHERE orderId = $1 AND rname=$2 AND fname=$3`
+        const values = [orderId, rname, fname, reviewContent];
+        console.log(orderId);
+        client.query(query, values)
+            .catch(e => console.error(e.stack))
+    })
+    client.release();
+    await res.json("successfully submitted review");
+
+});
+
+router.get('/getOrderInfo', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var orderId = parts.query.orderId;
+    const query = `SELECT DISTINCT *
+                    FROM orderinfo OI 
+                    WHERE OI.orderId = $1`;
+    values = [orderId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+router.post('/submitRiderRatings', async (req, res) => {
+    const orderId = req.body.orderId;
+    const rating = req.body.rating;
+    const query = `UPDATE Delivers SET rating = $2 WHERE orderId = $1`;
+    values = [orderId, rating];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
+// router.get('/getSameAreaRestaurantWithFood', async (req, res) => {
+//     var parts = url.parse(req.url, true);
+//     var area = parts.query.area;
+//     var fname = parts.query.fname;
+//     console.log(fname);
+//     const query = `SELECT distinct rname
+//                     FROM Sells S join Restaurants R using (rname)
+//                     WHERE R.area = $1
+//                     AND S.fname = $2
+//                     `;
+//     values = [area,fname];
+//     pool.query(query,values)
+//         .then(result => res.json(result.rows))
+//         .catch(e => console.error(e.stack))
+//
+// });
+
+
 module.exports = router;
