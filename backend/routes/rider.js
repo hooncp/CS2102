@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const pool = require('../database/db');
+var url = require('url');
+
 
 
 /* Useful guide:
@@ -144,6 +146,7 @@ router.get('/getMonthlyAverageDeliveryTime', async (req, res) => {
 router.post('/createWeeklySchedule', async (req, res) => {
 	const client = await pool.connect();
 	try {
+		console.log(req.body);
 		const userId = req.body.userId;
 		const startDate = req.body.startDate; //user input
 		const endDate = req.body.endDate; //calculate and pass down from frontend
@@ -172,7 +175,7 @@ router.post('/createWeeklySchedule', async (req, res) => {
 	} catch (err) {
 		client.query(`ROLLBACK`);
 		client.release()
-		console.error("error triggered: ", err.message);
+		console.log("error triggered: ", err.message);
 	}
 })
 
@@ -267,7 +270,7 @@ router.post('/insertPartTimeRider', async (req, res) => {
 		const area = req.body.area;
 		const dateCreated = req.body.dateCreated;
 		client.query('BEGIN').then(res => {
-			client.query(`INSERT INTO users(name,datecreated) VALUES ($1,$2) returning userId`, [name,dateCreated]).then(result => {
+			client.query(`INSERT INTO users(name,datecreated) VALUES ($1,$2) returning userId`, [name, dateCreated]).then(result => {
 				currId = result.rows[0].userid;
 				console.log('currId:', currId);
 				client.query(
@@ -279,7 +282,7 @@ router.post('/insertPartTimeRider', async (req, res) => {
 							})
 					})
 			})
-		}).catch( err => {
+		}).catch(err => {
 			console.error(err);
 		})
 		return res.json(`${name} added as a Rider`);
@@ -309,7 +312,7 @@ router.post('/insertFullTimeRider', async (req, res) => {
 							})
 					})
 			})
-		}).catch( err => {
+		}).catch(err => {
 			console.error(err);
 		})
 		return res.json(`${name} added as a Rider`);
@@ -464,9 +467,10 @@ router.get('/viewMonthSalary', (req, res) => {
 
 // view summary of Rider information
 router.get('/viewMonthSummary', (req, res) => {
-	const userId = req.body.userId;
-	const month = req.body.month;
-	const year = req.body.year;
+	var parts = url.parse(req.url, true);
+	const userId = req.query.userId;
+	const month = req.query.month;
+	const year = req.query.year;
 	const text = `with r1 as (
     select * from Rider_Delivery_Summary_Info D where D.work_month = $2 and D.work_year = $3
     ), 
@@ -486,6 +490,42 @@ router.get('/viewMonthSummary', (req, res) => {
     from (Riders left join r1 using (userId)) left join r2 using (userId)
     where userId = $1
     `;
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
+
+router.get('/getPastMonthSchedule', (req, res) => {
+	var parts = url.parse(req.url, true);
+	const userId = req.query.userId;
+	const month = req.query.month;
+	const year = req.query.year;
+	const text = `select starttime, endtime, intervalduration 
+	from Rider_Schedule_Info S 
+	where S.userId = $1 and S.work_month = $2 and S.work_year = $3`;
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
+
+router.get('/getPastOrder', (req, res) => {
+	var parts = url.parse(req.url, true);
+	const userId = req.query.userId;
+	const month = req.query.month;
+	const year = req.query.year;
+	const text = `select orderid, departtimeforrestaurant, deliverytimetocustomer, rating, delivery_fee 
+	from Rider_Delivery_Info R 
+	where R.userId = $1 and R.work_month = $2 and R.work_year = $3`;
 	const values = [userId, month, year];
 	pool
 		.query(text, values)

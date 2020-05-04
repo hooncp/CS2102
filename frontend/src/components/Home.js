@@ -14,8 +14,10 @@ export default class Home extends Component {
                         onClick={() => history.push('/RestaurantStaff')}>
                         RESTAURANT STAFF
                     </Button>
-                    <Button variant="contained" color="primary">
-                        Rider
+                    <Button variant="contained"
+                        color="primary"
+                        onClick={() => history.push('/Rider')}>
+                        RIDER
                     </Button>
                 </div>
 

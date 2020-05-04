@@ -216,7 +216,7 @@ CREATE TABLE Contains (
                           reviewContent	VARCHAR(300),
 
                           PRIMARY KEY(orderId, rname, fname),
-                          FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
+                          FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname) ON DELETE CASCADE ON UPDATE CASCADE,
                           CHECK(foodQty >= 1)
 );
 
@@ -554,6 +554,7 @@ CREATE VIEW Rider_Delivery_Info AS (
     SELECT D.userId,
            ((SELECT EXTRACT(MONTH FROM O.timeoforder::date))) AS work_month,
            ((SELECT EXTRACT(YEAR FROM O.timeoforder::date))) AS work_year,
+           O.orderId,
            O.timeoforder,
            D.deliveryTimetoCustomer,
            D.departTimeForRestaurant,
@@ -561,8 +562,8 @@ CREATE VIEW Rider_Delivery_Info AS (
            case --  determine delivery fee based on peak hours
                when ((O.timeoforder::time >= '12:00' and O.timeoforder::time <= '13:00')
                    OR (O.timeoforder::time >= '18:00' and O.timeoforder::time <= '20:00'))
-                   then 4
-               else 2
+                   then 10
+               else 5 --delivery fee based on peak hour
                end as delivery_fee
 
     FROM delivers D join Orders O on (D.orderId = O.OrderId)
@@ -854,8 +855,6 @@ CREATE VIEW Rider_Schedule_Summary_Info AS (
     FROM Rider_Schedule_Info
     GROUP BY userId, work_month, work_year
 );
-
-
 
 CREATE VIEW Customer_General_Info AS (
     WITH Monthly_New_Customer AS (
