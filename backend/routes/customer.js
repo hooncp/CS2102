@@ -181,52 +181,57 @@ router.post("/createOrder", async (req, res) => {
         const promoCode = req.body.promoCode;
         const applicableTo = req.body.applicableTo;
         const modeOfPayment = req.body.modeOfPayment;
-        const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');;
+        const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         const deliveryLocation = req.body.deliveryLocation;
         const usedRewardPoints = req.body.usedRewardPoints;
         const contains = req.body.contains;
         let orderId = 0;
-        client.query("BEGIN").then((result) => {
-            client
-                .query(
-                        `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
+        client.query("BEGIN").then(result => {
+            return client.query(
+                    `INSERT INTO Orders(userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints) 
                     VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING orderId `,
-                    [
-                        userId,
-                        promoCode,
-                        applicableTo,
-                        modeOfPayment,
-                        timeOfOrder,
-                        deliveryLocation,
-                        usedRewardPoints,
-                    ]
-                )
-                .then((result) => {
+                [
+                    userId,
+                    promoCode,
+                    applicableTo,
+                    modeOfPayment,
+                    timeOfOrder,
+                    deliveryLocation,
+                    usedRewardPoints,
+                ]
+            )
+                .then(result => {
                     orderId = result.rows[0].orderid;
-                    console.log("orderid:", result.rows[0].orderid);
+                    console.log("orderid:", result.rows);
                     contains.forEach((currInt) => {
                         var currentRname = currInt.rname;
                         var currentFname = currInt.fname;
+                        console.log(currInt.fname);
+                        console.log(currInt.rname);
                         var currentFoodQty = currInt.foodQty;
-                        client.query(
-                                    `INSERT INTO Contains(orderId, rname, fname, foodQty) VALUES ($1,$2,$3,$4)`,
-                                [
-                                    orderId,
-                                    currentRname,
-                                    currentFname,
-                                    currentFoodQty,
-                                    // currentReviewContent,
-                                ]
-                            )
-                            .catch(e => console.error(e.stack));
+                        const reviewContent = null;
+                        return client.query(
+                                `INSERT INTO Contains(orderId, rname, fname, foodQty,reviewContent) VALUES ($1,$2,$3,$4,$5)`,
+                            [
+                                orderId,
+                                currentRname,
+                                currentFname,
+                                currentFoodQty,
+                                reviewContent,
+                            ]
+                        ).then(result => {
+                        })
+                            // .catch(e => console.error(e.stack));
                     });
                     client.query("COMMIT");
                     client.release();
-                }).then (result=> {res.json(orderId)}).catch(e => console.error(e.stack));
+                }).then(result => {
+                    console.log('orderid', orderId);
+                    res.json(orderId);
+                }).catch(e => console.error(e.stack));
             ;
         })
             .catch(e => console.error(e.stack));
-        ;
     } catch (err) {
         client.query(`ROLLBACK`);
         client.release();
@@ -257,7 +262,7 @@ router.get('/getSameAreaFood', async (req, res) => {
                     FROM Sells S join Restaurants R using (rname) join Food F using (fname)
                     WHERE R.area = $1`;
     values = [area];
-    pool.query(query,values)
+    pool.query(query, values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
 });
@@ -269,7 +274,7 @@ router.get('/getSameAreaRestaurantAndFood', async (req, res) => {
                     FROM Sells S join Restaurants R using (rname) join Food F using (fname)
                     WHERE R.area = $1`;
     values = [area];
-    pool.query(query,values)
+    pool.query(query, values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
 
@@ -282,7 +287,7 @@ router.get('/getSameAreaRestaurant', async (req, res) => {
                     FROM Sells S join Restaurants R using (rname) 
                     WHERE R.area = $1`;
     values = [area];
-    pool.query(query,values)
+    pool.query(query, values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
 
@@ -294,7 +299,7 @@ router.get('/getCreditCardInfo', async (req, res) => {
                     FROM Customers C 
                     WHERE C.userId = $1`;
     values = [userId];
-    pool.query(query,values)
+    pool.query(query, values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
 
@@ -304,8 +309,8 @@ router.put('/updateCreditCardInfo', async (req, res) => {
     const userId = req.body.userId;
     const ccinfo = req.body.ccinfo;
     const query = `UPDATE Customers SET creditcardinfo = $2 WHERE userId = $1`;
-    values = [userId,ccinfo];
-    pool.query(query,values)
+    values = [userId, ccinfo];
+    pool.query(query, values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
 });
@@ -317,7 +322,7 @@ router.get('/customerRewardPoints', async (req, res) => {
                     FROM orderinfo OI 
                     WHERE OI.userId = $1`;
     values = [userId];
-    pool.query(query,values)
+    pool.query(query, values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
 
@@ -328,18 +333,42 @@ router.post('/submitReview', async (req, res) => {
     const client = await pool.connect();
     const reviews = req.body.reviews;
     reviews.forEach(result => {
-        const orderId = res.orderId;
-        const fname = res.fname;
-        const rname = res.rname;
-        const reviewContent = res.reviewContent;
+        const orderId = result.orderId;
+        const fname = result.fname;
+        const rname = result.rname;
+        const reviewContent = result.reviewContent;
         const query = `UPDATE Contains SET reviewContent = $4 WHERE orderId = $1 AND rname=$2 AND fname=$3`
         const values = [orderId, rname, fname, reviewContent];
-        client.query(query,values)
+        console.log(orderId);
+        client.query(query, values)
             .catch(e => console.error(e.stack))
     })
     client.release();
     await res.json("successfully submitted review");
 
+});
+
+router.get('/getOrderInfo', async (req, res) => {
+    var parts = url.parse(req.url, true);
+    var orderId = parts.query.orderId;
+    const query = `SELECT DISTINCT *
+                    FROM orderinfo OI 
+                    WHERE OI.orderId = $1`;
+    values = [orderId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
+router.post('/submitRiderRatings', async (req, res) => {
+    const orderId = req.body.orderId;
+    const rating = req.body.rating;
+    const query = `UPDATE Delivers SET rating = $2 WHERE orderId = $1`;
+    values = [orderId, rating];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
 });
 
 // router.get('/getSameAreaRestaurantWithFood', async (req, res) => {

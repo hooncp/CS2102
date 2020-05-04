@@ -149,7 +149,7 @@ export class restaurantOrder extends React.Component {
         console.log("arr:", arr);
         let param = {
             "userId": this.state.userId,
-            "promoCode": this.state.promoCode,
+            "promoCode": this.state.selectedPromoCode,
             "applicableTo": this.state.rname,
             "deliveryLocation": this.state.chosenLocation,
             "usedRewardPoints": this.state.usedRewardPts,
@@ -187,7 +187,8 @@ export class restaurantOrder extends React.Component {
                     userId: this.state.userId,
                     orderId: this.state.orderId,
                     orderedFood: this.state.orderedFood,
-                    rname: this.state.rname
+                    rname: this.state.rname,
+                    foodToQty: this.state.foodToQty,
 
                 }
         })
@@ -380,6 +381,7 @@ export class restaurantOrder extends React.Component {
                 <br/><br/>
                 <Button variant="contained" color="primary" onClick={this.handleSubmitOrder} size="small">
                     Submit Order
+                    <br/>
                 </Button>
                 <br/>
                 <br/>

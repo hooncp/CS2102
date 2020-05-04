@@ -178,7 +178,7 @@ class Login extends React.Component {
                         WELCOME
                     </Typography>
                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                        Our very own Food Delivery Service founded by Chee Ping, Ee Jian, Wei Dong & Jit Yong
+                        Our very own Food Delivery Service created by Chee Ping, Ee Jian, Wei Dong & Jit Yong
                     </Typography>
                     <div>
                         <br/> <br/>

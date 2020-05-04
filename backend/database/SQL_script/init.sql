@@ -695,7 +695,7 @@ BEGIN
       AND P.applicableTo = applicableTo1;
     CASE
         -- NO PROMOTION
-        WHEN ((promoCode1 IS NULL) AND (applicableTo1 IS NULL))
+        WHEN ((promoCode1 IS NULL))
             THEN amount =
                     (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
         -- $ PROMOTION
@@ -972,10 +972,11 @@ DECLARE
     checkTotalAmt       NUMERIC(8, 2);
     minRestaurantAmount NUMERIC(8, 2);
 BEGIN
-    SELECT minorderamt
+    SELECT DISTINCT minorderamt
     INTO minRestaurantAmount
     FROM Restaurants R
-    WHERE R.rname = (SELECT C.rname FROM Contains C WHERE C.orderId = NEW.orderId);
+    WHERE R.rname = (SELECT DISTINCT C.rname FROM Contains C WHERE C.orderId = NEW.orderId)
+    limit 1;
 
     SELECT sum(calculatePrice(C.rname, C.fname, C.foodQty))
     INTO checkTotalAmt
@@ -990,7 +991,6 @@ END;
 
 $$ LANGUAGE PLPGSQL;
 
-
 DROP TRIGGER IF EXISTS orders_trigger ON Orders CASCADE;
 CREATE CONSTRAINT TRIGGER order_trigger
     AFTER INSERT
@@ -999,6 +999,8 @@ CREATE CONSTRAINT TRIGGER order_trigger
     FOR EACH ROW
 EXECUTE FUNCTION check_Restaurant_MinOrderAmt();
 
+
+-- check promo trigger
 CREATE OR REPLACE FUNCTION check_Promo_minAmt()
     RETURNS
         TRIGGER
@@ -1008,10 +1010,11 @@ DECLARE
     checkTotalAmt  NUMERIC(8, 2);
     minPromoAmount NUMERIC(8, 2);
 BEGIN
-    SELECT minAmt
+    SELECT DISTINCT minAmt
     INTO minPromoAmount
     FROM MinSpendingPromotions M
-    WHERE M.promocode = NEW.promocode;
+    WHERE M.promocode = NEW.promocode
+    LIMIT 1;
 
     SELECT sum(calculatePrice(C.rname, C.fname, C.foodQty))
     INTO checkTotalAmt
