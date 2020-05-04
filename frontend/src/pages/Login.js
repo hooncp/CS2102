@@ -117,7 +117,7 @@ class Login extends React.Component {
 
     handleRedirect = () => {
         let userType = this.state.userType;
-        switch (userType) {
+        switch (this.state.userType) {
             case "customer":
                 this.props.history.push({
                     pathname: '/customerActions',
@@ -127,6 +127,7 @@ class Login extends React.Component {
                             userType: userType
                         }
                 });
+                break;
             // case "rider":
             // case "RS":
             case "FM":
@@ -137,6 +138,7 @@ class Login extends React.Component {
                             userId: this.state.userId,
                         }
                 });
+                break;
             default:
         }
     }
