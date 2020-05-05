@@ -203,6 +203,7 @@ async function insertWeeklySchedule(client, schedules) {
 					})
 					.then(result => {
 						res(scheduleId);
+						console.log("finish adding");
 					})
 			})
 			return 0;
@@ -268,7 +269,7 @@ router.post('/insertPartTimeRider', async (req, res) => {
 		let currId = 0;
 		const name = req.body.name;
 		const area = req.body.area;
-		let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+		let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 		client.query('BEGIN').then(res => {
 			client.query(`INSERT INTO users(name,datecreated) VALUES ($1,$2) returning userId`, [name, dateCreated]).then(result => {
 				currId = result.rows[0].userid;
@@ -299,9 +300,9 @@ router.post('/insertFullTimeRider', async (req, res) => {
 		let currId = 0;
 		const name = req.body.name;
 		const area = req.body.area;
-		let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+		let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 		client.query('BEGIN').then(res => {
-			client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name,dateCreated]).then(result => {
+			client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name, dateCreated]).then(result => {
 				currId = result.rows[0].userid;
 				console.log('currId:', currId);
 				client.query(

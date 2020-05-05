@@ -6,6 +6,9 @@ import { customerBrowse } from "./pages/customer/customerBrowse";
 import { restaurantOrder } from "./pages/customer/restaurantOrder";
 import { afterSubmitOrder } from "./pages/customer/afterSubmitOrder";
 import { summary } from "./pages/fdsManager/summary";
+import RestaurantStaff from "./pages/RestaurantStaff/RestaurantStaff";
+import Rider from "./pages/Rider/Rider";
+
 
 
 export default class App extends Component {
@@ -95,7 +98,8 @@ export default class App extends Component {
                         <Route path="/restaurantOrder" exact component={restaurantOrder} />
                         <Route path="/afterSubmitOrder" exact component={afterSubmitOrder} />
                         <Route path="/summary" exact component={summary} />
-
+                        <Route path="/RestaurantStaff" exact component={RestaurantStaff} />
+                        <Route path="/Rider" exact component={Rider} />
                     </Switch>
                 </div>
             </Router>

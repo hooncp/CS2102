@@ -25,16 +25,16 @@ class Login extends React.Component {
         partTimeOrFullTime: null
     }
     setExistingUser = () => {
-        this.setState({newOrExistingUser: "existing"});
+        this.setState({ newOrExistingUser: "existing" });
     }
 
     setNewUser = () => {
-        this.setState({newOrExistingUser: "new"});
+        this.setState({ newOrExistingUser: "new" });
     }
 
     handleChange = (event) => {
-        const {name, value} = event.target;
-        return this.setState({[name]: value});
+        const { name, value } = event.target;
+        return this.setState({ [name]: value });
     }
     handleLogin = () => {
         const userId = this.state.userId;
@@ -47,7 +47,7 @@ class Login extends React.Component {
         })
             .then(res => res.json())
             .then(json => {
-                this.setState({userType: json}, this.handleRedirect)
+                this.setState({ userType: json }, this.handleRedirect)
             })
             .catch(err => err);
     }
@@ -69,7 +69,7 @@ class Login extends React.Component {
                 })
                     .then(res => res.json())
                     .then(json => {
-                        this.setState({userType: "customer", userId: json}, this.handleRedirect)
+                        this.setState({ userType: "customer", userId: json }, this.handleRedirect)
                     })
                     .catch(err => err);
             case "rider":
@@ -87,7 +87,7 @@ class Login extends React.Component {
                     })
                         .then(res => res.json())
                         .then(json => {
-                            this.setState({userType: "rider"}, this.handleRedirect)
+                            this.setState({ userType: "rider" }, this.handleRedirect)
                         })
                         .catch(err => err);
                 } else if (this.state.partTimeOrFullTime === "fullTime") {
@@ -104,11 +104,11 @@ class Login extends React.Component {
                     })
                         .then(res => res.json())
                         .then(json => {
-                            this.setState({userType: "rider"}, this.handleRedirect)
+                            this.setState({ userType: "rider" }, this.handleRedirect)
                         })
                         .catch(err => err);
                 }
-            case"FM": //we dont have FM and RS insertion api
+            case "FM": //we dont have FM and RS insertion api
             case "RS":
             default:
                 return null;
@@ -122,21 +122,39 @@ class Login extends React.Component {
                 this.props.history.push({
                     pathname: '/customerActions',
                     state:
-                        {
-                            userId: this.state.userId,
-                            userType: userType
-                        }
+                    {
+                        userId: this.state.userId,
+                        userType: userType
+                    }
                 });
                 break;
-            // case "rider":
-            // case "RS":
+            case "rider":
+                this.props.history.push({
+                    pathname: '/Rider',
+                    state:
+                    {
+                        userId: this.state.userId,
+                        userType: userType
+                    }
+                });
+                break;
+            case "RS":
+                this.props.history.push({
+                    pathname: '/RestaurantStaff',
+                    state:
+                    {
+                        userId: this.state.userId,
+                        userType: userType
+                    }
+                });
+                break;
             case "FM":
                 this.props.history.push({
                     pathname: '/summary',
                     state:
-                        {
-                            userId: this.state.userId,
-                        }
+                    {
+                        userId: this.state.userId,
+                    }
                 });
                 break;
             default:
@@ -150,7 +168,7 @@ class Login extends React.Component {
 
     existingUserInput =
         <Grid container spacing={2} direction="row" justify="center" alignItems="center">
-            <Grid item style={{width: "100%"}}>
+            <Grid item style={{ width: "100%" }}>
                 <TextField
                     required
                     name="userId"
@@ -162,13 +180,13 @@ class Login extends React.Component {
                     onChange={this.handleChange}
                 />
             </Grid>
-            <Grid item style={{width: "100%"}}>
+            <Grid item style={{ width: "100%" }}>
                 <Button variant="contained" color="primary" onClick={this.handleLogin}>
                     Login
                 </Button>
             </Grid>
         </Grid>
-    ;
+        ;
 
 
     render() {
@@ -189,7 +207,7 @@ class Login extends React.Component {
                         Our very own Food Delivery Service created by Chee Ping, Ee Jian, Wei Dong & Jit Yong
                     </Typography>
                     <div>
-                        <br/> <br/>
+                        <br /> <br />
                         <Grid container spacing={2} direction="column" justify="center" alignItems="center">
                             <Grid item>
                                 <Button variant="contained" color="primary" onClick={this.setExistingUser}>
@@ -206,112 +224,112 @@ class Login extends React.Component {
                             </Grid>
                             <Grid item>
                                 {this.state.newOrExistingUser === "new" &&
-                                <Grid container spacing={2} direction="column" justify="center" alignItems="flex-start">
-                                    <Grid item style={{width: "100%"}}>
-                                        <FormControl variant="outlined" style={{width: "100%"}}>
-                                            <InputLabel>User Type</InputLabel>
-                                            <Select
-                                                required
-                                                name="userType"
-                                                value={this.state.userType}
+                                    <Grid container spacing={2} direction="column" justify="center" alignItems="flex-start">
+                                        <Grid item style={{ width: "100%" }}>
+                                            <FormControl variant="outlined" style={{ width: "100%" }}>
+                                                <InputLabel>User Type</InputLabel>
+                                                <Select
+                                                    required
+                                                    name="userType"
+                                                    value={this.state.userType}
+                                                    onChange={this.handleChange}
+                                                    input={
+                                                        <OutlinedInput
+                                                            label="User Type"
+                                                            name="userType"
+                                                            id="userType"
+                                                        />
+                                                    }
+                                                >
+                                                    <MenuItem value=""> --- Please select one ---</MenuItem>
+                                                    <MenuItem value="customer">Customer</MenuItem>
+                                                    <MenuItem value="rider">Rider</MenuItem>
+                                                    <MenuItem value="RS">Restaurant Staff</MenuItem>
+                                                    <MenuItem value="FM">FDS Manager</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item style={{ width: "100%" }}>
+                                            <TextField
+                                                name="userName"
+                                                label="Enter User Name"
+                                                placeholder="User Name"
+                                                variant="outlined"
+                                                value={this.state.userName}
                                                 onChange={this.handleChange}
-                                                input={
-                                                    <OutlinedInput
-                                                        label="User Type"
-                                                        name="userType"
-                                                        id="userType"
-                                                    />
-                                                }
-                                            >
-                                                <MenuItem value=""> --- Please select one ---</MenuItem>
-                                                <MenuItem value="customer">Customer</MenuItem>
-                                                <MenuItem value="rider">Rider</MenuItem>
-                                                <MenuItem value="RS">Restaurant Staff</MenuItem>
-                                                <MenuItem value="FM">FDS Manager</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item style={{width: "100%"}}>
-                                        <TextField
-                                            name="userName"
-                                            label="Enter User Name"
-                                            placeholder="User Name"
-                                            variant="outlined"
-                                            value={this.state.userName}
-                                            onChange={this.handleChange}
-                                        />
-                                    </Grid>
-                                    {this.state.userType === "rider" &&
-                                    <React.Fragment>
-                                        <Grid item style={{width: "100%"}}>
-                                            <FormControl variant="outlined" style={{width: "100%"}}>
-                                                <InputLabel>Delivery Area</InputLabel>
-                                                <Select
-                                                    required
-                                                    name="area"
-                                                    value={this.state.area}
-                                                    onChange={this.handleChange}
-                                                    input={
-                                                        <OutlinedInput
-                                                            label="area"
+                                            />
+                                        </Grid>
+                                        {this.state.userType === "rider" &&
+                                            <React.Fragment>
+                                                <Grid item style={{ width: "100%" }}>
+                                                    <FormControl variant="outlined" style={{ width: "100%" }}>
+                                                        <InputLabel>Delivery Area</InputLabel>
+                                                        <Select
+                                                            required
                                                             name="area"
-                                                            id="area"
-                                                        />
-                                                    }
-                                                >
-                                                    <MenuItem value=""> --- Please select one ---</MenuItem>
-                                                    <MenuItem value="north">North</MenuItem>
-                                                    <MenuItem value="south">South</MenuItem>
-                                                    <MenuItem value="east">East</MenuItem>
-                                                    <MenuItem value="west">West</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item style={{width: "100%"}}>
-                                            <FormControl variant="outlined" style={{width: "100%"}}>
-                                                <InputLabel>Schedule Type</InputLabel>
-                                                <Select
-                                                    required
-                                                    name="partTimeOrFullTime"
-                                                    value={this.state.partTimeOrFullTime}
-                                                    onChange={this.handleChange}
-                                                    input={
-                                                        <OutlinedInput
-                                                            label="partTimeOrFullTime"
+                                                            value={this.state.area}
+                                                            onChange={this.handleChange}
+                                                            input={
+                                                                <OutlinedInput
+                                                                    label="area"
+                                                                    name="area"
+                                                                    id="area"
+                                                                />
+                                                            }
+                                                        >
+                                                            <MenuItem value=""> --- Please select one ---</MenuItem>
+                                                            <MenuItem value="north">North</MenuItem>
+                                                            <MenuItem value="south">South</MenuItem>
+                                                            <MenuItem value="east">East</MenuItem>
+                                                            <MenuItem value="west">West</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item style={{ width: "100%" }}>
+                                                    <FormControl variant="outlined" style={{ width: "100%" }}>
+                                                        <InputLabel>Schedule Type</InputLabel>
+                                                        <Select
+                                                            required
                                                             name="partTimeOrFullTime"
-                                                            id="partTimeOrFullTime"
-                                                        />
-                                                    }
-                                                >
-                                                    <MenuItem value=""> --- Please select one ---</MenuItem>
-                                                    <MenuItem value="partTime">Part Time</MenuItem>
-                                                    <MenuItem value="fullTime">Full Time</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                    </React.Fragment>
-                                    }
-                                    {this.state.userType === "customer" &&
-                                    <Grid item style={{width: "100%"}}>
-                                        <TextField
-                                            required
-                                            name="creditCardInfo"
-                                            label="Credit Card Information"
-                                            placeholder="Credit Card Information"
-                                            helperText="Optional"
-                                            variant="outlined"
-                                            value={this.state.creditcardinfo}
-                                            onChange={this.handleChange}
-                                        />
-                                    </Grid>
-                                    }
-                                    <Grid item>
-                                        <Button variant="contained" color="secondary"
+                                                            value={this.state.partTimeOrFullTime}
+                                                            onChange={this.handleChange}
+                                                            input={
+                                                                <OutlinedInput
+                                                                    label="partTimeOrFullTime"
+                                                                    name="partTimeOrFullTime"
+                                                                    id="partTimeOrFullTime"
+                                                                />
+                                                            }
+                                                        >
+                                                            <MenuItem value=""> --- Please select one ---</MenuItem>
+                                                            <MenuItem value="partTime">Part Time</MenuItem>
+                                                            <MenuItem value="fullTime">Full Time</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
+                                            </React.Fragment>
+                                        }
+                                        {this.state.userType === "customer" &&
+                                            <Grid item style={{ width: "100%" }}>
+                                                <TextField
+                                                    required
+                                                    name="creditCardInfo"
+                                                    label="Credit Card Information"
+                                                    placeholder="Credit Card Information"
+                                                    helperText="Optional"
+                                                    variant="outlined"
+                                                    value={this.state.creditcardinfo}
+                                                    onChange={this.handleChange}
+                                                />
+                                            </Grid>
+                                        }
+                                        <Grid item>
+                                            <Button variant="contained" color="secondary"
                                                 onClick={this.handleCreateAccount}>
-                                            Create Account
+                                                Create Account
                                         </Button>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
                                 }
                             </Grid>
                         </Grid>

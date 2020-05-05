@@ -148,11 +148,16 @@ router.get('/getPromotionDuration', async (req, res) => {
     const query1 = `SELECT P.startDate, P.endDate, coalesce((P.endDate::date -  P.startDate::date), 0) as durationOfPromotion
                     FROM Promotions P
                     WHERE P.promoCode = '${promoCode}' AND P.applicableTo = '${applicableTo}';`
-    //console.log(query1);
+    console.log(query1);
     pool.query(query1).then(result => {
-        //let resDuration = result.rows;
-        //console.log(resDuration[0]);
-        res.json(result.rows);
+        if (result.length > 0) {
+            //let resDuration = result.rows;
+            //console.log(resDuration[0]);
+            res.json(result.rows);
+        } else {
+            console.log("none found");
+            res.json(null);
+        }
     }).catch(err => {
         if (err.constraint) {
             console.error(err.constraint);

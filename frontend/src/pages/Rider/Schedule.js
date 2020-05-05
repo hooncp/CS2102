@@ -53,7 +53,7 @@ export class Schedule extends Component {
                     margin="normal"
                     fullWidth="true"
                 />
-                <FormAddMWSchedule />
+                <FormAddMWSchedule userId={this.props.userId} />
                 <TextField
                     defaultValue=""
                     margin="normal"

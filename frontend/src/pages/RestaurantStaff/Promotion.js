@@ -40,11 +40,15 @@ export class Promotion extends Component {
         })
             .then(response => response.json())
             .then(result => {
-                this.setState({
-                    duration: result["0"]["durationofpromotion"],
-                    startDate: result["0"]["startdate"],
-                    endDate: result["0"]["enddate"]
-                })
+                if (result != null) {
+                    this.setState({
+                        duration: result["0"]["durationofpromotion"],
+                        startDate: result["0"]["startdate"],
+                        endDate: result["0"]["enddate"]
+                    })
+                } else {
+                    alert("no result found");
+                }
             });
     };
 

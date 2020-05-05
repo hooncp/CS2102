@@ -46,7 +46,7 @@ export class customerActions extends React.Component {
             .then(json => {
                 // let temp = this.state.pastFiveLoc.slice();
                 // temp = json;
-                this.setState({pastFiveLoc: json}, this.handleRedirect)
+                this.setState({ pastFiveLoc: json }, this.handleRedirect)
                 // this.state.pastFiveLoc.forEach(location => {
                 //     console.log(location.deliverylocation)
                 // })
@@ -61,7 +61,7 @@ export class customerActions extends React.Component {
         })
             .then(res => res.json())
             .then(json => {
-                this.setState({pastOrders: json}, this.handleRedirect)
+                this.setState({ pastOrders: json }, this.handleRedirect)
                 console.log(this.state.pastOrders)
             })
             .catch(err => err);
@@ -74,38 +74,38 @@ export class customerActions extends React.Component {
         })
             .then(res => res.json())
             .then(json => {
-                this.setState({foodDetails: json}, this.handleRedirect)
+                this.setState({ foodDetails: json }, this.handleRedirect)
                 console.log(this.state.foodDetails)
             })
             .catch(err => err);
     }
 
     hamdleViewPastOrders = () => {
-        this.setState({viewPastOrder: true, makeNewOrder: false});
+        this.setState({ viewPastOrder: true, makeNewOrder: false });
     }
     handleChange = (event) => {
-        const {name, value} = event.target;
-        return this.setState({[name]: value});
+        const { name, value } = event.target;
+        return this.setState({ [name]: value });
     }
     handleToggle = (event) => {
-        const {name, checked} = event.target;
-        return this.setState({[name]: checked});
+        const { name, checked } = event.target;
+        return this.setState({ [name]: checked });
     }
 
     handleMakeNewOrder = () => {
-        this.setState({makeNewOrder: true, viewPastOrder: false});
+        this.setState({ makeNewOrder: true, viewPastOrder: false });
     }
 
     handleGO = () => {
         this.props.history.push({
             pathname: '/customerBrowse',
             state:
-                {
-                    userId: this.state.userId,
-                    area: this.state.area,
-                    chosenLocation: this.state.chosenLocation,
-                    orderDetails: this.state.foodDetails
-                }
+            {
+                userId: this.state.userId,
+                area: this.state.area,
+                chosenLocation: this.state.chosenLocation,
+                orderDetails: this.state.foodDetails
+            }
         });
     }
 
@@ -115,46 +115,46 @@ export class customerActions extends React.Component {
         const foodDetailsCopy = this.state.foodDetails.slice();
         const pastOrdersView = this.state.pastOrders.map(orderDetails => {
             return (
-                <ExpansionPanel style={{width:"95%"}}>
+                <ExpansionPanel style={{ width: "95%" }}>
                     <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon/>}
+                        expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <Typography style={{fontWeight:"bold"}}> Order ID: {orderDetails.orderid}
-                        {"  "} || {"   "}
+                        <Typography style={{ fontWeight: "bold" }}> Order ID: {orderDetails.orderid}
+                            {"  "} || {"   "}
                         Restaurant name: {orderDetails.rname}
-                        {"   "} || {"  "}
-                        Date: {orderDetails.timeoforder.substring(0,10)}
+                            {"   "} || {"  "}
+                        Date: {orderDetails.timeoforder.substring(0, 10)}
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Grid container spacing={2} direction="column" justify="center" alignItems="flex-start">
-                        <Grid item>
-                        <Typography>
-                            <hr/>
-                            Final price: ${orderDetails.finalprice} (Delivery Fee: ${orderDetails.deliveryfee})
-                            <br/> <br/>
-                            {" "} Earned Reward Points: {orderDetails.earnedrewardpts} points
-                            <br/> <br/>
-                            {" "} Used Reward Points: {orderDetails.usedrewardpoints} points
-                            <hr/>
-                        </Typography>
-                        </Grid>
-                        <Grid item>
-                        {foodDetailsCopy
-                            .filter(record => {
-                                return (record.orderid === orderDetails.orderid)
-                            })
-                            .map((record,i) => {
-                            return (
+                            <Grid item>
                                 <Typography>
-                                    Food Item: {record.fname} x {record.foodqty}
+                                    <hr />
+                            Final price: ${orderDetails.finalprice} (Delivery Fee: ${orderDetails.deliveryfee})
+                            <br /> <br />
+                                    {" "} Earned Reward Points: {orderDetails.earnedrewardpts} points
+                            <br /> <br />
+                                    {" "} Used Reward Points: {orderDetails.usedrewardpoints} points
+                            <hr />
                                 </Typography>
+                            </Grid>
+                            <Grid item>
+                                {foodDetailsCopy
+                                    .filter(record => {
+                                        return (record.orderid === orderDetails.orderid)
+                                    })
+                                    .map((record, i) => {
+                                        return (
+                                            <Typography>
+                                                Food Item: {record.fname} x {record.foodqty}
+                                            </Typography>
 
-                                )
-                        })}
-                        </Grid>
+                                        )
+                                    })}
+                            </Grid>
                         </Grid>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
@@ -162,14 +162,15 @@ export class customerActions extends React.Component {
         })
         return (
             <React.Fragment>
-                <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
+                <AppBar style={{ backgroundColor: "#ff3d00" }} position="relative">
                     <Toolbar>
+
                         <Typography variant="h6" color="inherit" noWrap>
                             Customer Actions - User Id: {this.state.userId}
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <br/><br/>
+                <br /><br />
                 <div>
                     <Grid container spacing={2} direction="column" justify="center" alignItems="center">
                         <Grid item>
@@ -178,94 +179,94 @@ export class customerActions extends React.Component {
                             </Button>
                         </Grid>
                         {this.state.makeNewOrder &&
-                        <React.Fragment>
-                            <h2> Where are you ordering to?</h2>
-                            <Grid item style={{width: "80%"}}>
-                                <FormControl variant="outlined" style={{width: "100%"}}>
-                                    <InputLabel>Delivery Area</InputLabel>
-                                    <Select
-                                        required
-                                        name="area"
-                                        value={this.state.area}
-                                        onChange={this.handleChange}
-                                        input={
-                                            <OutlinedInput
-                                                label="area"
-                                                name="area"
-                                                id="area"
-                                            />
-                                        }
-                                    >
-                                        <MenuItem value=""> --- Please select one ---</MenuItem>
-                                        <MenuItem value="north">North</MenuItem>
-                                        <MenuItem value="south">South</MenuItem>
-                                        <MenuItem value="east">East</MenuItem>
-                                        <MenuItem value="west">West</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item style={{width: "80%"}}>
-                                <span> Choose From Previously Delivered Locations </span>
-                                <Switch
-                                    checked={this.state.chooseFromPrevOrders}
-                                    onChange={this.handleToggle}
-                                    name="chooseFromPrevOrders"
-                                    inputProps={{'aria-label': 'secondary checkbox'}}
-                                />
-                            </Grid>
-                            {this.state.chooseFromPrevOrders &&
                             <React.Fragment>
-                                <FormControl variant="outlined" style={{width: "80%"}}>
-                                    <InputLabel>Past Five Addresses </InputLabel>
-                                    <Select
-                                        required
-                                        name="chosenLocation"
-                                        value={this.state.chosenLocation}
-                                        onChange={this.handleChange}
-                                        input={
-                                            <OutlinedInput
-                                                label="area"
-                                                name="area"
-                                                id="area"
-                                            />
-                                        }
-                                    >
-                                        <MenuItem value=""> --- Please select one ---</MenuItem>
-                                        <MenuItem
-                                            value={this.state.pastFiveLoc[0].deliverylocation}>{this.state.pastFiveLoc[0].deliverylocation}</MenuItem>
-                                        <MenuItem
-                                            value={this.state.pastFiveLoc[1].deliverylocation}>{this.state.pastFiveLoc[1].deliverylocation}</MenuItem>
-                                        <MenuItem
-                                            value={this.state.pastFiveLoc[2].deliverylocation}>{this.state.pastFiveLoc[2].deliverylocation}</MenuItem>
-                                        <MenuItem
-                                            value={this.state.pastFiveLoc[3].deliverylocation}>{this.state.pastFiveLoc[3].deliverylocation}</MenuItem>
-                                        <MenuItem
-                                            value={this.state.pastFiveLoc[4].deliverylocation}>{this.state.pastFiveLoc[4].deliverylocation}</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </React.Fragment>
-                            }
-                            {!this.state.chooseFromPrevOrders &&
-                            <FormControl variant="outlined" style={{width: "80%"}}>
-                                <TextField
-                                    name="chosenLocation"
-                                    label="Enter New Delivery Address"
-                                    placeholder="Address"
-                                    variant="outlined"
-                                    value={this.state.chosenLocation}
-                                    onChange={this.handleChange}
-                                />
-                            </FormControl>
-                            }
-                            <br/>
-                            <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium">
-                                GO
+                                <h2> Where are you ordering to?</h2>
+                                <Grid item style={{ width: "80%" }}>
+                                    <FormControl variant="outlined" style={{ width: "100%" }}>
+                                        <InputLabel>Delivery Area</InputLabel>
+                                        <Select
+                                            required
+                                            name="area"
+                                            value={this.state.area}
+                                            onChange={this.handleChange}
+                                            input={
+                                                <OutlinedInput
+                                                    label="area"
+                                                    name="area"
+                                                    id="area"
+                                                />
+                                            }
+                                        >
+                                            <MenuItem value=""> --- Please select one ---</MenuItem>
+                                            <MenuItem value="north">North</MenuItem>
+                                            <MenuItem value="south">South</MenuItem>
+                                            <MenuItem value="east">East</MenuItem>
+                                            <MenuItem value="west">West</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item style={{ width: "80%" }}>
+                                    <span> Choose From Previously Delivered Locations </span>
+                                    <Switch
+                                        checked={this.state.chooseFromPrevOrders}
+                                        onChange={this.handleToggle}
+                                        name="chooseFromPrevOrders"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                </Grid>
+                                {this.state.chooseFromPrevOrders &&
+                                    <React.Fragment>
+                                        <FormControl variant="outlined" style={{ width: "80%" }}>
+                                            <InputLabel>Past Five Addresses </InputLabel>
+                                            <Select
+                                                required
+                                                name="chosenLocation"
+                                                value={this.state.chosenLocation}
+                                                onChange={this.handleChange}
+                                                input={
+                                                    <OutlinedInput
+                                                        label="area"
+                                                        name="area"
+                                                        id="area"
+                                                    />
+                                                }
+                                            >
+                                                <MenuItem value=""> --- Please select one ---</MenuItem>
+                                                <MenuItem
+                                                    value={this.state.pastFiveLoc[0].deliverylocation}>{this.state.pastFiveLoc[0].deliverylocation}</MenuItem>
+                                                <MenuItem
+                                                    value={this.state.pastFiveLoc[1].deliverylocation}>{this.state.pastFiveLoc[1].deliverylocation}</MenuItem>
+                                                <MenuItem
+                                                    value={this.state.pastFiveLoc[2].deliverylocation}>{this.state.pastFiveLoc[2].deliverylocation}</MenuItem>
+                                                <MenuItem
+                                                    value={this.state.pastFiveLoc[3].deliverylocation}>{this.state.pastFiveLoc[3].deliverylocation}</MenuItem>
+                                                <MenuItem
+                                                    value={this.state.pastFiveLoc[4].deliverylocation}>{this.state.pastFiveLoc[4].deliverylocation}</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </React.Fragment>
+                                }
+                                {!this.state.chooseFromPrevOrders &&
+                                    <FormControl variant="outlined" style={{ width: "80%" }}>
+                                        <TextField
+                                            name="chosenLocation"
+                                            label="Enter New Delivery Address"
+                                            placeholder="Address"
+                                            variant="outlined"
+                                            value={this.state.chosenLocation}
+                                            onChange={this.handleChange}
+                                        />
+                                    </FormControl>
+                                }
+                                <br />
+                                <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium">
+                                    GO
                             </Button>
-                        </React.Fragment>
+                            </React.Fragment>
                         }
                         <Grid item>
                             <Button variant="outlined" color="secondary" onClick={this.hamdleViewPastOrders}
-                                    size="large">
+                                size="large">
                                 View past orders
                             </Button>
                         </Grid>
