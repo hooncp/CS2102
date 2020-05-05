@@ -160,6 +160,7 @@ export class customerActions extends React.Component {
                 </ExpansionPanel>
             )
         })
+        console.log("pastorder:",pastOrdersView);
         return (
             <React.Fragment>
                 <AppBar style={{ backgroundColor: "#ff3d00" }} position="relative">
@@ -232,6 +233,8 @@ export class customerActions extends React.Component {
                                                 }
                                             >
                                                 <MenuItem value=""> --- Please select one ---</MenuItem>
+                                                {this.state.pastFiveLoc[0] !== undefined &&
+                                                <React.Fragment>
                                                 <MenuItem
                                                     value={this.state.pastFiveLoc[0].deliverylocation}>{this.state.pastFiveLoc[0].deliverylocation}</MenuItem>
                                                 <MenuItem
@@ -242,6 +245,8 @@ export class customerActions extends React.Component {
                                                     value={this.state.pastFiveLoc[3].deliverylocation}>{this.state.pastFiveLoc[3].deliverylocation}</MenuItem>
                                                 <MenuItem
                                                     value={this.state.pastFiveLoc[4].deliverylocation}>{this.state.pastFiveLoc[4].deliverylocation}</MenuItem>
+                                                </React.Fragment>
+                                                    }
                                             </Select>
                                         </FormControl>
                                     </React.Fragment>
@@ -270,7 +275,8 @@ export class customerActions extends React.Component {
                                 View past orders
                             </Button>
                         </Grid>
-                        {this.state.viewPastOrder && pastOrdersView}
+                        {this.state.viewPastOrder && pastOrdersView.length === 0 ? "None" : pastOrdersView}
+
                     </Grid>
                 </div>
             </React.Fragment>
