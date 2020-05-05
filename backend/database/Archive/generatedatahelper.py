@@ -170,13 +170,13 @@ lastcount = 1
 
 def generateAllWeeklyWorkSchedule(totalPartTimeRider, startingUserIdPartTimeRider):
     randomIntervalsBetweenWeeksTotal = 0
-    commonStartDate = datetime(2019, 1, 1)
+    commonStartDate = datetime(2020, 1, 1)
     count = 1
 
     for i in range(totalPartTimeRider):
         randomIntervalsBetweenWeeksTotal = 0
-        #numberOfTimes = random.randrange(10,20)
-        numberOfTimes = 1
+        numberOfTimes = random.randrange(11,17) #change here
+        #numberOfTimes = 1
         for a in range(numberOfTimes):
 
             startDate = commonStartDate + timedelta(days = randomIntervalsBetweenWeeksTotal)
@@ -197,7 +197,7 @@ intervalsFT = []
 
 def generateWeeklyWorkScheduleForFT(startDate, riderNo):
     enddate = startDate + timedelta(days = 6)
-   ## startdate = date(2020, 1, 1).strftime("%Y-%m-%d") convert to string
+    startdate = date(2020, 1, 1).strftime("%Y-%m-%d") ## convert to string
     tempArr = [riderNo, startDate, enddate] ##something wrong
     weeklyworkFT.append(tempArr)
 
@@ -222,13 +222,13 @@ def generateIntervalFinalFT(scheduleId, matrix, startDate):
 
 def generateAllWeeklyWorkScheduleFt(totalFullTimeRider, startingUserIdFullTimeRider, scheduleId):
     randomIntervalsBetweenWeeksTotal = 0
-    commonStartDate = datetime(2019, 1, 1)
+    commonStartDate = datetime(2020, 1, 1)
     count = scheduleId
 
     for i in range(totalFullTimeRider):
         randomIntervalsBetweenWeeksTotal = 0
-        numberOfTimes = 1
-        #numberOfTimes = 3
+        #numberOfTimes = 1  #change here
+        numberOfTimes = 4
         for a in range(numberOfTimes):
             
             arr = create_arrayFT()
@@ -264,10 +264,28 @@ def generateAllWeeklyWorkScheduleFt(totalFullTimeRider, startingUserIdFullTimeRi
 
             generateMonthlyWorkScheduleForFT(scheduleId1, scheduleId2, scheduleId3, scheduleId4)
 
+            randomIntervalsBetweenWeeksTotal += random.randrange(0,7)
+
 def generateMonthlyWorkScheduleForFT(scheduleId1, scheduleId2, scheduleId3, scheduleId4):
     temparr = [scheduleId1, scheduleId2,scheduleId3,scheduleId4]
     monthlyworkFT.append(temparr)
 
+timeOforders = []
+
+def generateOrderTimeOfOrder():
+    startDate = datetime(2020, 1, 1)
+    noOfDays = 125 #already generated for january change here
+    for a in range(noOfDays): 
+        currentDate = startDate + timedelta(days = a)
+        noOfOrdersPerday = random.randrange(10,20) #random.randrange(40,80) #change here remember to order first before inserting 100 orders per day is no issue
+        for b in range(noOfOrdersPerday):
+            dateString = currentDate.strftime("%Y-%m-%d") #tostring
+            hh = random.randrange(10, 22)
+            mm = random.randrange(0, 60)
+            ss = random.randrange(0, 60)
+            timeStamp = dateString + " " + str(hh) + ":" + str(mm).zfill(2) + ":" + str(ss).zfill(2)
+            temp = [timeStamp]
+            timeOforders.append(temp)
 
 def convert_to_csv(data, filename):
     f = open(filename, 'w', newline='')
@@ -288,32 +306,46 @@ def convert_to_csv(data, filename):
         if(filename == 'smallmonthlyworkFT.csv'):
             writer.writerow(['scheduleId1', 'scheduleId2', 'scheduleId3', 'scheduleId4'])
 
+        if(filename == 'MoreOrders.csv'):
+            writer.writerow(['timeOfOrder'])
+
         for row in data:
             writer.writerow(row)
+
+generateOrderTimeOfOrder()
+#print(timeOforders)
+convert_to_csv(timeOforders, 'MoreOrders.csv')
+
 """
 a = create_array()
 while(not checkconstrain1(a)):
     a = create_array()
-
 print(a)
-
 a = create_arrayFT()
-
 print(a)
-
 b = create_arrayFT()
 print(b)
 a = generateInterval(b)
 print(a)
+"""
 
+"""
 scheduleId = generateAllWeeklyWorkSchedule(20,41) #20 parttime rider start from userid 40
 convert_to_csv(weeklywork, 'smallweeklywork.csv')
 convert_to_csv(intervals, 'smallintervals.csv')
-
-
 generateAllWeeklyWorkScheduleFt(25,61, scheduleId) #25 fulltime rider start from userid 40
 convert_to_csv(weeklyworkFT, 'smallweeklyworkFT.csv')
 convert_to_csv(intervalsFT, 'smallintervalsFT.csv')
 convert_to_csv(monthlyworkFT, 'smallmonthlyworkFT.csv')
+"""
 
+"""
+scheduleId = generateAllWeeklyWorkSchedule(20,41) #20 parttime rider start from userid 40
+convert_to_csv(weeklywork, 'weeklywork.csv')
+convert_to_csv(intervals, 'intervals.csv')
+
+generateAllWeeklyWorkScheduleFt(25,61, scheduleId) #25 fulltime rider start from userid 61
+convert_to_csv(weeklyworkFT, 'weeklyworkFT.csv')
+convert_to_csv(intervalsFT, 'intervalsFT.csv')
+convert_to_csv(monthlyworkFT, 'monthlyworkFT.csv')
 """
