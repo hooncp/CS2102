@@ -462,42 +462,75 @@ commit;
 -- [fail] MWS has 5 days, but not all days got work
 
 begin;
-insert into schedules values (9,1,'7 nov 2020', '13 nov 2020');
-insert into schedules values (10,1,'13 nov 2020', '19 nov 2020');
-insert into schedules values (11,1,'19 nov 2020', '25 nov 2020');
-insert into schedules values (12,1,'25 nov 2020', '2 dec 2020');
+insert into Weekly_Work_Schedules(userId, startDate, endDate) values (43,'7 nov 2020', '13 nov 2020');
+insert into Weekly_Work_Schedules(userId, startDate, endDate) values (43,'13 nov 2020', '19 nov 2020');
+insert into Weekly_Work_Schedules(userId, startDate, endDate) values (43,'19 nov 2020', '25 nov 2020');
+insert into Weekly_Work_Schedules(userId, startDate, endDate) values (43,'25 nov 2020', '1 dec 2020');
 
-insert into Intervals values (5,9,'2020-11-07 10:00','2020-11-07 14:00');
-insert into Intervals values (6,9,'2020-11-07 15:00','2020-11-07 19:00');
---insert into Intervals values (7,9,'2020-11-08 10:00','2020-11-08 14:00');
---insert into Intervals values (8,9,'2020-11-08 15:00','2020-11-08 19:00');
-insert into Intervals values (9,9,'2020-11-09 10:00','2020-11-09 14:00');
-insert into Intervals values (10,9,'2020-11-09 15:00','2020-11-09 19:00');
-insert into Intervals values (11,9,'2020-11-10 10:00','2020-11-10 14:00');
-insert into Intervals values (12,9,'2020-11-10 15:00','2020-11-10 19:00');
-insert into Intervals values (13,9,'2020-11-12 10:00','2020-11-12 14:00');
-insert into Intervals values (14,9,'2020-11-12 15:00','2020-11-12 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-07 10:00','2020-11-07 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-07 15:00','2020-11-07 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-08 10:00','2020-11-08 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-08 15:00','2020-11-08 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-09 10:00','2020-11-09 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-09 15:00','2020-11-09 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-10 10:00','2020-11-10 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-10 15:00','2020-11-10 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-11 10:00','2020-11-11 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (664,'2020-11-11 15:00','2020-11-11 19:00');
 
-insert into monthly_work_schedules values (9,10,11,12);
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-13 10:00','2020-11-13 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-13 15:00','2020-11-13 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-14 10:00','2020-11-14 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-14 15:00','2020-11-14 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-15 10:00','2020-11-15 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-15 15:00','2020-11-15 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-16 10:00','2020-11-16 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-16 15:00','2020-11-16 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-17 10:00','2020-11-17 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (665,'2020-11-17 15:00','2020-11-17 19:00');
+
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-19 10:00','2020-11-19 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-19 15:00','2020-11-19 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-20 10:00','2020-11-20 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-20 15:00','2020-11-20 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-21 10:00','2020-11-21 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-21 15:00','2020-11-21 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-22 10:00','2020-11-22 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-22 15:00','2020-11-22 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-23 10:00','2020-11-23 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (666,'2020-11-23 15:00','2020-11-23 19:00');
+
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-25 10:00','2020-11-25 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-25 15:00','2020-11-25 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-26 10:00','2020-11-26 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-26 15:00','2020-11-26 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-27 10:00','2020-11-27 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-27 15:00','2020-11-27 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-28 10:00','2020-11-28 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-28 15:00','2020-11-28 19:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-29 10:00','2020-11-29 14:00');
+insert into Intervals(scheduleId, startTime, endTime) values (667,'2020-11-29 15:00','2020-11-29 19:00');
+
+insert into Monthly_Work_Schedules(scheduleId1, scheduleId2, scheduleId3, scheduleId4) values (664,665,666,667);
 commit;
 
 -- [pass] MWS has 5 consecutive days
 begin;
-insert into schedules values (9,4,'7 nov 2020', '13 nov 2020');
-insert into schedules values (10,4,'14 nov 2020', '20 nov 2020');
-insert into schedules values (11,4,'21 nov 2020', '27 nov 2020');
-insert into schedules values (12,4,'28 nov 2020', '4 dec 2020');
+insert into schedules values (43,'7 nov 2020', '13 nov 2020');
+insert into schedules values (43,'14 nov 2020', '20 nov 2020');
+insert into schedules values (43,'21 nov 2020', '27 nov 2020');
+insert into schedules values (43,'28 nov 2020', '4 dec 2020');
 
-insert into Intervals values (5,9,'2020-11-07 10:00','2020-11-07 14:00');
-insert into Intervals values (6,9,'2020-11-07 15:00','2020-11-07 19:00');
-insert into Intervals values (7,9,'2020-11-08 10:00','2020-11-08 14:00');
-insert into Intervals values (8,9,'2020-11-08 15:00','2020-11-08 19:00');
-insert into Intervals values (9,9,'2020-11-09 10:00','2020-11-09 14:00');
-insert into Intervals values (10,9,'2020-11-09 15:00','2020-11-09 19:00');
-insert into Intervals values (11,9,'2020-11-10 10:00','2020-11-10 14:00');
-insert into Intervals values (12,9,'2020-11-10 15:00','2020-11-10 19:00');
-insert into Intervals values (13,9,'2020-11-11 10:00','2020-11-11 14:00');
-insert into Intervals values (14,9,'2020-11-11 15:00','2020-11-11 19:00');
+insert into Intervals values (9,'2020-11-07 10:00','2020-11-07 14:00');
+insert into Intervals values (9,'2020-11-07 15:00','2020-11-07 19:00');
+insert into Intervals values (9,'2020-11-08 10:00','2020-11-08 14:00');
+insert into Intervals values (9,'2020-11-08 15:00','2020-11-08 19:00');
+insert into Intervals values (9,'2020-11-09 10:00','2020-11-09 14:00');
+insert into Intervals values (9,'2020-11-09 15:00','2020-11-09 19:00');
+insert into Intervals values (9,'2020-11-10 10:00','2020-11-10 14:00');
+insert into Intervals values (9,'2020-11-10 15:00','2020-11-10 19:00');
+insert into Intervals values (9,'2020-11-11 10:00','2020-11-11 14:00');
+insert into Intervals values (9,'2020-11-11 15:00','2020-11-11 19:00');
 
 insert into monthly_work_schedules values (9,10,11,12);
 commit;
