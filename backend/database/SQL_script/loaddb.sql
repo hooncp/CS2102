@@ -414,7 +414,7 @@ $$
         randomRating INTEGER;
 
     BEGIN
-        randomRating = floor(random() * 3 + 3)::INT;
+        randomRating = 0;
         randomTime1 = floor(random() * (5) + 1) * '1 minute'::INTERVAL; -- 1- 5 minutes?
         randomTime2 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime1;-- 11- 15 minutes?
         randomTime3 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime2;-- 11- 15 minutes?

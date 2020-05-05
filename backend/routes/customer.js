@@ -361,6 +361,18 @@ router.get('/getOrderInfo', async (req, res) => {
 
 });
 
+router.get('/getDeliveryRider', async(req,res) => {
+    var parts = url.parse(req.url, true);
+    var orderId = parts.query.orderId;
+    const query = `SELECT * 
+                    FROM delivers 
+                    WHERE orderId = $1`;
+    values = [orderId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
+
 router.post('/submitRiderRatings', async (req, res) => {
     const orderId = req.body.orderId;
     const rating = req.body.rating;

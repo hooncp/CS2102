@@ -23,6 +23,7 @@ export class afterSubmitOrder extends React.Component {
             foodToQty: this.props.location.state.foodToQty,
             foodToReview: {},
             orderInfo: [],
+            deliveryInfo: [],
             rating: null,
 
         }
@@ -35,6 +36,28 @@ export class afterSubmitOrder extends React.Component {
         })
         this.setState({foodToReview: temp});
         this.getOrderInfo();
+        this.getDeliveryInfo();
+    }
+
+    getDeliveryInfo = () => {
+        fetch(`http://localhost:5000/customer/getDeliveryRider?orderId=${this.state.orderId}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept':
+                        'application/json',
+                    'Content-Type':
+                        'application/json',
+                }
+            }
+        ).then(res => res.json())
+            .then(json => {
+                this.setState({deliveryInfo: json[0]})
+                console.log('deliveryInfo', this.state.deliveryInfo)
+        })
+        .catch(err => err);
+
+
     }
 
     getOrderInfo = () => {
@@ -56,6 +79,8 @@ export class afterSubmitOrder extends React.Component {
             })
             .catch(err => err);
     }
+
+
 
     handleInputReview = (event) => {
         const {name, value} = event.target;
@@ -100,6 +125,13 @@ export class afterSubmitOrder extends React.Component {
         const datetime = orderInfo.timeoforder + "";
         const date = datetime.substr(0, 10);
         const time = datetime.substr(11, 8);
+
+                
+        const deliveryInfo = this.state.deliveryInfo;
+        const datetime1 = deliveryInfo.deliverytimetocustomer + "";
+        const date1 = datetime1.substr(0, 10);
+        const time1 = datetime1.substr(11, 8);
+
         console.log('orderid:', this.state.orderId);
         console.log("foodtoreview", this.state.foodToReview);
         return (
@@ -129,6 +161,19 @@ export class afterSubmitOrder extends React.Component {
                             Time Of Order: {date} | {time}
                             <br/> <br/>
 
+                        </Paper>
+                    </Grid>
+                </Grid>
+                <br/>
+                <Grid container direction="column" alignItems="center" justify="center">
+                    <Grid item alignItems="center">
+                        <Paper>
+                            <span style={{fontWeight: "bold", textAlign: 'center'}}>Delivery Info:</span> <br/> <br/>
+                            Your order is delivered by: {deliveryInfo.userid} 
+                            <hr/>
+                            Received at: {date1} | {time1}
+                            <br/>
+                            <br/>
                         </Paper>
                     </Grid>
                 </Grid>
