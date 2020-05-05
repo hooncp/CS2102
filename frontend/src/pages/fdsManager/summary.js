@@ -265,7 +265,7 @@ export class summary extends React.Component {
                                     id="panel1a-header"
                                 >
                                     <Typography style={{fontWeight: "bold"}}>
-                                        Customer ID: {res.userid}
+                                        Rider ID: {res.userid}
                                     </Typography>
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
