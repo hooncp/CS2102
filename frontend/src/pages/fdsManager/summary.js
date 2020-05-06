@@ -28,9 +28,9 @@ export class summary extends React.Component {
             userId: this.props.location.state.userId,
             monthlyGeneralSummary: [],
             monthlyCustomerSummary: [],
-            year: 2019,
+            year: 2020,
             month: 1,
-            day: 11,
+            day: 1,
             hour: 21,
             chooseMonthlySummary: false,
             customerOpen: false,
@@ -249,7 +249,7 @@ export class summary extends React.Component {
 
                     </Select>
                 </FormControl>
-                <Button variant="outlined" color="default" onClick={this.getMonthlyCustomerSummary}
+                <Button variant="outlined" color="default" onClick={this.getMonthlyRiderSummary}
                         size="large">
                     Go
                 </Button>
@@ -278,7 +278,7 @@ export class summary extends React.Component {
                                         <br/>
                                         <span style={{fontWeight: "bold"}}>Total Salary:</span> {res.totalsalary} <br/>
                                         <span
-                                            style={{fontWeight: "bold"}}>Average Delivery Time:</span> ${res.avgtimedelivery}
+                                            style={{fontWeight: "bold"}}>Average Delivery Time:</span> {res.avgtimedelivery} minutes
                                         <br/>
                                         <span style={{fontWeight: "bold"}}>Number Of Ratings:</span> {res.numrating}
                                         <br/>
