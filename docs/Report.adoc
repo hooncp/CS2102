@@ -239,7 +239,7 @@ By abstracting out key attributes of the promotion, different restaurants can no
 === Constraints not captured by ER Model
 
 == Database Relational Schema
-Users schema
+Users: BCNF
 [source,SQL]
 ----
 CREATE TABLE Users (
@@ -247,8 +247,12 @@ CREATE TABLE Users (
     name		VARCHAR(100),
     PRIMARY KEY (userId)
 );
+
+Non-trivial FDs F = {userId → name}
 ----
-Restaurants schema
+
+
+Restaurants: BCNF
 [source,SQL]
 ----
 CREATE TABLE Restaurants (
@@ -262,8 +266,10 @@ CREATE TABLE Restaurants (
         area = 'north' OR
         area = 'south')
 );
+
+Non-trivial FDs F = {rname → (minOrderAmt)(area)}
 ----
-Food schema
+Food schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Food (
@@ -276,8 +282,10 @@ CREATE TABLE Food (
         category = 'korean' OR
         category = 'fusion')
 );
+
+Non-trivial FDs F = {fname → category}
 ----
-Sells schema
+Sells schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Sells (
@@ -291,8 +299,10 @@ CREATE TABLE Sells (
     availability 	INTEGER DEFAULT 10,
     PRIMARY KEY (rname, fname)
 );
+
+Non-trivial FDs F = {(fname)(rname) → (price)(availability)}
 ----
-Restaurant Staff schema
+Restaurant Staff schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Restaurant_Staff (
@@ -305,8 +315,23 @@ CREATE TABLE Restaurant_Staff (
                             on DELETE CASCADE
                             on UPDATE CASCADE
 );
+
+Non-trivial FDs F = {userId → rname}
 ----
-Customers schema
+FDS Manager schema : BCNF
+[source,SQL]
+----
+CREATE TABLE FDS_Managers (
+	userId 		INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+    			on DELETE CASCADE
+			    on UPDATE CASCADE
+);
+
+Non-trivial FDs F = {0}
+----
+Customers schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Customers (
@@ -317,8 +342,10 @@ CREATE TABLE Customers (
                             on DELETE CASCADE
                             on UPDATE CASCADE
 );
+
+Non-trivial FDs F = {userId → creditCardInfo}
 ----
-Riders schema
+Riders schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Riders (
@@ -334,8 +361,10 @@ CREATE TABLE Riders (
         area = 'north' OR
         area = 'south')
 );
+
+Non-trivial FDs F = {userId → area}
 ----
-Part-time schema
+Part-time schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Part_Time
@@ -347,8 +376,10 @@ CREATE TABLE Part_Time
                             on UPDATE CASCADE
     --        DEFERRABLE INITIALLY DEFERRED
 );
+
+Non-trivial FDs F = {0}
 ----
-Weekly Work Schedules (WWS) schema
+Weekly Work Schedules (WWS) schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Weekly_Work_Schedules
@@ -361,8 +392,10 @@ CREATE TABLE Weekly_Work_Schedules
     FOREIGN KEY (userId) REFERENCES Riders (userId),
         check ((endDate::date - startDate::date) = 6)
 );
+
+Non-trivial FDs F = {scheduleId → (userId)(startDate)(endDate)}
 ----
-Monthly Work Schedules (MWS) schema
+Monthly Work Schedules (MWS) schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Monthly_Work_Schedules (
@@ -376,8 +409,13 @@ CREATE TABLE Monthly_Work_Schedules (
                                     ON DELETE CASCADE,
     PRIMARY KEY (scheduleId1, scheduleId2, scheduleId3, scheduleId4)
 );
+
+Non-trivial FDs F = {scheduleId1 → (scheduleId2)(scheduleId3)(scheduleId4)
+                    scheduleId2 → (scheduleId1)(scheduleId3)(scheduleId4)
+                    scheduleId3 → (scheduleId1)(scheduleId2)(scheduleId4)
+                    scheduleId4 → (scheduleId1)(scheduleId2)(scheduleId3)}
 ----
-Intervals schema
+Intervals schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Intervals
@@ -409,8 +447,9 @@ CREATE TABLE Intervals
         )
 );
 
+Non-trivial FDs F = {intervalId → (scheduleId)(startTime)(endTime)}
 ----
-Promotions schema
+Promotions schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Promotions (
@@ -426,8 +465,12 @@ CREATE TABLE Promotions (
     PRIMARY KEY (promoCode, applicableTo)
 );
 
+
+Non-trivial FDs F = {(promoCode)(applicableTo) → (promoDesc)(createdBy)(discUnit)
+                                                    (discRate)(startDate)(endDate)}
+
 ----
-Orders schema
+Orders schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Orders (
@@ -445,8 +488,12 @@ CREATE TABLE Orders (
     CHECK(modeOfPayment = 'cash' OR
           modeOfPayment ='credit')
 );
+
+Non-trivial FDs F = {orderId → (userId)(promoCode)(applicableTo)
+                                (modeOfPayment)(timeOfOrder)(deliveryLocation)
+                                (usedRewardPoints)(givenRewardPoints)}
 ----
-Contains schema
+Contains schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Contains (
@@ -461,8 +508,11 @@ CREATE TABLE Contains (
     FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
     CHECK(foodQty >= 1)
 );
+
+Non-trivial FDs F = {(orderId)(rname)(fname) → (foodQty)(reviewContent)}
+
 ----
-Delivers schema
+Delivers schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Delivers (
@@ -480,8 +530,12 @@ CREATE TABLE Delivers (
                             ON DELETE CASCADE,
     CHECK(rating <= 5)
 );
+
+Non-trivial FDs F = {(orderId) → (userId)(departTimeForRestaurant)(departTimeFromRestaurant)
+                                    (arrivalTimeAtRestaurant)(deliveryTimetoCustomer)(rating)}
+
 ----
-MinSpendingPromotions schema
+MinSpendingPromotions schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE MinSpendingPromotions (
@@ -493,8 +547,11 @@ CREATE TABLE MinSpendingPromotions (
                                             ON DELETE CASCADE
                                             ON UPDATE CASCADE
 );
+
+Non-trivial FDs F = {(promoCode)(applicableTo) → minAmt}
+
 ----
-CustomerPromotions schema
+CustomerPromotions schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE CustomerPromotions (
@@ -506,6 +563,9 @@ CREATE TABLE CustomerPromotions (
                                             ON DELETE CASCADE
                                             ON UPDATE CASCADE
 );
+
+Non-trivial FDs F = {(promoCode)(applicableTo) → minTimeFromLastOrder}
+
 ----
 === Constraints not captured by Relational Schema
 
@@ -520,8 +580,6 @@ CREATE TABLE CustomerPromotions (
 *Riders* - During the operation hours of the FDS, there should be at least five riders (part-time or full-time) working at each hourly interval.
 
 *Orders* - Quantity of food ordered for a particular food item cannot exceed it's availability. Total cost order must hit a certain minimum order amount set by the restaurant.
-
-=== 3NF/BCNF
 
 == Triggers
 === 1
