@@ -4,13 +4,22 @@ import Button from '@material-ui/core/Button';
 
 
 export class ViewOngoingOrder extends Component {
-    state = {
-        departTimeForRestaurantOpen: true,
-        departTimeFromRestaurantOpen: false,
-        arrivalTimeAtRestaurantOpen : false,
-        deliveryTimetoCustomer : false,
-        finishedDelivery: false,
+    constructor(props) {
+        super(props);
+        this.state = {
+            departTimeForRestaurantOpen: true,
+            departTimeFromRestaurantOpen: false,
+            arrivalTimeAtRestaurantOpen : false,
+            deliveryTimetoCustomer : false,
+            finishedDelivery: false,
+            orderId : props.orderId,
+        }
     }
+
+    componentDidMount() {
+        // this.setState({orderId: props.orderId})
+    }
+
     handleDepartTimeForRestaurantButton = () => {
         fetch(`http://localhost:5000/rider/updateDepartTimeForRestaurant`, {
             method: 'PUT',
@@ -81,10 +90,12 @@ export class ViewOngoingOrder extends Component {
     }
     handleDeliveryFinish = () => {
         alert('Delivery Completed!');
-        this.props.orderId = null;
+        // this.props.orderId = null;
+        // this.setState({orderId: null});
     }
     render() {
         console.log(this.props.orderId);
+        console.log(this.state.orderId);
         const departTimeForRestaurantButton =
             <Button variant="contained" color="primary" onClick={this.handleDepartTimeForRestaurantButton} size="small">
                 Departed For Restaurant
