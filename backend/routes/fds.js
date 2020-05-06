@@ -366,9 +366,9 @@ WHERE checkWorkingStatusHelperOfRider(R.userId, '2020-11-12 11:10:00') = 1;
 */
 // not tested yet
 router.get('/checkStatus', async (req, res) => {
-    const timeArr = ["10:00:00", '11:10:00', "12:00:00", "13:00:00", "14:00:00"
+    const timeArr = ["10:00:00", '11:00:00', "12:00:00", "13:00:00", "14:00:00"
         , "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00", "20:00:00",
-        "21:00:00", "22:00:00"]
+        "21:00:00"]
     const day = req.body.day; //example 2020-11-12
     let querytime = "";
 
