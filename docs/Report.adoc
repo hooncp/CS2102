@@ -73,41 +73,10 @@ The following sections will attempt to mainly explain the design considerations 
 * Each order references the userId of the customer who created the order (foreign key)
 * Each order references the promo code, together with the restaurant name that the promo code is applicable to (foreign key) from promotions entity
 * Each order must be delivered exactly once by a rider
-<<<<<<< HEAD
-
-*Promotions*
-
-* Each promotion entity stores the promo code of the promotion, the description, the creator of the promotion, the restaurant name it is applicable to, the unit of measurement of the discount, the rate of discount, and the start and end date of the promotion
-* Each promotion is uniquely identifiable by the promo code coupled with the name of restaurant it is applicable to (primary key).
-* For the same promo code, every restaurant that it is applicable to will be recorded in the promotions table. This facilitates the checking of the validity of use of the promo code
-
-*CustomerPromotions* ?
-
-* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and minimum time the customer last ordered from the restaurant.
-* Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
-
-
-*MinSpendingPromotions* ?
-
-* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the minimum amount the customer must spend to receive the discount
-* Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
-
-*Sells*
-
-* Sells is a relation between restaurants and food, and stores the restaurant name, food name, the price, as well as the quantity that is available for each food
-* Each sells relation is uniquely identified by the restaurant name coupled with the food name (primary key)
-* The restaurant name is referenced from restaurants (foreign key), while the food name is referenced from the food (foreign key)
-
-*Contains*
-
-* Contains is an aggregate relation between the sells relation and Orders entity, and stores the orderId it belongs to, the restaurant name and food name of the food, the quantity of the food ordered, as wells as the review of the ordered food item
-* For the same orderId, each food item being ordered will recorded in the contains table. This facilitates reviewing each food item individually, as well as keeping track of the quantity ordered per food item
-=======
 * Each delivers relation stores the orderId for the order being delivered, the userId of the rider, the time rider departs for the restaurant, the time rider arrives at the restaurant, the time rider leaves the restaurant, the delivery time to the customer, and the rating received for the delivery
 * Each deliver is uniquely identified by orderId (primary key) referenced from orders (foreign key), and references rider for userId (foreign key)
 * Each order contains food items from a single restaurant
 * Each contains aggregate relation stores the orderId it belongs to, the restaurant name and food name of the food, the quantity of the food ordered, and the review for the specific food
->>>>>>> reportbranch-ej
 * Each contains entry is uniquely identified by orderId,the restaurant name and food name (primary key)
 * The restaurant and food name is referenced by the sells relation (foreign key), and the orderId is referenced from the orders entity (foreign key)
 * Each Weekly Work Schedule (WWS) stores the scheduleId, userId of the rider, start date and end date of the schedule.
@@ -149,10 +118,6 @@ FDS managers should be able to register restaurants into the application.
 FDS managers should also be able to view monthly summary information. This includes total number of new customers, total number of orders made, and the total cost of all orders.
 FDS managers should also be able to view an hourly summary information. This includes the total number of orders for each location, and the number of riders for each interval.
 Finally, FDS managers should be able to view the monthly summary information that individual customers and riders have access to.
-
-
-=== Interesting / Non-trivial Functions
-
 
 == ER Model
 === Design considerations
@@ -502,11 +467,13 @@ Non-trivial FDs F = {(promoCode)(applicableTo) → minTimeFromLastOrder}
 
 *Monthly Work Schedule* - For each week in of the MWS, the 4 comprising WWS must be equivalent. Each WWS should have 5 consecutive work days, that comprise of intervals using the pre-defined shifts for full-time riders. Each MWS should last for 28 days exactly, and there should not be any overlapping MWS for the same rider.
 
-*Promotions* - Every promotion applied to an order has to be checked that it fulfils the promotions constraints such as the minAmount as well as timelastOrdered
+*Promotions* - Every promotion applied to an order has to be checked for validity. This includes checking that the promoCode is still in use, is applicable to the restaurant, and that the order had met the minimum requirement to be eligible for promotion (e.g. minimum spending of $10).
 
 *Riders* - During the operation hours of the FDS, there should be at least five riders (part-time or full-time) working at each hourly interval.
 
 *Orders* - Quantity of food ordered for a particular food item cannot exceed it's availability. Total cost order must hit a certain minimum order amount set by the restaurant.
+
+*Delivers* - Assignment of rider has to ensure that the rider is currently on his work shift, and is free to deliver the order.
 
 == Triggers
 === Ensure No Overlap Between Intervals
@@ -728,6 +695,7 @@ Base salary is calculated by: Number of hours worked * Rate per hour. Rate per h
 
 Bonus salary is calculated by: Number of deliveries($4 per delivery) made during peak hour (Between the periods of 12:00 - 13:00 and 18:00 - 20:00) + Number of deliveries($2 per delivery) made during non-peak hour.
 
+[source,SQL]
 ----
  WITH result AS (                                                                                                                      
         SELECT startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) AS duration                                
@@ -769,7 +737,7 @@ All riders will be in three states:
 
 First, we find the detailed schedule of all riders by joining the schedule table and interval table. We check whether he is working or he is on his break at this current time. If he is working, we would check again to see if he is currently delivering or not by checking the expected delivery time to the customer.
 
-
+[source,SQL]
 ----
 CREATE OR REPLACE FUNCTION findStatusOfRider(riderId INTEGER, current TIMESTAMP)
     RETURNS INTEGER AS
