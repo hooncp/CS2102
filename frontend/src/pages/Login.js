@@ -147,6 +147,7 @@ class Login extends React.Component {
                         this.setState({ userType: "FM", userId: json }, this.handleRedirect)
                     })
                     .catch(err => err);
+                break;
             case "RS":
                 fetch(`http://localhost:5000/rs/insertRS`, {
                     method: 'POST',

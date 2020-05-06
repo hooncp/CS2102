@@ -383,6 +383,17 @@ router.post('/submitRiderRatings', async (req, res) => {
         .catch(e => console.error(e.stack))
 });
 
+router.get('/getRestaurantMinOrderAmt', async(req,res) => {
+    var parts = url.parse(req.url, true);
+    var rname = parts.query.rname;
+    const query = `SELECT minOrderAmt 
+                    FROM Restaurants 
+                    WHERE rname = $1`;
+    values = [rname];
+    pool.query(query, values)
+        .then(result => res.json(result.rows[0].minorderamt))
+        .catch(e => console.error(e.stack))
+});
 // router.get('/getSameAreaRestaurantWithFood', async (req, res) => {
 //     var parts = url.parse(req.url, true);
 //     var area = parts.query.area;
