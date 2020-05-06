@@ -44,7 +44,13 @@ router.get('/getPromoCode', async (req, res) => {
         .catch(e => console.error(e.stack))
 });
 
-
+router.get('/getAllRname', async (req, res) => {
+    const query = `SELECT DISTINCT rname FROM Restaurants`
+    const values = [];
+    pool.query(query,values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+});
 module.exports = router;
 
 

@@ -21,7 +21,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-export class summary extends React.Component {
+export class FDSManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -40,6 +40,10 @@ export class summary extends React.Component {
             filterRider: "",
             monthlyRiderSummary: [],
             hourlyOrderInfo: [],
+            otherActions: false,
+            newMinOrderAmt:"",
+            newArea:"",
+            newRname: "",
 
         }
     }
@@ -127,6 +131,29 @@ export class summary extends React.Component {
     }
     handleOrderToggle = () => {
         this.setState({orderOpen: !this.state.orderOpen});
+    }
+    handleOtherActionsToggle  = () => {
+        this.setState({otherActions: !this.state.otherActions});
+    }
+    handleCreateRestaurant = () => {
+        fetch(`http://localhost:5000/fds/insertRestaurant`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                rname: this.state.newRname,
+                minorderamt: this.state.newMinOrderAmt,
+                area: this.state.newArea,
+            })
+        })
+            .then(res => res.json())
+            .then(json => {
+                this.setState({ otherActions : false })
+            })
+            .catch(err => err);
+        alert("Restaurant Created!");
     }
 
     render() {
@@ -477,6 +504,67 @@ export class summary extends React.Component {
                             size="large">
                         View Hourly Order Info
                     </Button> <br/> <br/>
+                    <Button variant="outlined" color="primary" onClick={this.handleOtherActionsToggle}
+                            size="large">
+                        Other Actions
+                    </Button> <br/> <br/>
+                    {this.state.otherActions &&
+                    <React.Fragment>
+                        <Grid container spacing={2} direction="column" justify="center" alignItems="center">
+                            <Grid item style={{ width: "80%" }}>
+                                <FormControl variant="outlined" style={{ width: "100%" }}>
+                                <TextField
+                                    required
+                                    name="newRname"
+                                    label="Required"
+                                    helperText="Enter Restaurant Name"
+                                    placeholder="Restaurant Name"
+                                    variant="outlined"
+                                    value={this.state.newRname}
+                                    onChange={this.handleChange}
+                                />
+                                </FormControl>
+                            </Grid>
+                            <Grid item style={{ width: "80%" }}>
+                                <FormControl variant="outlined" style={{ width: "100%" }}>
+                                <TextField
+                                    required
+                                    name="newMinOrderAmt"
+                                    label="Required"
+                                    placeholder="ie. 20"
+                                    helperText="Enter Minimum Order Amount"
+                                    variant="outlined"
+                                    value={this.state.newMinOrderAmt}
+                                    onChange={this.handleChange}
+                                />
+                                </FormControl>
+                            </Grid>
+                            <Grid item style={{ width: "80%" }}>
+                                <FormControl variant="outlined" style={{ width: "100%" }}>
+                                    <InputLabel>Restaurant Area</InputLabel>
+                                    <Select
+                                        required
+                                        name="newArea"
+                                        value={this.state.newArea}
+                                        onChange={this.handleChange}
+                                    >
+                                        <MenuItem value=""> --- Please select one ---</MenuItem>
+                                        <MenuItem value="north">North</MenuItem>
+                                        <MenuItem value="south">South</MenuItem>
+                                        <MenuItem value="east">East</MenuItem>
+                                        <MenuItem value="west">West</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                        <br/>
+                        <Button variant="contained" color="primary" onClick={this.handleCreateRestaurant}
+                                size="large">
+                            Create a Restaurant
+                        </Button> <br/> <br/>
+                    </React.Fragment>
+
+                    }
                 </Grid>
             </React.Fragment>
         )

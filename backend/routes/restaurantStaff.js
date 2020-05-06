@@ -14,6 +14,38 @@ async function selectRname(data, table, condition, userId) {
         return err.stack;
     }
 }
+router.post('/insertRS', async (req, res) => {
+    //console.log("succeed");
+    const client = await pool.connect();
+    try {
+        let currId = 0;
+        const name = req.body.name;
+        const rname = req.body.rname;
+        //https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
+        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        console.log(dateCreated);
+        client.query('BEGIN').then(result => {
+            client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name, dateCreated])
+                .then(result => {
+                    currId = result.rows[0].userid;
+                    console.log('currId:', currId);
+                    client.query(
+                        `INSERT INTO Restaurant_Staff VALUES ($1, $2)`, [currId, rname]).then(result => {
+                        client.query('COMMIT');
+                        client.release()
+                    }).then(result => {
+                        return res.json(currId);
+                    })
+                })
+        })
+        console.log("userid:", currId);
+    } catch (err) {
+        client.query(`ROLLBACK`);
+        client.release()
+        console.error("error triggered: ", err.message);
+    }
+});
+
 
 router.post('/createMinSpendingPromotion', async (req, res) => {
     const client = await pool.connect();

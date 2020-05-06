@@ -22,7 +22,27 @@ class Login extends React.Component {
         dataFetched: false,
         creditcardinfo: null,
         area: null,
-        partTimeOrFullTime: null
+        partTimeOrFullTime: null,
+        rname: "",
+        allRname: [],
+    }
+    componentDidMount() {
+        this.getAllRname();
+    }
+    getAllRname = () => {
+        fetch(`http://localhost:5000/general/getAllRname`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                this.setState({ allRname: json })
+                console.log("all rname:", this.state.allRname);
+            })
+            .catch(err => err);
     }
     setExistingUser = () => {
         this.setState({ newOrExistingUser: "existing" });
@@ -72,6 +92,7 @@ class Login extends React.Component {
                         this.setState({ userType: "customer", userId: json }, this.handleRedirect)
                     })
                     .catch(err => err);
+                break;
             case "rider":
                 if (this.state.partTimeOrFullTime === "partTime") {
                     fetch(`http://localhost:5000/rider/insertPartTimeRider`, {
@@ -90,6 +111,7 @@ class Login extends React.Component {
                             this.setState({ userType: "rider" }, this.handleRedirect)
                         })
                         .catch(err => err);
+                    break;
                 } else if (this.state.partTimeOrFullTime === "fullTime") {
                     fetch(`http://localhost:5000/rider/insertFullTimeRider`, {
                         method: 'POST',
@@ -107,9 +129,42 @@ class Login extends React.Component {
                             this.setState({ userType: "rider" }, this.handleRedirect)
                         })
                         .catch(err => err);
+                    break;
                 }
-            case "FM": //we dont have FM and RS insertion api
+            case "FM":
+                fetch(`http://localhost:5000/fds/insertFDS`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: this.state.userName,
+                    })
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        this.setState({ userType: "FM", userId: json }, this.handleRedirect)
+                    })
+                    .catch(err => err);
             case "RS":
+                fetch(`http://localhost:5000/rs/insertRS`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: this.state.userName,
+                        rname: this.state.rname
+                    })
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        this.setState({ userType: "RS", userId: json }, this.handleRedirect)
+                    })
+                    .catch(err => err);
+                break;
             default:
                 return null;
         }
@@ -150,7 +205,7 @@ class Login extends React.Component {
                 break;
             case "FM":
                 this.props.history.push({
-                    pathname: '/summary',
+                    pathname: '/FDSManager',
                     state:
                     {
                         userId: this.state.userId,
@@ -322,6 +377,26 @@ class Login extends React.Component {
                                                     onChange={this.handleChange}
                                                 />
                                             </Grid>
+                                        }
+                                        {this.state.userType === "RS" &&
+                                        <Grid item style={{ width: "100%" }}>
+                                            <FormControl variant="outlined" style={{ width: "100%" }}>
+                                                <InputLabel>Restaurant Name</InputLabel>
+                                                <Select
+                                                    required
+                                                    name="rname"
+                                                    value={this.state.rname}
+                                                    onChange={this.handleChange}
+
+                                                >
+                                                    {this.state.allRname.map(res => {
+                                                        return (
+                                                            <MenuItem value={res.rname}>{res.rname}</MenuItem>
+                                                        )
+                                                    })}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
                                         }
                                         <Grid item>
                                             <Button variant="contained" color="secondary"
