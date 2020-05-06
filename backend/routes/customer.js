@@ -10,8 +10,7 @@ router.post('/insertCustomer', async (req, res) => {
         let currId = 0;
         const name = req.body.name;
         const creditcardinfo = req.body.creditcardinfo;
-        //https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
-        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let dateCreated = new Date().toLocaleString('en-US');
         console.log(dateCreated);
         client.query('BEGIN').then(result => {
             console.log('creditcard:', creditcardinfo);
