@@ -181,6 +181,7 @@ router.post("/createOrder", async (req, res) => {
         const applicableTo = req.body.applicableTo;
         const modeOfPayment = req.body.modeOfPayment;
         const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        // const timeOfOrder = new Date().toLocaleString('en-US');
         const deliveryLocation = req.body.deliveryLocation;
         const usedRewardPoints = req.body.usedRewardPoints;
         const contains = req.body.contains;

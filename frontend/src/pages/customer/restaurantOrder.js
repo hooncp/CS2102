@@ -199,7 +199,7 @@ export class restaurantOrder extends React.Component {
             .then(json => {
                 this.setState({orderId: json, orderedFood: arr}, this.handleRedirect)
             })
-            .catch(err => err);
+            .catch(err => console.error(err));
 
     }
     handleRedirect = () => {
