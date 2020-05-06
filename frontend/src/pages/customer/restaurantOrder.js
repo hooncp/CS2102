@@ -355,7 +355,7 @@ export class restaurantOrder extends React.Component {
 
                             >
                                 <MenuItem value="cash">Cash</MenuItem>
-                                <MenuItem value="creditcard">Credit Card</MenuItem>
+                                <MenuItem value="credit">Credit Card</MenuItem>
                             </Select>
                         </FormControl>
                         <br/>

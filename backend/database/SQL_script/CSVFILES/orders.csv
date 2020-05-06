@@ -134,21 +134,21 @@ userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRew
 12,,,credit,9/1/2020 20:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
 19,,,cash,9/1/2020 21:55,"P.O. Box 478, 6223 Amet Av.",0
 33,A123,Ornare Ltd,cash,10/1/2020 10:59,"21 Lower Kent Ridge Rd, Singapore 119077",0
-2,,,cash,10/1/2020 12:35,Ap #865-5540 Ligula St.,0
-21,,,credit,10/1/2020 13:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
-21,A123,Amet Consectetuer Corp.,credit,10/1/2020 13:47,465 Id Rd.,0
+2,A123,Amet Consectetuer Corp.,cash,10/1/2020 12:35,Ap #865-5540 Ligula St.,0
+21,A123,Curabitur LLP,credit,10/1/2020 13:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,A123,Egestas Urna Ltd,credit,10/1/2020 13:47,465 Id Rd.,0
 37,A123,Curabitur LLP,credit,10/1/2020 14:13,"21 Lower Kent Ridge Rd, Singapore 119077",0
-34,A123,Egestas Urna Ltd,credit,10/1/2020 14:20,"P.O. Box 712, 4578 Vivamus Av.",0
-11,,,credit,10/1/2020 14:49,4892 Proin St.,0
-31,,,cash,10/1/2020 14:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
-37,A123,Curabitur LLP,cash,10/1/2020 15:09,1922 Aliquam Street,0
-29,A123,Lacus Inc.,cash,10/1/2020 15:11,3568 Mauris St.,0
+34,A123,Lacus Inc.,credit,10/1/2020 14:20,"P.O. Box 712, 4578 Vivamus Av.",0
+11,A123,Nulla Semper Industries,credit,10/1/2020 14:49,4892 Proin St.,0
+31,A123,Ligula PC,cash,10/1/2020 14:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,A123,Lacus Inc.,cash,10/1/2020 15:09,1922 Aliquam Street,0
+29,,,cash,10/1/2020 15:11,3568 Mauris St.,0
 13,,,cash,10/1/2020 15:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
-1,A123,Nulla Semper Industries,credit,10/1/2020 16:35,Ap #346-4100 Odio. Av.,0
-7,A123,Ligula PC,cash,10/1/2020 17:11,740-1045 A Av.,0
+1,,,credit,10/1/2020 16:35,Ap #346-4100 Odio. Av.,0
+7,,,cash,10/1/2020 17:11,740-1045 A Av.,0
 10,,,credit,10/1/2020 17:31,Ap #312-8413 Proin St.,0
 26,,,cash,10/1/2020 18:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
-15,A123,Lacus Inc.,credit,10/1/2020 19:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,10/1/2020 19:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
 20,,,credit,10/1/2020 20:03,4892 Proin St.,0
 39,,,cash,11/1/2020 10:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
 6,,,cash,11/1/2020 11:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
@@ -425,7 +425,6 @@ userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRew
 2,,,credit,29/1/2020 14:12,Ap #546-6868 Molestie Rd.,0
 25,,,credit,29/1/2020 14:15,Ap #383-6975 Nibh. Rd.,0
 8,,,credit,29/1/2020 14:22,"P.O. Box 657, 7698 Eu, Rd.",0
-15,,,credit,29/1/2020 14:32,2803 Dis St.,0
 34,,,cash,29/1/2020 15:32,2143 Mi Rd.,0
 17,,,credit,29/1/2020 15:42,922-8195 Parturient Avenue,0
 40,,,cash,29/1/2020 16:11,456-5817 Justo Rd.,0

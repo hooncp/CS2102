@@ -175,7 +175,7 @@ def generateAllWeeklyWorkSchedule(totalPartTimeRider, startingUserIdPartTimeRide
 
     for i in range(totalPartTimeRider):
         randomIntervalsBetweenWeeksTotal = 0
-        numberOfTimes = random.randrange(11,17) #change here
+        numberOfTimes = random.randrange(17,22) #change here
         #numberOfTimes = 1
         for a in range(numberOfTimes):
 
@@ -228,7 +228,7 @@ def generateAllWeeklyWorkScheduleFt(totalFullTimeRider, startingUserIdFullTimeRi
     for i in range(totalFullTimeRider):
         randomIntervalsBetweenWeeksTotal = 0
         #numberOfTimes = 1  #change here
-        numberOfTimes = 4
+        numberOfTimes = 6
         for a in range(numberOfTimes):
             
             arr = create_arrayFT()
@@ -311,11 +311,11 @@ def convert_to_csv(data, filename):
 
         for row in data:
             writer.writerow(row)
-
+"""
 generateOrderTimeOfOrder()
 #print(timeOforders)
 convert_to_csv(timeOforders, 'MoreOrders.csv')
-
+"""
 """
 a = create_array()
 while(not checkconstrain1(a)):
@@ -339,7 +339,7 @@ convert_to_csv(intervalsFT, 'smallintervalsFT.csv')
 convert_to_csv(monthlyworkFT, 'smallmonthlyworkFT.csv')
 """
 
-"""
+
 scheduleId = generateAllWeeklyWorkSchedule(20,41) #20 parttime rider start from userid 40
 convert_to_csv(weeklywork, 'weeklywork.csv')
 convert_to_csv(intervals, 'intervals.csv')
@@ -348,4 +348,3 @@ generateAllWeeklyWorkScheduleFt(25,61, scheduleId) #25 fulltime rider start from
 convert_to_csv(weeklyworkFT, 'weeklyworkFT.csv')
 convert_to_csv(intervalsFT, 'intervalsFT.csv')
 convert_to_csv(monthlyworkFT, 'monthlyworkFT.csv')
-"""
