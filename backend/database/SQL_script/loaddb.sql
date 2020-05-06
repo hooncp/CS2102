@@ -213,7 +213,7 @@ BEGIN
                             IP.startTime1::time = '13:00'
                         )
                        OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4
-                        AND DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4)
+                        AND DATE_PART('hours', IP.endTime2) - DATE_PART('hours', IP.startTime2) = 4)
 
                        OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours', IP.endTime1) = 1)
                 )
