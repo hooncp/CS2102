@@ -36,6 +36,7 @@ export class FDSManager extends React.Component {
             customerOpen: false,
             riderOpen: false,
             orderOpen: false,
+            workingRiderOpen:false,
             filterCustomer: "",
             filterRider: "",
             monthlyRiderSummary: [],
@@ -45,6 +46,7 @@ export class FDSManager extends React.Component {
             newArea:"",
             newRname: "",
 
+            dailyRidersWorkingPerHour: [],
         }
     }
 
@@ -53,6 +55,7 @@ export class FDSManager extends React.Component {
         this.getMonthlyCustomerSummary();
         this.getMonthlyRiderSummary();
         this.getHourlyOrderInfo();
+        this.getRidersWorkingPerHour();
     }
 
     handleChange = (event) => {
@@ -120,6 +123,23 @@ export class FDSManager extends React.Component {
             })
             .catch(err => err);
     }
+
+    getRidersWorkingPerHour = () => {
+        fetch(`http://localhost:5000/fds/checkStatus?day=${encodeURIComponent(this.state.day)}&month=${encodeURIComponent(this.state.month)}&year=${encodeURIComponent(this.state.year)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                this.setState({dailyRidersWorkingPerHour: json})
+                console.log("dailyRidersWorkingPerHour", this.state.dailyRidersWorkingPerHour);
+            })
+            .catch(err => err);
+    }
+
     handleMonthlySummary = () => {
         this.setState({chooseMonthlySummary: !this.state.chooseMonthlySummary})
     }
@@ -129,6 +149,11 @@ export class FDSManager extends React.Component {
     handleRiderToggle = () => {
         this.setState({riderOpen: !this.state.riderOpen});
     }
+
+    handleWorkingRiderToggle = () => {
+        this.setState({workingRiderOpen: !this.state.workingRiderOpen});
+    }
+
     handleOrderToggle = () => {
         this.setState({orderOpen: !this.state.orderOpen});
     }
@@ -499,6 +524,13 @@ export class FDSManager extends React.Component {
                             size="large">
                         View Rider Summary
                     </Button> <br/> <br/>
+
+                    <h1> Daily Summary </h1>
+                    <Button variant="contained" color="secondary" onClick={this.handleWorkingRiderToggle}
+                            size="large">
+                        View Number of Working Rider 
+                    </Button> <br/> <br/>
+
                     <h1> Hourly Summary </h1>
                     <Button variant="contained" color="secondary" onClick={this.handleOrderToggle}
                             size="large">
