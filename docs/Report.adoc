@@ -727,16 +727,21 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
 
 [source,SQL]
 ----
- WITH result AS (                                                                                                                      
-        SELECT startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) AS duration                                
-        FROM Weekly_Work_Schedules S JOIN intervals I                                                                                                     
-        ON (S.scheduleId = I.scheduleId)                                                                                                  
-        AND (S.userid = $1) AND (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
-        AND (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
-    result2 AS (
-        SELECT D.deliveryTimetoCustomer, CASE 
-                                        WHEN ((deliveryTimetoCustomer::time >= '12:00' AND deliveryTimetoCustomer::time <= '13:00')
-                                                OR (deliveryTimetoCustomer::time >= '18:00' AND deliveryTimetoCustomer::time <= '20:00'))
+ router.get('/viewMonthSalary', (req, res) => {
+	const userId = req.body.userId;
+	const month = req.body.month;
+	const year = req.body.year;
+	const text = `
+    with result as (                                                                                                                      
+        select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration                                
+        from Weekly_Work_Schedules S join intervals I                                                                                                     
+        on (S.scheduleId = I.scheduleId)                                                                                                  
+        and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
+        and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
+    result2 as (
+        SELECT D.deliveryTimetoCustomer, case 
+                                        when ((deliveryTimetoCustomer::time >= '12:00' and deliveryTimetoCustomer::time <= '13:00')
+                                                OR (deliveryTimetoCustomer::time >= '18:00' and deliveryTimetoCustomer::time <= '20:00'))
                                         then 4
                                         else 2
                                         end as delivery_fee
@@ -744,14 +749,25 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
         WHERE userId = $1
         AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
         AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3),
-    result3 AS (
-        SELECT coalesce((SELECT sum(duration) from result R),0) AS totalHoursWorked , coalesce(sum(delivery_fee),0) AS totalFees
-        FROM result2 R2)
-    SELECT R3.totalHoursWorked, R3.totalFees, CASE
-        WHEN $1 NOT IN (select PT.userId from Part_Time PT) THEN (R3.totalHoursWorked * 5 + totalFees)
-        ELSE (R3.totalHoursWorked * 2 + totalFees) --part_time
-        end AS pay
-    FROM result3 R3;
+    result3 as (
+        select coalesce((select sum(duration) from result R),0) as totalHoursWorked , coalesce(sum(delivery_fee),0) as totalFees
+        from result2 R2)
+    select R3.totalHoursWorked, R3.totalFees, case
+        when $1 not in (select PT.userId from Part_Time PT) then (R3.totalHoursWorked * 5 + totalFees)
+        else (R3.totalHoursWorked * 2 + totalFees) --part_time
+        end as pay
+    from result3 R3
+    `;
+
+	const values = [userId, month, year];
+	pool
+		.query(text, values)
+		.then(result => {
+			console.log(result.rows);
+			res.json(result.rows);
+		})
+		.catch(e => console.error(e.stack))
+})
 ----
 
 
