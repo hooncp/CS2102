@@ -891,8 +891,7 @@ BEGIN
                 FROM Intervals I
                 WHERE I.startTime::time <= currentTime
                   AND I.endTime::time > currentTime
-                  AND I.startTime::date <= currentDate
-                  AND I.endTIme::date <= currentDate
+                  AND I.startTime::date = currentDate
                   AND I.scheduleId = (SELECT W.scheduleId
                                       FROM Weekly_Work_Schedules W
                                       WHERE W.startDate::date <= currentDate
