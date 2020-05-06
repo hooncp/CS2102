@@ -913,7 +913,11 @@ $$ LANGUAGE PLPGSQL;
 
 *Framework* : Express.js
 
-*Database* : PostgreSQL [v?]
+*Database* : PostgreSQL
+
+*Version Control* : Git & GitHub
+
+*Code Editor*: IntelliJ IDEA
 
 *Languages used*
 
