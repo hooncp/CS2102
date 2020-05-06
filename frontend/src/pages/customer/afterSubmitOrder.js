@@ -114,6 +114,7 @@ export class afterSubmitOrder extends React.Component {
         })
             .then(res => res.json())
             .catch(err => err);
+        alert('Review submitted!');
     }
     handleChange = (event) => {
         const {name, value} = event.target;
@@ -128,10 +129,15 @@ export class afterSubmitOrder extends React.Component {
 
                 
         const deliveryInfo = this.state.deliveryInfo;
-        const datetime1 = deliveryInfo.deliverytimetocustomer + "";
-        const date1 = datetime1.substr(0, 10);
-        const time1 = datetime1.substr(11, 8);
-
+        console.log("deliveryInfo", deliveryInfo);
+        let datetime1 = 0;
+        let date1 = 0;
+        let time1 = 0;
+        if (deliveryInfo !== undefined) {
+            datetime1 = deliveryInfo.deliverytimetocustomer + "";
+            date1 = datetime1.substr(0, 10);
+            time1 = datetime1.substr(11, 8);
+        }
         console.log('orderid:', this.state.orderId);
         console.log("foodtoreview", this.state.foodToReview);
         return (
@@ -169,7 +175,7 @@ export class afterSubmitOrder extends React.Component {
                     <Grid item alignItems="center">
                         <Paper>
                             <span style={{fontWeight: "bold", textAlign: 'center'}}>Delivery Info:</span> <br/> <br/>
-                            Your order is delivered by: {deliveryInfo.userid} 
+                            Your order is delivered by: {deliveryInfo !== undefined ? deliveryInfo.userid : "no rider is available at the moment"}
                             <hr/>
                             Received at: {date1} | {time1}
                             <br/>

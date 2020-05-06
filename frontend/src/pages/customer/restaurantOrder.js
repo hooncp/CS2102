@@ -36,7 +36,8 @@ export class restaurantOrder extends React.Component {
             availableRewardPts: "",
             usedRewardPts: 0,
             orderId: "",
-            orderedFood:[],
+            orderedFood: [],
+            minOrderAmt: "",
         }
     }
 
@@ -53,6 +54,28 @@ export class restaurantOrder extends React.Component {
         this.getCreditCardInfo();
         this.getPromoCode();
         this.getAvailableRewardPts();
+        this.getRestaurantMinOrderAmt();
+    }
+
+    getRestaurantMinOrderAmt = () => {
+        fetch(`http://localhost:5000/customer/getRestaurantMinOrderAmt?rname=${this.state.rname}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept':
+                        'application/json',
+                    'Content-Type':
+                        'application/json',
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(json => {
+                console.log('minOrderAmt', json);
+                this.setState({minOrderAmt: json})
+                console.log('minOrderAmt', this.state.minOrderAmt);
+            })
+            .catch(err => err);
     }
 
     getAvailableRewardPts = () => {
@@ -210,14 +233,33 @@ export class restaurantOrder extends React.Component {
     }
 
     render() {
-        const foodToQtyCopy = this.state.foodToQty;
+        const minOrderAmt = this.state.minOrderAmt;
+        console.log("minOrderAmt",minOrderAmt);
         const rname = this.state.rname;
+        const allFoodCopy = this.state.allFoodAndRes.slice();
+        const foodToQtyCopy = this.state.foodToQty;
+        const currentFoodCost = (Object.keys(foodToQtyCopy).reduce(function (previous, key) {
+            return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
+        }, 0));
         const promoCodeCopy = this.state.promoCode.slice();
         console.log('qtyCopy', foodToQtyCopy);
         console.log("f&r", this.state.allFoodAndRes)
         const orderDetailsTemp = this.state.orderDetails.slice();
-        const allFoodCopy = this.state.allFoodAndRes.slice();
         console.log('foodCopy', allFoodCopy);
+        const disabledSubmitButton =
+            <React.Fragment>
+                <Button variant="contained" color="primary" onClick={this.handleSubmitOrder} size="small" disabled>
+                    Submit Order
+                </Button>
+                <br/>
+                <h6>Please select at least one food item and make sure that your food cost > minimum order amount! </h6>
+            </React.Fragment>
+        ;
+        const enabledSubmitButton =
+            <Button variant="contained" color="primary" onClick={this.handleSubmitOrder} size="small">
+                Submit Order
+            </Button>
+        ;
         return (
             <div>
                 <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
@@ -289,23 +331,17 @@ export class restaurantOrder extends React.Component {
                 }
                 <Paper style={{color: "green", fontWeight: 'bold', height: "50%"}}>
                     Total Cost:
-                    ${
-                    (Object.keys(foodToQtyCopy).reduce(function (previous, key) {
-                        return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
-                    }, 0))
-                }
+                    ${currentFoodCost}
                     {this.state.usedRewardPts > 0
                     &&
-                    (Object.keys(foodToQtyCopy).reduce(function (previous, key) {
-                        return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
-                    }, 0)) > 0
+                    currentFoodCost > 0
                     &&
                     (<span style={{color: "red"}}> - ${this.state.usedRewardPts / 5}
                         {" "} = {" "}
-                        ${(Object.keys(foodToQtyCopy).reduce(function (previous, key) {
-                            return previous + foodToQtyCopy[key] * (allFoodCopy.filter(res => res.fname === key && res.rname === rname)[0].price)
-                        }, 0)) - this.state.usedRewardPts / 5}
+                        ${currentFoodCost - this.state.usedRewardPts / 5}
                     </span>)}
+                    <br/> <br/>
+                    Min Order Amount: {this.state.minOrderAmt}
 
                     <br/><br/>
                     <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
@@ -379,10 +415,12 @@ export class restaurantOrder extends React.Component {
                     </Grid>
                 </Paper>
                 <br/><br/>
-                <Button variant="contained" color="primary" onClick={this.handleSubmitOrder} size="small">
-                    Submit Order
-                    <br/>
-                </Button>
+                <br/><br/>
+                {console.log("minOrderAmt",minOrderAmt)}
+                {minOrderAmt !== undefined && (Number(minOrderAmt.replace(/[^0-9.-]+/g, "")) <= currentFoodCost)
+                    ? enabledSubmitButton
+                    : disabledSubmitButton
+                }
                 <br/>
                 <br/>
             </div>
