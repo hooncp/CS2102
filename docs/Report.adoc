@@ -142,8 +142,9 @@ Users: BCNF
 [source,SQL]
 ----
 CREATE TABLE Users (
-    userId 	     SERIAL,
-    name		VARCHAR(100),
+    userId      SERIAL,
+    name        VARCHAR(100),
+    dateCreated TIMESTAMP,
     PRIMARY KEY (userId)
 );
 
@@ -155,9 +156,9 @@ Restaurants: BCNF
 [source,SQL]
 ----
 CREATE TABLE Restaurants (
-    rname 		VARCHAR(200),
-    minOrderAmt	   NUMERIC(8, 2),
-    area 		 VARCHAR(20),
+    rname 		    VARCHAR(200),
+    minOrderAmt	    NUMERIC(8, 2),
+    area 		    VARCHAR(20),
     PRIMARY KEY (rname),
     CHECK(area = 'central' OR
         area = 'west' OR
@@ -172,8 +173,8 @@ Food schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Food (
-    fname 		VARCHAR(20),
-    category 	     VARCHAR(20) NOT NULL,
+    fname 		    VARCHAR(20),
+    category 	    VARCHAR(20) NOT NULL,
     PRIMARY KEY (fname),
     CHECK (category = 'western' OR
         category = 'chinese' OR
@@ -188,13 +189,13 @@ Sells schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Sells (
-    rname 		VARCHAR(20) REFERENCES Restaurants
+    rname 		    VARCHAR(20) REFERENCES Restaurants
                             on DELETE CASCADE
                             on UPDATE CASCADE,
-    fname 		VARCHAR(20) REFERENCES Food
+    fname 		    VARCHAR(20) REFERENCES Food
                             on DELETE CASCADE
                             on UPDATE CASCADE,
-    price 		NUMERIC(8, 2) NOT NULL,
+    price 		    NUMERIC(8, 2) NOT NULL,
     availability 	INTEGER DEFAULT 10,
     PRIMARY KEY (rname, fname)
 );
@@ -205,8 +206,8 @@ Restaurant Staff schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Restaurant_Staff (
-    userId 		INTEGER,
-    rname		  VARCHAR(20) REFERENCES Restaurants
+    userId      INTEGER,
+    rname	    VARCHAR(20) REFERENCES Restaurants
                             on DELETE CASCADE
                             on UPDATE CASCADE,
     PRIMARY KEY (userId),
@@ -234,8 +235,8 @@ Customers schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Customers (
-    userId 		INTEGER,
-    creditCardInfo	 VARCHAR(100),
+    userId 		        INTEGER,
+    creditCardInfo	    VARCHAR(100),
     PRIMARY KEY (userId),
     FOREIGN KEY (userId) REFERENCES Users
                             on DELETE CASCADE
@@ -248,8 +249,8 @@ Riders schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Riders (
-    userId 		INTEGER,
-    area 		  VARCHAR(20) NOT NULL,
+    userId 	    INTEGER,
+    area 	    VARCHAR(20) NOT NULL,
     PRIMARY KEY (userId),
     FOREIGN KEY (userId) REFERENCES Users
                             on DELETE CASCADE
@@ -278,6 +279,23 @@ CREATE TABLE Part_Time
 
 Non-trivial FDs F = {0}
 ----
+
+Full-time schema : BCNF
+[source,SQL]
+----
+CREATE TABLE Full_Time
+(
+    userId               INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Riders
+                            on DELETE CASCADE
+                            on UPDATE CASCADE
+    --        DEFERRABLE INITIALLY DEFERRED
+);
+
+Non-trivial FDs F = {0}
+----
+
 Weekly Work Schedules (WWS) schema : BCNF
 [source,SQL]
 ----
@@ -353,15 +371,16 @@ Promotions schema : BCNF
 ----
 CREATE TABLE Promotions (
     promoCode	    VARCHAR(20),
-    promoDesc 	   VARCHAR(200),
+    promoDesc 	    VARCHAR(200),
     createdBy	    VARCHAR(50), --?
-    applicableTo	 VARCHAR(200) REFERENCES Restaurants(rname)
+    applicableTo    VARCHAR(200) REFERENCES Restaurants(rname)
                                         ON DELETE CASCADE,
-    discUnit	     VARCHAR(20) NOT NULL,
-    discRate	     VARCHAR(20) NOT NULL,
+    discUnit	    VARCHAR(20) NOT NULL,
+    discRate	    VARCHAR(20) NOT NULL,
     startDate	    TIMESTAMP NOT NULL,
-    endDate	      TIMESTAMP NOT NULL,
-    PRIMARY KEY (promoCode, applicableTo)
+    endDate	        TIMESTAMP NOT NULL,
+    PRIMARY KEY (promoCode, applicableTo),
+    CHECK (discUnit = '$' OR discUnit = '%' OR discUnit = 'FD')
 );
 
 
@@ -373,19 +392,23 @@ Orders schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE Orders (
-    orderId 	    INTEGER,
+    orderId 	        INTEGER,
     userId              INTEGER NOT NULL REFERENCES Customers ON DELETE CASCADE ON UPDATE CASCADE,
-    promoCode	   VARCHAR(20),
+    promoCode	        VARCHAR(20),
     applicableTo        VARCHAR(200),
     modeOfPayment       VARCHAR(10) NOT NULL,
-    timeOfOrder	 TIMESTAMP NOT NULL,
+    timeOfOrder	        TIMESTAMP NOT NULL,
     deliveryLocation    VARCHAR(100) NOT NULL,
     usedRewardPoints    INTEGER DEFAULT 0,
     givenRewardPoints   INTEGER NOT NULL,
     PRIMARY KEY(orderId),
     FOREIGN KEY(promoCode, applicableTo)  REFERENCES Promotions,
     CHECK(modeOfPayment = 'cash' OR
-          modeOfPayment ='credit')
+          modeOfPayment ='credit'),
+    CHECK (usedRewardPoints = 5 OR 
+            usedRewardPoints = 10 OR 
+            usedRewardPoints = 15 OR 
+            usedRewardPoints = 0)
 );
 
 Non-trivial FDs F = {orderId → (userId)(promoCode)(applicableTo)
@@ -400,9 +423,9 @@ CREATE TABLE Contains (
                                     ON DELETE CASCADE
                                     ON UPDATE CASCADE,
     rname		    VARCHAR(100),
-    fname 		   VARCHAR(100),
-    foodQty		  INTEGER NOT NULL,
-    reviewContent            VARCHAR(300),
+    fname 		    VARCHAR(100),
+    foodQty		    INTEGER NOT NULL,
+    reviewContent   VARCHAR(300),
     PRIMARY KEY(orderId, rname, fname),
     FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
     CHECK(foodQty >= 1)
@@ -423,7 +446,7 @@ CREATE TABLE Delivers (
     departTimeFromRestaurant TIMESTAMP,
     arrivalTimeAtRestaurant  TIMESTAMP,
     deliveryTimetoCustomer   TIMESTAMP,
-    rating	           INTEGER,
+    rating	                 INTEGER,
     PRIMARY KEY (orderId),
     FOREIGN KEY (userId) REFERENCES Riders
                             ON DELETE CASCADE,
@@ -438,9 +461,9 @@ MinSpendingPromotions schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE MinSpendingPromotions (
-    promoCode	   VARCHAR(20),
+    promoCode	    VARCHAR(20),
     applicableTo	VARCHAR(200),
-    minAmt	      NUMERIC(8, 2) DEFAULT 0,
+    minAmt	        NUMERIC(8, 2) DEFAULT 0,
     PRIMARY KEY (promoCode, applicableTo),
     FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions
                                             ON DELETE CASCADE
@@ -454,9 +477,9 @@ CustomerPromotions schema : BCNF
 [source,SQL]
 ----
 CREATE TABLE CustomerPromotions (
-    promoCode	      VARCHAR(20),
-    applicableTo	   VARCHAR(200),
-    minTimeFromLastOrder   INTEGER, -- # of days
+    promoCode	            VARCHAR(20),
+    applicableTo	        VARCHAR(200),
+    minTimeFromLastOrder    INTEGER, -- # of days
     PRIMARY KEY (promoCode, applicableTo),
     FOREIGN KEY (promoCode, applicableTo) REFERENCES Promotions
                                             ON DELETE CASCADE
@@ -560,20 +583,20 @@ DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCAD
 CREATE OR REPLACE FUNCTION check_mws_5days_consecutive_constraint_deferred() RETURNS TRIGGER AS
 $$
 DECLARE
-lastIntervalStartTime  TIMESTAMP;
-firstIntervalStartTime TIMESTAMP;
-distinctDates          INTEGER;
+    lastIntervalStartTime  TIMESTAMP;
+    firstIntervalStartTime TIMESTAMP;
+    distinctDates          INTEGER;
 BEGIN
-WITH curr_Intervals AS (
-SELECT *
-FROM Intervals I
-WHERE I.scheduleId = NEW.scheduleId1
-)
-SELECT startTime
-into lastIntervalStartTime
-FROM curr_Intervals I
-ORDER BY endTime DESC
-LIMIT 1;
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I
+        WHERE I.scheduleId = NEW.scheduleId1
+    )
+    SELECT startTime
+    into lastIntervalStartTime
+    FROM curr_Intervals I
+    ORDER BY endTime DESC
+    LIMIT 1;
 
     WITH curr_Intervals AS (
         SELECT *
@@ -606,10 +629,10 @@ $$ LANGUAGE PLPGSQL;
 
 
 CREATE CONSTRAINT TRIGGER mws_5days_trigger
-AFTER INSERT
-ON Monthly_Work_Schedules
-DEFERRABLE INITIALLY DEFERRED
-FOR EACH ROW
+    AFTER INSERT
+    ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
 EXECUTE FUNCTION check_mws_5days_consecutive_constraint_deferred();
 ----
 
