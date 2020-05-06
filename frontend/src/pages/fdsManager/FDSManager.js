@@ -36,6 +36,7 @@ export class FDSManager extends React.Component {
             customerOpen: false,
             riderOpen: false,
             orderOpen: false,
+            workingRiderOpen:false,
             filterCustomer: "",
             filterRider: "",
             monthlyRiderSummary: [],
@@ -45,6 +46,7 @@ export class FDSManager extends React.Component {
             newArea:"",
             newRname: "",
 
+            dailyRidersWorkingPerHour: [],
         }
     }
 
@@ -53,6 +55,7 @@ export class FDSManager extends React.Component {
         this.getMonthlyCustomerSummary();
         this.getMonthlyRiderSummary();
         this.getHourlyOrderInfo();
+        this.getRidersWorkingPerHour();
     }
 
     handleChange = (event) => {
@@ -120,6 +123,23 @@ export class FDSManager extends React.Component {
             })
             .catch(err => err);
     }
+
+    getRidersWorkingPerHour = () => {
+        fetch(`http://localhost:5000/fds/checkStatus?day=${encodeURIComponent(this.state.day)}&month=${encodeURIComponent(this.state.month)}&year=${encodeURIComponent(this.state.year)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                this.setState({dailyRidersWorkingPerHour: json})
+                console.log("dailyRidersWorkingPerHour", this.state.dailyRidersWorkingPerHour);
+            })
+            .catch(err => err);
+    }
+
     handleMonthlySummary = () => {
         this.setState({chooseMonthlySummary: !this.state.chooseMonthlySummary})
     }
@@ -129,6 +149,11 @@ export class FDSManager extends React.Component {
     handleRiderToggle = () => {
         this.setState({riderOpen: !this.state.riderOpen});
     }
+
+    handleWorkingRiderToggle = () => {
+        this.setState({workingRiderOpen: !this.state.workingRiderOpen});
+    }
+
     handleOrderToggle = () => {
         this.setState({orderOpen: !this.state.orderOpen});
     }
@@ -406,11 +431,85 @@ export class FDSManager extends React.Component {
                     })}
                 </DialogContent>
             </Dialog>
+
+        const workingRiderDialog = 
+        <Dialog open={this.state.workingRiderOpen} onClose={this.handleWorkingRiderToggle} fullWidth="100">
+                <br/><br/>
+                <FormControl variant="outlined">
+                    <InputLabel>Day</InputLabel>
+                    <Select
+                        required
+                        name="day"
+                        value={this.state.day}
+                        onChange={this.handleChange}
+                    >
+                        {dayArr.map(res => {
+                                return (
+                                    <MenuItem value={res}>{res}</MenuItem>
+                                )
+                            }
+                        )}
+                    </Select>
+                </FormControl>
+                <br/>
+                <FormControl variant="outlined">
+                    <InputLabel>Month</InputLabel>
+                    <Select
+                        required
+                        name="month"
+                        value={this.state.month}
+                        onChange={this.handleChange}
+                    >
+                        {monthArr.map(res => {
+                                return (
+                                    <MenuItem value={res}>{res}</MenuItem>
+                                )
+                            }
+                        )}
+                    </Select>
+                </FormControl>
+                <br/>
+                <FormControl variant="outlined">
+                    <InputLabel>Year</InputLabel>
+                    <Select
+                        required
+                        name="year"
+                        value={this.state.year}
+                        onChange={this.handleChange}
+                    >
+
+                        <MenuItem value={2019}>2019</MenuItem>
+                        <MenuItem value={2020}>2020</MenuItem>
+
+                    </Select>
+                </FormControl>
+                <Button variant="outlined" color="default" onClick={this.getRidersWorkingPerHour}
+                        size="large">
+                    Go
+                </Button>
+                <DialogContent>
+                    {this.state.dailyRidersWorkingPerHour.map(res => {
+                        return (
+                            <div>
+                                <hr/>
+                                <span
+                                    style={{fontWeight: "bold"}}>Interval: </span> {res.starttime} - {res.endtime}
+                                <br/>
+                                <span style={{fontWeight: "bold"}}>Number Of Riders working: </span> {res.count}
+                                <hr/>
+                            </div>
+
+                        )
+                    })}
+                </DialogContent>
+            </Dialog>
+
         return (
             <React.Fragment>
                 {customerDialog}
                 {riderDialog}
                 {orderDialog}
+                {workingRiderDialog}
                 <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
                     <Toolbar>
                         <Typography variant="h6" color="inherit" noWrap>
@@ -499,6 +598,13 @@ export class FDSManager extends React.Component {
                             size="large">
                         View Rider Summary
                     </Button> <br/> <br/>
+
+                    <h1> Daily Summary </h1>
+                    <Button variant="contained" color="secondary" onClick={this.handleWorkingRiderToggle}
+                            size="large">
+                        View Number of Working Rider 
+                    </Button> <br/> <br/>
+
                     <h1> Hourly Summary </h1>
                     <Button variant="contained" color="secondary" onClick={this.handleOrderToggle}
                             size="large">

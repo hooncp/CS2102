@@ -297,7 +297,7 @@ SELECT userId,
        work_year,
        count(*)                                       as NumDelivery,
        round(sum((extract(epoch from (deliveryTimetoCustomer - departTimeForRestaurant))) / 60)::numeric
-           / count(userId),2)                            as avgTimeDelivery,
+           / count(userId)::numeric,2)                            as avgTimeDelivery,
        count(rating)                                  as numRating,
        round(sum(rating)::numeric / count(rating), 2) as avgRating,
        sum(delivery_fee)                              as Total_delivery_fee
