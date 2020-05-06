@@ -348,6 +348,17 @@ router.post('/submitReview', async (req, res) => {
 
 });
 
+router.post('/submitRating', async (req, res) => {
+    const orderId = req.body.orderId;
+    const rating = req.body.rating;
+    const query = `UPDATE Delivers SET rating = $1 where orderId = $2 `;
+    values = [rating, orderId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
+
+});
+
 router.get('/getOrderInfo', async (req, res) => {
     var parts = url.parse(req.url, true);
     var orderId = parts.query.orderId;

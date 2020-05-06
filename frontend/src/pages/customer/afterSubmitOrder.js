@@ -120,6 +120,22 @@ export class afterSubmitOrder extends React.Component {
         const {name, value} = event.target;
         return this.setState({[name]: value});
     }
+    handleSubmitRating = () => {
+        fetch(`http://localhost:5000/customer/submitRating`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                rating: this.state.rating,
+                orderId: this.state.orderId,
+            })
+        })
+            .then(res => res.json())
+            .catch(err => err);
+        alert('Rating submitted!');
+    }
 
     render() {
         const orderInfo = this.state.orderInfo;
@@ -175,9 +191,9 @@ export class afterSubmitOrder extends React.Component {
                     <Grid item alignItems="center">
                         <Paper>
                             <span style={{fontWeight: "bold", textAlign: 'center'}}>Delivery Info:</span> <br/> <br/>
-                            Your order is delivered by: {deliveryInfo !== undefined ? deliveryInfo.userid : "no rider is available at the moment"}
+                            Your order is delivered by: Rider ID #{deliveryInfo !== undefined ? deliveryInfo.userid : "no rider is available at the moment"}
                             <hr/>
-                            Received at: {date1} | {time1}
+                            {/*Received at: {date1} | {time1}*/}
                             <br/>
                             <br/>
                         </Paper>
@@ -230,6 +246,11 @@ export class afterSubmitOrder extends React.Component {
 
                     </Select>
                 </FormControl>
+                <br/> <br/>
+                <Button variant="outlined" color="secondary" onClick={this.handleSubmitRating}
+                        size="small">
+                    Submit Rating
+                </Button>
             </React.Fragment>
         )
     }
