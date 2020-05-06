@@ -391,7 +391,7 @@ router.get('/viewMonthlyCustomerSummary', (req, res) => {
 router.get('/checkStatus', async (req, res) => {
     const timeArr = ["10:00:00", '11:00:00', "12:00:00", "13:00:00", "14:00:00"
         , "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00", "20:00:00",
-        "21:00:00"];
+        "21:00:00", "22:00:00"];
     let parts = url.parse(req.url, true);
     const day = parts.query.day; //example 2020-11-12
     const month = parts.query.month;
@@ -405,7 +405,7 @@ router.get('/checkStatus', async (req, res) => {
 
     let resArr = [];
 
-    for (let i = 0; i < timeArr.length; i++) {
+    for (let i = 0; i < timeArr.length-1; i++) {
 
 
         querytime = date + " " + timeArr[i];
@@ -419,7 +419,9 @@ router.get('/checkStatus', async (req, res) => {
             // console.log(result.rows);
 
             console.log(resArr);
-            await resArr.push(result.rows[0].count);
+            await resArr.push({ "starttime":timeArr[i],
+                                "endtime": timeArr[i+1], 
+                                "count" : result.rows[0].count});
         }).catch(err => {
             if (err.constraint) {
                 console.error(err.constraint);
@@ -431,7 +433,7 @@ router.get('/checkStatus', async (req, res) => {
 
     }
     //console.log("test" + resArr);
-    res.json({"data": resArr});
+    res.json(resArr);
 })
 
 // Create a Restaurant
