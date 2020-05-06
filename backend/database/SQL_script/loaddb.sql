@@ -80,7 +80,7 @@ COMMIT;
 
 \copy Orders(userId, promoCode, applicableTo, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/Orders.csv' CSV HEADER;
 \copy Contains(orderId, fname, rname, foodQty, reviewContent) from './CSVFILES/Contains.csv' CSV HEADER;
---\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/Delivers.csv' CSV HEADER;
+\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/Delivers.csv' CSV HEADER;
 
 
 ------------------------------------------ END OF LARGE DATA SET ------------------------------------------
