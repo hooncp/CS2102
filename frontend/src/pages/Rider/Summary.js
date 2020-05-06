@@ -55,7 +55,7 @@ export class Summary extends Component {
                     <FormSummary userId={this.props.userId} fetchData={this.fetchData} />
                     <h2>Summary Information for Month : {this.state.month}, Year: {this.state.year}</h2>
                     <h3>Total Number of Deliveries : {this.state.numOfDelivery}</h3>
-                    <h3>Average Time Taken for Deliveries : {this.state.avgTimeDelivery}</h3>
+                    <h3>Average Time Taken for Deliveries : {this.state.avgTimeDelivery} minutes</h3>
                     <h3>Total Number of Ratings Received : {this.state.numRating}</h3>
                     <h3>Average Ratings Received : {this.state.avgRating}</h3>
                     <h3>Total Number of Hours Worked : {this.state.numHoursWorked}</h3>

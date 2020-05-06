@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+
 export class ViewOrderTable extends Component {
 
     render() {
@@ -38,8 +39,8 @@ export class ViewOrderTable extends Component {
                                     <TableCell component="th" scope="row">
                                         {row["orderid"]}
                                     </TableCell>
-                                    <TableCell>{row["departtimeforrestaurant"]}</TableCell>
-                                    <TableCell>{row["deliverytimetocustomer"]}</TableCell>
+                                    <TableCell>{new Date(row["departtimeforrestaurant"]).toLocaleString('en-US')}</TableCell>
+                                    <TableCell>{new Date(row["deliverytimetocustomer"]).toLocaleString('en-US')}</TableCell>
                                     <TableCell>{row["rating"]}</TableCell>
                                     <TableCell>{row["delivery_fee"]}</TableCell>
                                 </TableRow>

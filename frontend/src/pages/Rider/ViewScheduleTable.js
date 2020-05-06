@@ -6,6 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import DateFnsUtils from '@date-io/date-fns';
 
 export class ViewScheduleTable extends Component {
 
@@ -36,9 +37,9 @@ export class ViewScheduleTable extends Component {
                             {data.map((row) => (
                                 <TableRow key={row["starttime"]}>
                                     <TableCell component="th" scope="row">
-                                        {row["starttime"]}
+                                        {new Date(row["starttime"]).toLocaleString('en-US')}
                                     </TableCell>
-                                    <TableCell>{row["endtime"]}</TableCell>
+                                    <TableCell>{new Date(row["endtime"]).toLocaleString('en-US')}</TableCell>
                                     <TableCell>{row["intervalduration"]}</TableCell>
                                 </TableRow>
                             ))}
