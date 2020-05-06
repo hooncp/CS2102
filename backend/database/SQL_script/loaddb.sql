@@ -80,7 +80,7 @@ COMMIT;
 
 \copy Orders(userId, promoCode, applicableTo, modeOfPayment, timeOfOrder, deliveryLocation, usedRewardPoints) from './CSVFILES/Orders.csv' CSV HEADER;
 \copy Contains(orderId, fname, rname, foodQty, reviewContent) from './CSVFILES/Contains.csv' CSV HEADER;
-\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/Delivers.csv' CSV HEADER;
+--\copy Delivers(orderId, userId, departTimeForRestaurant, departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer, rating) from './CSVFILES/Delivers.csv' CSV HEADER;
 
 
 ------------------------------------------ END OF LARGE DATA SET ------------------------------------------
@@ -414,6 +414,7 @@ $$
         randomRating INTEGER;
 
     BEGIN
+        ---randomRating = floor(random() * 3 + 3)::INT;
         randomRating = 0;
         randomTime1 = floor(random() * (5) + 1) * '1 minute'::INTERVAL; -- 1- 5 minutes?
         randomTime2 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime1;-- 11- 15 minutes?
@@ -427,7 +428,7 @@ $$
         LIMIT 1;
 
         IF assigneduserId IS NULL THEN
-            RAISE EXCEPTION 'Unable to find rider for Order. ALl riders are not free';
+            RAISE EXCEPTION 'Unable to find rider for Order. ALl riders are not free: %',new.timeOfOrder;
         END IF;
 
         INSERT INTO Delivers(orderId, userId, departTimeForRestaurant,
