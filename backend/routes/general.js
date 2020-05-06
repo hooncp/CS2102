@@ -37,8 +37,13 @@ router.get('/getUserType', async (req, res) => {
 router.get('/getPromoCode', async (req, res) => {
     var parts = url.parse(req.url, true);
     var rname = parts.query.rname;
-    const query = `SELECT DISTINCT promoCode, promoDesc FROM Promotions P WHERE P.applicableTo = $1`
-    const values = [rname];
+    let currentDate = new Date().toLocaleString('en-US');
+    const query = `SELECT DISTINCT promoCode, promoDesc 
+                    FROM Promotions P 
+                    WHERE P.applicableTo = $1
+                    AND startDate <= $2
+                    AND endDate >= $2`
+    const values = [rname,currentDate];
     pool.query(query,values)
         .then(result => res.json(result.rows))
         .catch(e => console.error(e.stack))
