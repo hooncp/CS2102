@@ -198,6 +198,36 @@ var url = require('url');
 //         .catch(e => console.error(e.stack))
 // })
 
+router.post('/insertFDS', async (req, res) => {
+    //console.log("succeed");
+    const client = await pool.connect();
+    try {
+        let currId = 0;
+        const name = req.body.name;
+        //https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
+        let dateCreated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        console.log(dateCreated);
+        client.query('BEGIN').then(result => {
+            client.query(`INSERT INTO users(name,dateCreated) VALUES ($1,$2) returning userId`, [name, dateCreated])
+                .then(result => {
+                    currId = result.rows[0].userid;
+                    console.log('currId:', currId);
+                    client.query(
+                        `INSERT INTO FDS_Managers VALUES ($1)`, [currId]).then(result => {
+                        client.query('COMMIT');
+                        client.release()
+                    }).then(result => {
+                        return res.json(currId);
+                    })
+                })
+        })
+        console.log("userid:", currId);
+    } catch (err) {
+        client.query(`ROLLBACK`);
+        client.release()
+        console.error("error triggered: ", err.message);
+    }
+});
 
 //view entire summary statistics
 router.get('/viewCustomerGeneralInfo', (req, res) => {

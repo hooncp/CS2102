@@ -5,7 +5,7 @@ import customerActions from "./pages/customer/customerActions";
 import { customerBrowse } from "./pages/customer/customerBrowse";
 import { restaurantOrder } from "./pages/customer/restaurantOrder";
 import { afterSubmitOrder } from "./pages/customer/afterSubmitOrder";
-import { summary } from "./pages/fdsManager/summary";
+import { FDSManager } from "./pages/fdsManager/FDSManager";
 import RestaurantStaff from "./pages/RestaurantStaff/RestaurantStaff";
 import Rider from "./pages/Rider/Rider";
 
@@ -22,7 +22,7 @@ export default class App extends Component {
                         <Route path="/customerBrowse" exact component={customerBrowse} />
                         <Route path="/restaurantOrder" exact component={restaurantOrder} />
                         <Route path="/afterSubmitOrder" exact component={afterSubmitOrder} />
-                        <Route path="/summary" exact component={summary} />
+                        <Route path="/FDSManager" exact component={FDSManager} />
                         <Route path="/RestaurantStaff" exact component={RestaurantStaff} />
                         <Route path="/Rider" exact component={Rider} />
                     </Switch>
