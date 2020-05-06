@@ -907,7 +907,7 @@ $$ LANGUAGE PLPGSQL;
 ----
 
 == Software tools / Frameworks
-*Frontend* :
+*Frontend* : React.js
 
 *Platform* : Node.js
 
@@ -924,6 +924,8 @@ $$ LANGUAGE PLPGSQL;
 * Javascript
 
 * SQL for database
+
+* Python for generation of large dataset
 
 == Application Screenshot
 
