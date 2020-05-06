@@ -582,12 +582,215 @@ Non-trivial FDs F = {(promoCode)(applicableTo) → minTimeFromLastOrder}
 *Orders* - Quantity of food ordered for a particular food item cannot exceed it's availability. Total cost order must hit a certain minimum order amount set by the restaurant.
 
 == Triggers
-=== 1
-=== 2
-=== 3
+=== Ensure No Overlap Between Intervals
+Trigger: interval_overlap_trigger
 
+Function called: check_intervals_overlap_deferred()
+
+This trigger makes sure that within a same schedule which belongs to only one rider, there must not exist an overlap of different intervals.
+This is a different implementation from the `OVERLAPS` operator provided by PSQL. The `OVERLAPS` operator does not consider intervals with a single common endpoint to overlap but our implementation does, in order to better fit our use case.
+
+This is done by ensuring:
+
+* For two intervals belonging to the same schedule and falls on the same date, they do not have any properties of a wrong input schedule.
+
+[source,SQL]
+----
+CREATE OR REPLACE FUNCTION check_intervals_overlap_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    badInputSchedule INTEGER;
+BEGIN
+    SELECT DISTINCT I1.scheduleId
+    INTO badInputSchedule
+    FROM Intervals I1
+    WHERE EXISTS(
+                  SELECT 1
+                  FROM Intervals I2
+                  WHERE I2.scheduleId = I1.scheduleId
+                    AND I2.intervalId <> I1.intervalId
+                    AND I2.startTime::date = I1.startTime::date
+                    AND (
+                          (I2.startTime::time <= I1.startTime::time
+                              AND I2.endTime::time >= I1.startTime::time)
+                          --IE: I2 is 2-5pm , I1 is 3 - 4pm / 3 - 6pm
+                          OR
+                          (I2.startTime::time <= I1.endTime::time
+                              AND I2.endTime::time >= I1.endTime::time)
+                          --IE: I2 is 2-5pm, I1 is 12pm - 3pm / 12pm - 6pm
+                          OR (
+                                      DATE_PART('hours', I1.startTime) - DATE_PART('hours', I2.endTime) < 1
+                                  AND DATE_PART('hours', I1.startTime) >= DATE_PART('hours', I2.endTime)
+                            -- IE: I1 : 3-5pm, I2 is 11am - 2.30pm  (this constraint of one hour difference is also capture in schema)
+                              )
+                      )
+              );
+    IF badInputSchedule IS NOT NULL THEN
+        RAISE EXCEPTION 'scheduleId % has some overlapping intervals', badInputSchedule;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+CREATE CONSTRAINT TRIGGER interval_overlap_trigger
+    AFTER INSERT
+    ON Intervals
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_intervals_overlap_deferred();
+----
+
+=== Ensure 5 Consecutive Days In Each WWS of a MWS
+Trigger: mws_5days_trigger
+
+Function: check_mws_5days_consecutive_constraint_deferred()
+
+This is to enforce the constraint of “Each WWS in a MWS must consist of five consecutive work days”. The trigger makes sure that all intervals in a week (7 days) of the MWS selected by a full-time rider are of five consecutive days. This means that every day within the five consecutive days are work days with valid intervals.
+
+This is done by ensuring:
+
+* there are 5 distinct days that can be obtained from the work intervals for each week
+* the difference between the first interval and the last interval of work is 4 days , i.e. all intervals fall within 5 days.
+
+[source,SQL]
+----
+DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_5days_consecutive_constraint_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+lastIntervalStartTime  TIMESTAMP;
+firstIntervalStartTime TIMESTAMP;
+distinctDates          INTEGER;
+BEGIN
+WITH curr_Intervals AS (
+SELECT *
+FROM Intervals I
+WHERE I.scheduleId = NEW.scheduleId1
+)
+SELECT startTime
+into lastIntervalStartTime
+FROM curr_Intervals I
+ORDER BY endTime DESC
+LIMIT 1;
+
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I2
+        WHERE I2.scheduleId = NEW.scheduleId1
+    )
+    SELECT startTime
+    into firstIntervalStartTime
+    FROM curr_Intervals I
+    ORDER BY endTime ASC
+    LIMIT 1;
+
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I3
+        WHERE I3.scheduleId = NEW.scheduleId1
+    )
+    SELECT COUNT(DISTINCT I.startTime::date)
+    into distinctDates
+    FROM curr_Intervals I;
+    IF ((lastIntervalStartTime::date - firstIntervalStartTime::date) <> 4 --all intervals within 5 days
+        OR distinctDates <> 5) -- each day got interval
+    THEN
+        RAISE EXCEPTION 'MWS must have 5 consecutive work days';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+
+CREATE CONSTRAINT TRIGGER mws_5days_trigger
+AFTER INSERT
+ON Monthly_Work_Schedules
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION check_mws_5days_consecutive_constraint_deferred();
+----
+
+=== Ensure Intervals in MWS Follow Predefined Timings
+Trigger: mws_predefined_interval_trigger
+
+Function: check_mws_intervals_constraint_deferred()
+
+This trigger enforces each work day to only consist of the predefined intervals for full-time riders (e.g. 10pm to 2pm, 3pm to 7pm). This is achieved by pairing intervals of the same day belonging to the same schedule to ensure that they follow the specified timings.
+
+First, we join 2 Interval instances using the startTime of the intervals.
+Then, we check:
+
+* Each interval declared has a corresponding pair
+* Intervals are 1 hour apart
+* The first interval starts at 10am/11am/12pm/1pm
+* Both intervals are 4 hours long
+
+[source,SQL]
+----
+DROP FUNCTION IF EXISTS check_mws_intervals_constraint_deferred() CASCADE;
+CREATE OR REPLACE FUNCTION check_mws_intervals_constraint_deferred() RETURNS TRIGGER AS
+$$
+DECLARE
+    badInputSchedule INTEGER;
+BEGIN
+    WITH curr_Intervals AS (
+        SELECT *
+        FROM Intervals I
+        WHERE I.scheduleId = NEW.scheduleId1
+    ),
+         Interval_Pairs (intervalId1, startTime1, endTime1, intervalId2, startTime2, endTime2) AS (
+             select cI1.intervalId, cI1.startTime, cI1.endTime, cI2.intervalId, cI2.startTime, cI2.endTime
+             from curr_Intervals cI1,
+                  curr_Intervals cI2
+             where cI1.startTime::date = cI2.startTime::date -- 2 intervals of the same day
+               and cI1.startTime::time < cI2.startTime::time -- cI1 is the earlier timing, cI2 the later
+         )
+    SELECT S.scheduleId
+    INTO badInputSchedule
+    FROM Weekly_Work_Schedules S
+    WHERE S.scheduleId = NEW.scheduleId1
+      AND (
+            NOT EXISTS( -- table is non-empty
+                    select 1 from Interval_Pairs IP2 limit 1
+                )
+            OR
+            EXISTS( --checks for any bad intervals
+                    SELECT 1
+                    FROM Interval_Pairs IP
+                    WHERE (select count(*) from Interval_Pairs) <>
+                          ((select count(*) from curr_Intervals) / 2) -- each interval has a pair
+                       OR NOT (
+                            IP.startTime1::time = '10:00' OR
+                            IP.startTime1::time = '11:00' OR
+                            IP.startTime1::time = '12:00' OR
+                            IP.startTime1::time = '13:00'
+                        )
+                       OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4
+                        AND DATE_PART('hours', IP.endTime2) - DATE_PART('hours', IP.startTime2) = 4)
+
+                       OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours', IP.endTime1) = 1)
+                )
+        );
+
+    IF badInputSchedule IS NOT NULL THEN
+        RAISE EXCEPTION '% violates some timing in Intervals', badInputSchedule;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+CREATE CONSTRAINT TRIGGER mws_predefined_interval_trigger
+    AFTER INSERT
+    ON Monthly_Work_Schedules
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_mws_intervals_constraint_deferred();
+----
 == Complex Queries
-=== 1 View Monthly Salary for Rider
+=== View Monthly Salary for Rider
 
 This query calculates the amount of salary that a rider (part-time or full-time) receives for the month. First we find the detailed schedule of the rider by joining the interval table with the weekly schedule table. 
 
@@ -627,7 +830,7 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
 ----
 
 
-=== 2 Check current status for Rider
+=== Check current status for Rider
 
 This is a complex query to find the current status of the rider. 
 
@@ -720,4 +923,12 @@ $$ LANGUAGE PLPGSQL;
 
 == Application Screenshot
 
-== Conclusion
+== Conclusion/Summary
+
+One particularly challenging factor that we faced was coding out a full stack development which consists of the front-end, back-end and the database. As some of us are relatively new to PERN (PostgresSQL, Express, Node.js and React) stack development, we have to research a lot to find out how each of the technology works and how to make sure each of them can be used cohesive with each other. We also had some difficulties coming up with various complex queries and triggers for the system. At many times, the queries that we came up with did not generate what we wanted, hence, quite some time was spent on debugging.
+
+At times, we were also unsure of what the best practices are when building the app. For example, there were cases where we were uncertain if we should implement a logic in the backend or if we should handle it in the database as both ways are possible. Furthermore, when we first started on the project, we were unsure of how to design a good schema, i.e. what kind of attributes we should include in the schema. These were gradually made clearer to us in the later part of the module after we were introduced with concepts like normal forms, which taught us some properties to take note of when evaluating a schema.
+
+From this project, we learnt that it is very important to determine how you will evaluate your system before implementation. We managed to incorporate a design thinking iterative process throughout our project. As there are many different types of users and each user has different needs, hence the design thinking process helps us to understand each user and the needs. With this, we managed to understand the specification better.
+
+The key takeaway was the valuable experience of coding out a database application. This project helps us to understand the importance of using a database in a system and how it is implemented in a real world setting. Apart from learning databases at a deeper level, we also learnt about other web development technologies which will be very useful to us in the future.
