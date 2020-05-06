@@ -148,7 +148,6 @@ export class ViewOngoingOrder extends Component {
                                 Customer ID: {res.userid} <br/>
                                 Restaurant Name: {res.rname} <br/>
                                 Deliver To: {res.deliverylocation} <br/>
-                                Earned Delivery Fee:{res.deliveryfee}) <br/>
                             </div>
                         )
                     })}
