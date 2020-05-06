@@ -414,11 +414,6 @@ $$
         randomRating INTEGER;
 
     BEGIN
-        randomRating = 0;
-        randomTime1 = floor(random() * (5) + 1) * '1 minute'::INTERVAL; -- 1- 5 minutes?
-        randomTime2 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime1;-- 11- 15 minutes?
-        randomTime3 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime2;-- 11- 15 minutes?
-        randomTime4 = floor(random() * (15) + 5) * '1 minute'::INTERVAL + randomTime3;-- 11- 15 minutes?
 
         SELECT R.userId INTO assigneduserId
         FROM Riders R
@@ -430,11 +425,8 @@ $$
             RAISE EXCEPTION 'Unable to find rider for Order. ALl riders are not free';
         END IF;
 
-        INSERT INTO Delivers(orderId, userId, departTimeForRestaurant,
-        departTimeFromRestaurant, arrivalTimeAtRestaurant, deliveryTimetoCustomer,
-        rating)
-        VALUES(new.orderId, assigneduserId, new.timeOfOrder + randomTime1, new.timeOfOrder + randomTime2,
-        new.timeOfOrder + randomTime3, new.timeOfOrder + randomTime4, randomRating);
+        INSERT INTO Delivers(orderId, userId)
+        VALUES(new.orderId, assigneduserId);
         RETURN new;
     END;
 $$ LANGUAGE PLPGSQL;
