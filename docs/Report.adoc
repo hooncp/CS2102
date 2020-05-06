@@ -24,9 +24,9 @@ The objective of the team project is to create a food delivery service applicati
 
 * Customers - Browse and place orders on food items from Restaurants
 
-* Restaurants - Receive and prepare orders from Consumers
+* Restaurants Staff - Receive, prepare orders from Consumers and manage food items in Restaurant.
 
-* Delivery rider - Deliver orders from Restaurants to Consumers
+* Delivery rider - Receive and deliver orders from Restaurants to Consumers
 
 * Food Delivery Service (FDS) Manager - Manage operations of the application
 
@@ -132,17 +132,13 @@ The following are the data requirements and constraints for the various entities
 
 *CustomerPromotions* ?
 
-* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the (?)
+* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and minimum time the customer last ordered from the restaurant.
 * Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
 
-*DeliveryPromotions* ?
-
-* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the (?)
-* Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
 
 *MinSpendingPromotions* ?
 
-* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the (?)
+* The customer promotions entity is a type of promotion, and stores the promo code, the restaurant name it is applicable to, and the minimum amount the customer must spend to receive the discount
 * Each customer promotion is uniquely identified by the promo code coupled with the name of restaurant it is applicable to (primary key), which it references from Promotions (foreign key)
 
 *Sells*
@@ -236,7 +232,7 @@ hour for that location area.
 
 (1) Promotions as an ISA relation to all sub promotions. By abstracting out attributes that are common to all promotions, we are able to achieve extensibility for promotions. This means it is easy to extend promotions and create more sub promotions. Restaurant Staff or the FDS Managers are able to create new types of sub promotions by identifying unique attributes which the sub promotion is based off.
 
-By abstracting out key attributes of the promotion, different restaurants can now also create the same type of promotion but with the ability to customise it to thier needs e.g. start and end date, rate of discount etc.
+By abstracting out key attributes of the promotion, different restaurants can now also create the same type of promotion but with the ability to customise it to their needs e.g. start and end date, rate of discount etc, different types of discount (Free delivery, %X Off, $X off, etc) and different promotion requirement (Spend a minimum of $10, Customer's last ordered delivery is 30 days ago)
 
 (2)
 
@@ -533,9 +529,121 @@ CREATE TABLE CustomerPromotions (
 === 3
 
 == Complex Queries
-=== 1
-=== 2
-=== 3
+=== 1 View Monthly Salary for Rider
+
+This query calculates the amount of salary that a rider (part-time or full-time) receives for the month. First we find the detailed schedule of the rider by joining the interval table with the weekly schedule table. 
+
+The salary calculation is as such: 
+
+Base salary + Bonus salary.
+Base salary is calculated by: Number of hours worked * Rate per hour. Rate per hour is determined by whether the rider is a part-timer ($2/h) or full timer($5/h). 
+
+Bonus salary is calculated by: Number of deliveries($4 per delivery) made during peak hour (Between the periods of 12:00 - 13:00 and 18:00 - 20:00) + Number of deliveries($2 per delivery) made during non-peak hour.
+
+----
+ WITH result AS (                                                                                                                      
+        SELECT startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) AS duration                                
+        FROM Weekly_Work_Schedules S JOIN intervals I                                                                                                     
+        ON (S.scheduleId = I.scheduleId)                                                                                                  
+        AND (S.userid = $1) AND (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
+        AND (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
+    result2 AS (
+        SELECT D.deliveryTimetoCustomer, CASE 
+                                        WHEN ((deliveryTimetoCustomer::time >= '12:00' AND deliveryTimetoCustomer::time <= '13:00')
+                                                OR (deliveryTimetoCustomer::time >= '18:00' AND deliveryTimetoCustomer::time <= '20:00'))
+                                        then 4
+                                        else 2
+                                        end as delivery_fee
+        FROM Delivers D      
+        WHERE userId = $1
+        AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
+        AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3),
+    result3 AS (
+        SELECT coalesce((SELECT sum(duration) from result R),0) AS totalHoursWorked , coalesce(sum(delivery_fee),0) AS totalFees
+        FROM result2 R2)
+    SELECT R3.totalHoursWorked, R3.totalFees, CASE
+        WHEN $1 NOT IN (select PT.userId from Part_Time PT) THEN (R3.totalHoursWorked * 5 + totalFees)
+        ELSE (R3.totalHoursWorked * 2 + totalFees) --part_time
+        end AS pay
+    FROM result3 R3;
+----
+
+
+=== 2 Check current status for Rider
+
+This is a complex query to find the current status of the rider. 
+
+All riders will be in three states:
+
+* Rider is not working 
+* Rider is working and free to accept orders.
+* Rider is working and currently delivering orders.
+
+First, we find the detailed schedule of all riders by joining the schedule table and interval table. We check whether he is working or he is on his break at this current time. If he is working, we would check again to see if he is currently delivering or not by checking the expected delivery time to the customer.
+
+
+----
+CREATE OR REPLACE FUNCTION findStatusOfRider(riderId INTEGER, current TIMESTAMP)
+    RETURNS INTEGER AS
+$$
+DECLARE
+    latestDelivery TIMESTAMP;
+    result         INTEGER;
+
+BEGIN
+    SELECT D.deliveryTimetoCustomer
+    INTO latestDelivery
+    FROM Delivers D
+    WHERE D.userId = riderId
+    ORDER BY D.deliveryTimetoCustomer desc
+    LIMIT 1;
+
+    IF latestDelivery IS NULL THEN
+        latestDelivery = '1970-01-01 00:00:00';
+    END IF;
+
+    CASE
+        WHEN checkWorkingStatusHelperOfRider(riderId, current) = 0 then result = 0;
+        WHEN latestDelivery < current THEN result = 1;
+        WHEN current <= latestDelivery THEN result = 2;
+        ELSE result = -1;
+        END CASE;
+    RETURN result;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
+    RETURNS INTEGER AS
+$$
+DECLARE
+    currentDate DATE;
+    currentTime TIME;
+    result      INTEGER;
+
+BEGIN
+    currentTime = current::time;
+    currentDate = current::date;
+
+    CASE
+        WHEN EXISTS(
+                SELECT 1
+                FROM Intervals I
+                WHERE I.startTime::time <= currentTime
+                  AND I.endTime::time > currentTime
+                  AND I.startTime::date <= currentDate
+                  AND I.endTIme::date <= currentDate
+                  AND I.scheduleId = (SELECT W.scheduleId
+                                      FROM Weekly_Work_Schedules W
+                                      WHERE W.startDate::date <= currentDate
+                                        AND W.endDate::date >= currentDate
+                                        AND W.userId = riderId)
+            ) THEN result = 1;
+        ELSE result = 0;
+        END CASE;
+    RETURN result;
+END;
+$$ LANGUAGE PLPGSQL;
+----
 
 == Software tools / Frameworks
 *Frontend* :
