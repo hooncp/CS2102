@@ -52,41 +52,19 @@ The following are the data requirements and constraints for the various entities
 * Each user entity stores the userId, the user's name, and date of creation of account
 * Each user is uniquely identifiable by userId (primary key)
 * Each user must be one of : (i) Customer (ii) Restaurant Staff (iii) Rider (iv) FDS Manager
-
-*Customers*
-
-* The customer entity is a user, and stores the userId, name, date of creation of account, and credit card information for payment of orders
-* Each customer is identified by userId (primary key) which is referenced from users (foreign key)
-
-*Riders*
-
-* The rider entity is a user, and stores the userId, name, date of creation of account, and the area he lives in
-* The area attribute is used to  facilitate the application's assignment of orders to riders based on locality
-* Each rider is identified by userId (primary key) which is referenced from users (foreign key)
+* Each customer entity is a user, and stores the userId and credit card information
+* Each rider entity is a user, and stores the userId and the area he/she lives in
 * Each rider must be either : (i) Full-Time Rider (ii) Part-Time Rider
-
-*Restaurant Staff*
-
-* The restaurant staff entity is a user and stores the userId, name, date of creation of account
-* Each restaurant staff is identified by userId (primary key) which is referenced from users (foreign key)
-* Every restaurant staff must work in exactly one restaurant
-
-*FDS Manager*
-
-* The FDS manager entity is a user and stores the userId, name, date of creation of account
-* Each FDS Manager is identified by userId (primary key) which is referenced from users (foreign key)
-
-*Part-Time Rider*
-
-* The part-time rider entity is a rider and stores the userId, name, date of creation of account
 * Each part-time rider works on a weekly work schedule
-* Each part-time rider is identified by userId (primary key) which is referenced from riders (foreign key)
-
-*Full-Time Rider* //still need?
-
-* The full-time rider entity is a rider and stores the userId, name, date of creation of account
 * Each full-time rider works on a monthly work schedule
-* Each full-time rider is identified by userId (primary key) which is referenced from riders (foreign key)
+* Each restaurant staff entity is a user and stores the userId, and name of the restaurant he/she works for
+* Every restaurant staff must work in exactly one restaurant
+* Each FDS manager entity is a user and stores the userId, name, date of creation of account
+* Each customer/rider/restaurant staff/FDS manager is identified by userId (primary key) which is referenced from users (foreign key)
+* Each restaurant entity stores the restaurant name, area of locality, and a minimum order amount of any order to go through
+* Each restaurant is uniquely identifiable by restaurant name
+* Each food entity stores the food name and category of the food
+* Each food is uniquely identified by its food name (primary key).
 
 *Weekly Work Schedule (WWS)*
 
@@ -109,12 +87,6 @@ The following are the data requirements and constraints for the various entities
 * The restaurant entity stores the restaurant name, area of locality, and a minimum order amount of any order to go through
 * Each restaurant is uniquely identifiable by restaurant name
 * Restaurants with the same name will have their location appended to thier restaurant name (e.g. Mac@WestCoastPark)
-
-*Food*
-
-* The food entity stores the food name and category of the food
-* Each food is uniquely identified by its food name (primary key).
-// must belong to at least some restaurant?
 
 *Orders*
 
