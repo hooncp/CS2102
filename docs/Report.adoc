@@ -1,4 +1,5 @@
 = CS2102 PROJECT TEAM 56
+:imagesDir: ./images/
 :site-section: Report
 :toc:
 :toc-title: Table Of Content
@@ -14,9 +15,9 @@ ifdef::env-github[]
 endif::[]
 :repoURL:
 
-    LEOW JIT YONG (A0183105N)
-    LIM WEI DONG (A0183105N)
-    HOON CHEE PING (A0183105N)
+    LEOW JIT YONG (A0182998A)
+    LIM WEI DONG (A0184149X)
+    HOON CHEE PING (A0183922B)
     LEE EE JIAN (A0183105N)
 
 == Introduction
@@ -120,15 +121,21 @@ FDS managers should also be able to view an hourly summary information. This inc
 Finally, FDS managers should be able to view the monthly summary information that individual customers and riders have access to.
 
 == ER Model
+
+.ER diagram for the Food Delivery Service application
+
+image::ER_Diagram.png[]
+
 === Design considerations
 
-(1) Promotions as an ISA relation to all sub promotions. By abstracting out attributes that are common to all promotions, we are able to achieve extensibility for promotions. This means it is easy to extend promotions and create more sub promotions. Restaurant Staff or the FDS Managers are able to create new types of sub promotions by identifying unique attributes which the sub promotion is based off.
+Promotions - Is an ISA relation to all promotion types.
+By abstracting out key attributes that are common to all promotions, we are able to achieve extensibility to easily create more types of promotions.
 
-By abstracting out key attributes of the promotion, different restaurants can now also create the same type of promotion but with the ability to customise it to their needs e.g. start and end date, rate of discount etc, different types of discount (Free delivery, %X Off, $X off, etc) and different promotion requirement (Spend a minimum of $10, Customer's last ordered delivery is 30 days ago)
-
-(2)
+Monthly Work Schedules (MWS) - By implementing monthly work schedules (MWS) such that it is composed of 4 unique weekly work schedules (WWS), we can leverage on triggers and checks that are done for the WWS which also apply to each week of the MWS. Checking that each week of the MWS is equivalent is also efficient because we can simply replicate one WWS for    4 times with only the dates adjusted for.
 
 === Constraints not captured by ER Model
+
+ssss
 
 == Database Relational Schema
 Users: BCNF
