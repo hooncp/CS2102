@@ -746,7 +746,6 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
 		.catch(e => console.error(e.stack))
 })
 ----
-
 <<<
 
 === Check current status for Rider
@@ -827,6 +826,76 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 ----
+
+=== Calculate Final Price of Order
+
+[source,SQL]
+----
+DROP FUNCTION IF EXISTS calculateTotalPriceAfterPromotionAndRewards CASCADE;
+CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(foodprice NUMERIC(6, 2),
+                                                                       deliveryfee NUMERIC(6, 2),
+                                                                       promoCode1 VARCHAR(20),
+                                                                       applicableTo1 VARCHAR(200),
+                                                                       usedRewardPoints INTEGER)
+    RETURNS NUMERIC(6, 2) AS
+$$
+DECLARE
+    amount   NUMERIC(6, 2);
+    discRate INTEGER;
+
+BEGIN
+    SELECT P.discRate
+    INTO discRate
+    FROM PROMOTIONS P
+    WHERE P.promoCode = promoCode1
+      AND P.applicableTo = applicableTo1;
+    CASE
+        -- NO PROMOTION
+        WHEN ((promoCode1 IS NULL))
+            THEN amount =
+                    (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
+        -- $ PROMOTION
+        WHEN EXISTS(
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE P.promoCode = promoCode1
+                  AND P.applicableTo = applicableTo1
+                  AND P.discUnit = '$')
+            THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - discRate
+                + deliveryfee);
+        -- Free Delivery PROMOTION
+        WHEN EXISTS(
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE P.promoCode = promoCode1
+                  AND P.applicableTo = applicableTo1
+                  AND P.discUnit = 'FD')
+            THEN amount = (
+                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
+                );
+        -- % PROMOTION
+        WHEN EXISTS(
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE P.promoCode = promoCode1
+                  AND P.applicableTo = applicableTo1
+                  AND P.discUnit = '%'
+            ) THEN amount = getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) * (100 - discRate) / 100
+            + deliveryfee;
+        --throw error.
+        ELSE amount = -1.00;
+        END CASE;
+
+    IF amount < 0 THEN
+        RAISE EXCEPTION 'final price should be more than or equal to 0';
+    END IF;
+
+    RETURN amount;
+END;
+$$ LANGUAGE PLPGSQL;
+
+----
+
 == Software tools / Frameworks
 *Frontend* : React.js
 
@@ -848,8 +917,6 @@ $$ LANGUAGE PLPGSQL;
 
 * Python for generation of large dataset
 
-<<<
-
 == Application Screenshot
 .Customer can browse for food, make an order, and make a review
 image::customer_bg.png[550,550]
@@ -860,10 +927,6 @@ image::rider_bg.png[600,600]
 .FDS managers can view all summary info (e.g. Hourly rider update)
 image::fds_bg.png[600,600]
 
-.Restaurant Staff can update menu dyanmically
-image::menu_bg.png[600,600]
-
-
 == Conclusion/Summary
 
 In summary, this project served as a very challenging learning experience for us. All of us were relatively new to full stack development and using technologies like PERN (PostgresSQL, Express, Node.js and React).
@@ -873,3 +936,80 @@ At times, we were also unsure of what the best practices were when building the 
 Through these challenges, aside from learning modern technologies, we learnt the importance of thinking from the perspective of the database when making an application, and the important factors when designing a database, such as good schema design.
 We saw firsthand the gradual improvement of our schema design as we were introduced to concepts such as normal forms.
 We learnt how to critically evaluate our system before implementation and afterwards continuously better meet required specifications by incorporating a design thinking iterative process.
+
+<<<
+
+== Appendix
+
+[source,SQL]
+----
+DROP FUNCTION IF EXISTS calculatePrice CASCADE;
+CREATE OR REPLACE FUNCTION calculatePrice(rname1 VARCHAR(20), fname1 VARCHAR(20), foodQty INTEGER)
+    RETURNS NUMERIC(6, 2) AS
+$$
+DECLARE
+    price NUMERIC(6, 2);
+
+BEGIN
+    SELECT S.price
+    into price
+    FROM SELLS S
+    WHERE S.fname = fname1
+      AND S.rname = rname1;
+    RETURN price * foodQty;
+END;
+
+$$ LANGUAGE PLPGSQL
+;
+----
+[source,SQL]
+----
+
+--nonpeak vs peak hour deliveryfee
+DROP FUNCTION IF EXISTS getDeliveryFee CASCADE;
+CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP, orderId1 INTEGER)
+    RETURNS NUMERIC(6, 2) AS
+$$
+DECLARE
+    test   time;
+    amount NUMERIC(6, 2);
+
+BEGIN
+    test = orderTime::time;
+    CASE
+        WHEN EXISTS(
+                SELECT 1
+                FROM Orders O
+                         JOIN Promotions P ON O.promoCode = P.promoCode AND O.applicableTo = P.applicableTo
+                WHERE O.orderId = orderId1
+                  AND P.discUnit = 'FD'
+            ) then amount = 0.00;
+        WHEN test < '19:00:00' AND test > '17:00:00' then amount = 10.00;
+        else amount = 5.00;
+        END CASE;
+    RETURN amount;
+END;
+$$ LANGUAGE PLPGSQL;
+----
+[source,SQL]
+----
+
+DROP FUNCTION IF EXISTS getearnedRewardPts CASCADE;
+CREATE OR REPLACE FUNCTION getearnedRewardPts(foodprice NUMERIC(6, 2))
+    RETURNS NUMERIC(6, 0) AS
+$$
+SELECT FLOOR(foodprice / 10.0)
+$$ LANGUAGE SQL;
+----
+[source,SQL]
+----
+
+
+DROP FUNCTION IF EXISTS getTotalPriceAdjustedForRewards CASCADE;
+CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(6, 2), rewardPt INTEGER)
+    RETURNS NUMERIC(6, 0) AS
+$$
+SELECT foodprice - (rewardPt / 5)
+$$ LANGUAGE SQL;
+
+----
