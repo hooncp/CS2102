@@ -700,7 +700,7 @@ The salary calculation is as such:
 Base salary + Bonus salary.
 Base salary is calculated by: Number of hours worked * Rate per hour. Rate per hour is determined by whether the rider is a part-timer ($2/h) or full timer($5/h). 
 
-Bonus salary is calculated by: Number of deliveries($4 per delivery) made during peak hour (Between the periods of 12:00 - 13:00 and 18:00 - 20:00) + Number of deliveries($2 per delivery) made during non-peak hour.
+Bonus salary is calculated by: Number of deliveries($4 per delivery) made during peak hour (Between the periods of 17:00 - 19:00) made during non-peak hour.
 
 [source,SQL]
 ----
@@ -709,31 +709,30 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
 	const month = req.body.month;
 	const year = req.body.year;
 	const text = `
-    with result as (                                                                                                                      
-        select startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) as duration                                
-        from Weekly_Work_Schedules S join intervals I                                                                                                     
-        on (S.scheduleId = I.scheduleId)                                                                                                  
-        and (S.userid = $1) and (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
-        and (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
-    result2 as (
-        SELECT D.deliveryTimetoCustomer, case 
-                                        when ((deliveryTimetoCustomer::time >= '12:00' and deliveryTimetoCustomer::time <= '13:00')
-                                                OR (deliveryTimetoCustomer::time >= '18:00' and deliveryTimetoCustomer::time <= '20:00'))
-                                        then 4
-                                        else 2
-                                        end as delivery_fee
+    WITH result AS (                                                                                                                      
+        SELECT startTime, endTime, date_part('hours', endTime) - date_part('hours', startTime) AS duration                                
+        FROM Weekly_Work_Schedules S JOIN intervals I                                                                                                     
+        ON (S.scheduleId = I.scheduleId)                                                                                                  
+        AND (S.userid = $1) AND (SELECT EXTRACT(MONTH FROM S.startDate::date)) = $2                                                       
+        AND (SELECT EXTRACT(YEAR FROM S.startDate::date)) = $3), 
+    result2 AS (
+        SELECT D.deliveryTimetoCustomer, CASE 
+                                        WHEN ((deliveryTimetoCustomer::time >= '17:00' AND deliveryTimetoCustomer::time <= '19:00')
+                                        THEN 4
+                                        ELSE 2
+                                        END AS delivery_fee
         FROM Delivers D      
         WHERE userId = $1
         AND (SELECT EXTRACT(MONTH FROM D.deliveryTimetoCustomer::date)) = $2
         AND (SELECT EXTRACT(YEAR FROM D.deliveryTimetoCustomer::date)) = $3),
-    result3 as (
-        select coalesce((select sum(duration) from result R),0) as totalHoursWorked , coalesce(sum(delivery_fee),0) as totalFees
+    result3 AS (
+        SELECT coalesce((SELECT sum(duration) FROM result R),0) AS totalHoursWorked , coalesce(sum(delivery_fee),0) AS totalFees
         from result2 R2)
-    select R3.totalHoursWorked, R3.totalFees, case
-        when $1 not in (select PT.userId from Part_Time PT) then (R3.totalHoursWorked * 5 + totalFees)
-        else (R3.totalHoursWorked * 2 + totalFees) --part_time
-        end as pay
-    from result3 R3
+    SELECT R3.totalHoursWorked, R3.totalFees, CASE
+        WHEN $1 NOT IN (select PT.userId FROM Part_Time PT) THEN (R3.totalHoursWorked * 5 + totalFees)
+        ELSE (R3.totalHoursWorked * 2 + totalFees) --part_time
+        END AS pay
+    FROM result3 R3
     `;
 
 	const values = [userId, month, year];
@@ -792,41 +791,47 @@ $$ LANGUAGE PLPGSQL;
 
 ----
 
-This is facilitated by a helper function where we first find out their detailed schedule through a helper function that joins the schedule table and interval table: (see next page)
+This is facilitated by a helper function where we first find out their detailed schedule through a helper function that joins the schedule table and interval table: (see Annex 10.1)
+
+=== Find the total price of the order
+
+This is a complex query to find the total price of the order (final price). 
+
+The order price calculation is as such:
+
+Base price + adjustment(reward point)  + adjustment(promotion) + delivery fee.
+
+Base price is calculated by the sum of (food price * quantity) in the single order using the `calculatePrice` function (see Annex 10.2.1)
+
+Adjustment(reward point) is calculated using the `getTotalPriceAdjustedForRewards` function (see Annex 10.2.2). Every 5 points used is a $1 discount, capped at the maximum of $3. 
+
+Adjustment(promotion) is calculated using the `calculateTotalPriceAfterPromotionAndRewards` function (see Annex 10.2.3). There are two different types of promotion, $X off or %X discount and we apply this promotion to the adjustment.
+
+Delivery fee is calculated by peak hour (Between the periods of 17:00 - 19:00) and non-peak hour and whether there is free delivery promotion using the `getDeliveryFee` (see Annex 10.2.4). Peak hour delivery costs $10 and non-peak hour delivery costs $5.
 
 [source,SQL]
 ----
-CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
-    RETURNS INTEGER AS
-$$
-DECLARE
-    currentDate DATE;
-    currentTime TIME;
-    result      INTEGER;
+CREATE VIEW OrderInfo AS
 
-BEGIN
-    currentTime = current::time;
-    currentDate = current::date;
+SELECT O.orderId,
+       O.userId,
+       O.deliveryLocation,
+       C.rname,
+       sum(calculatePrice(C.rname, C.fname, C.foodQty))                                as totalFoodPrice,
+       getDeliveryFee(O.timeOfOrder, O.orderId)                                        as deliveryfee,
+       O.timeOfOrder,
+       getearnedRewardPts(sum(calculatePrice(C.rname, C.fname, C.foodQty)))            as earnedRewardPts,
+       O.usedRewardPoints,
+       calculateTotalPriceAfterPromotionAndRewards(sum(calculatePrice(C.rname, C.fname, C.foodQty)),
+                                                   getDeliveryFee(O.timeOfOrder, O.orderId), O.promoCode,
+                                                   O.applicableTo, O.usedRewardPoints) as finalPrice
 
-    CASE
-        WHEN EXISTS(
-                SELECT 1
-                FROM Intervals I
-                WHERE I.startTime::time <= currentTime
-                  AND I.endTime::time > currentTime
-                  AND I.startTime::date = currentDate
-                  AND I.scheduleId = (SELECT W.scheduleId
-                                      FROM Weekly_Work_Schedules W
-                                      WHERE W.startDate::date <= currentDate
-                                        AND W.endDate::date >= currentDate
-                                        AND W.userId = riderId)
-            ) THEN result = 1;
-        ELSE result = 0;
-        END CASE;
-    RETURN result;
-END;
-$$ LANGUAGE PLPGSQL;
+FROM ORDERS O
+         JOIN CONTAINS C ON O.orderId = C.orderId
+GROUP BY O.orderId, C.rname, O.timeOfOrder
+ORDER BY O.orderId ASC;
 ----
+
 == Software tools / Frameworks
 *Frontend* : React.js
 
@@ -873,3 +878,164 @@ At times, we were also unsure of what the best practices were when building the 
 Through these challenges, aside from learning modern technologies, we learnt the importance of thinking from the perspective of the database when making an application, and the important factors when designing a database, such as good schema design.
 We saw firsthand the gradual improvement of our schema design as we were introduced to concepts such as normal forms.
 We learnt how to critically evaluate our system before implementation and afterwards continuously better meet required specifications by incorporating a design thinking iterative process.
+
+== Annex
+
+=== Secondary code to check working status
+[source,SQL]
+----
+CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
+    RETURNS INTEGER AS
+$$
+DECLARE
+    currentDate DATE;
+    currentTime TIME;
+    result      INTEGER;
+
+BEGIN
+    currentTime = current::time;
+    currentDate = current::date;
+
+    CASE
+        WHEN EXISTS(
+                SELECT 1
+                FROM Intervals I
+                WHERE I.startTime::time <= currentTime
+                  AND I.endTime::time > currentTime
+                  AND I.startTime::date = currentDate
+                  AND I.scheduleId = (SELECT W.scheduleId
+                                      FROM Weekly_Work_Schedules W
+                                      WHERE W.startDate::date <= currentDate
+                                        AND W.endDate::date >= currentDate
+                                        AND W.userId = riderId)
+            ) THEN result = 1;
+        ELSE result = 0;
+        END CASE;
+    RETURN result;
+END;
+$$ LANGUAGE PLPGSQL;
+----
+
+=== Secondary code to calculate order price
+
+==== calculatePrice
+[source,SQL]
+----
+CREATE OR REPLACE FUNCTION calculatePrice(rname1 VARCHAR(20), fname1 VARCHAR(20), foodQty INTEGER)
+    RETURNS NUMERIC(6, 2) AS
+$$
+DECLARE
+    price NUMERIC(6, 2);
+
+BEGIN
+    SELECT S.price
+    into price
+    FROM SELLS S
+    WHERE S.fname = fname1
+      AND S.rname = rname1;
+    RETURN price * foodQty;
+END;
+
+$$ LANGUAGE PLPGSQL
+;
+----
+
+==== getTotalPriceAdjustedForRewards
+[source,SQL]
+----
+CREATE OR REPLACE FUNCTION getTotalPriceAdjustedForRewards(foodprice NUMERIC(6, 2), rewardPt INTEGER)
+    RETURNS NUMERIC(6, 0) AS
+$$
+SELECT foodprice - (rewardPt / 5)
+$$ LANGUAGE SQL;
+----
+
+==== calculateTotalPriceAfterPromotionAndRewards
+[source,SQL]
+----
+CREATE OR REPLACE FUNCTION calculateTotalPriceAfterPromotionAndRewards(
+    foodprice NUMERIC(6, 2), deliveryfee NUMERIC(6, 2), promoCode1 VARCHAR(20), 
+    applicableTo1 VARCHAR(200), usedRewardPoints INTEGER) RETURNS NUMERIC(6, 2) AS
+$$
+DECLARE
+    amount   NUMERIC(6, 2);
+    discRate INTEGER;
+
+BEGIN
+    SELECT P.discRate
+    INTO discRate
+    FROM PROMOTIONS P
+    WHERE P.promoCode = promoCode1
+      AND P.applicableTo = applicableTo1;
+    CASE
+        -- NO PROMOTION
+        WHEN ((promoCode1 IS NULL))
+            THEN amount =
+                    (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) + deliveryfee);
+        -- $ PROMOTION
+        WHEN EXISTS(
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE P.promoCode = promoCode1
+                  AND P.applicableTo = applicableTo1
+                  AND P.discUnit = '$')
+            THEN amount = (getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) - discRate
+                + deliveryfee);
+        -- Free Delivery PROMOTION
+        WHEN EXISTS(
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE P.promoCode = promoCode1
+                  AND P.applicableTo = applicableTo1
+                  AND P.discUnit = 'FD')
+            THEN amount = (
+                getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints)
+                );
+        -- % PROMOTION
+        WHEN EXISTS(
+                SELECT 1
+                FROM PROMOTIONS P
+                WHERE P.promoCode = promoCode1
+                  AND P.applicableTo = applicableTo1
+                  AND P.discUnit = '%'
+            ) THEN amount = getTotalPriceAdjustedForRewards(foodprice, usedRewardPoints) * (100 - discRate) / 100
+            + deliveryfee;
+        --throw error.
+        ELSE amount = -1.00;
+        END CASE;
+
+    IF amount < 0 THEN
+        RAISE EXCEPTION 'final price should be more than or equal to 0';
+    END IF;
+
+    RETURN amount;
+END;
+$$ LANGUAGE PLPGSQL;
+----
+
+==== getDeliveryFee
+[source,SQL]
+----
+CREATE OR REPLACE FUNCTION getDeliveryFee(orderTime TIMESTAMP, orderId1 INTEGER)
+    RETURNS NUMERIC(6, 2) AS
+$$
+DECLARE
+    test   time;
+    amount NUMERIC(6, 2);
+
+BEGIN
+    test = orderTime::time;
+    CASE
+        WHEN EXISTS(
+                SELECT 1
+                FROM Orders O JOIN Promotions P ON O.promoCode = P. promoCode AND O.applicableTo = P.applicableTo
+                WHERE O.orderId = orderId1
+                  AND P.discUnit = 'FD'
+            ) then amount = 0.00;
+        WHEN test < '19:10:00' AND test > '17:00:00' then amount = 10.00;
+        else amount = 5.00;
+        END CASE;
+    RETURN amount;
+END;
+$$ LANGUAGE PLPGSQL;
+----
