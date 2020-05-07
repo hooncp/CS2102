@@ -18,10 +18,12 @@ const pool = new Pool({
 }); 
 ```
 # Running the application:
-- cd backend
-- npm start
-- cd frontend
-- npm start
+```
+cd backend
+npm start
+cd ../frontend
+npm start
+```
 
 # Documentation
 - Refer to the report.pdf 
