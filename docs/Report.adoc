@@ -1032,7 +1032,7 @@ BEGIN
                 WHERE O.orderId = orderId1
                   AND P.discUnit = 'FD'
             ) then amount = 0.00;
-        WHEN test < '19:10:00' AND test > '17:00:00' then amount = 10.00;
+        WHEN test < '19:00:00' AND test > '17:00:00' then amount = 10.00;
         else amount = 5.00;
         END CASE;
     RETURN amount;
