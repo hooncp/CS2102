@@ -130,6 +130,11 @@ export class customerBrowse extends React.Component {
                 }
         });
     }
+    handleHome = () => {
+        this.props.history.push({
+            pathname: '/'
+        })
+    }
     render() {
         console.log("f1",this.state.allFood);
         const temp = this.state.allFood.slice();
@@ -176,8 +181,8 @@ export class customerBrowse extends React.Component {
                         <Typography variant="h6" color="inherit" noWrap>
                             Browse Food/Restaurants
                         </Typography>
+                        <Grid container spacing={5} direction="row" justify="flex-start" alignItems="center">
 
-                        <Grid container spacing={5} direction="row" justify="center" alignItems="flex-end">
                             <FormControl variant="filled" style={{width: "20%"}}>
                                 <InputLabel style={{color: "white"}}>Browse Preference</InputLabel>
                                 <Select style={{color: "white"}}
@@ -224,6 +229,7 @@ export class customerBrowse extends React.Component {
                                 GO
                             </Button>
                         </Grid>
+                            <Button color="inherit" onClick={this.handleHome}> HOME </Button>
                     </Toolbar>
                 </AppBar>
                 <br/> <br/>

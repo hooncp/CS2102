@@ -54,8 +54,8 @@ export class afterSubmitOrder extends React.Component {
             .then(json => {
                 this.setState({deliveryInfo: json[0]})
                 console.log('deliveryInfo', this.state.deliveryInfo)
-        })
-        .catch(err => err);
+            })
+            .catch(err => err);
 
 
     }
@@ -79,7 +79,6 @@ export class afterSubmitOrder extends React.Component {
             })
             .catch(err => err);
     }
-
 
 
     handleInputReview = (event) => {
@@ -136,6 +135,11 @@ export class afterSubmitOrder extends React.Component {
             .catch(err => err);
         alert('Rating submitted!');
     }
+    handleHome = () => {
+        this.props.history.push({
+            pathname: '/'
+        })
+    }
 
     render() {
         const orderInfo = this.state.orderInfo;
@@ -143,7 +147,7 @@ export class afterSubmitOrder extends React.Component {
         const date = datetime.substr(0, 10);
         const time = datetime.substr(11, 8);
 
-                
+
         const deliveryInfo = this.state.deliveryInfo;
         console.log("deliveryInfo", deliveryInfo);
         let datetime1 = 0;
@@ -160,9 +164,13 @@ export class afterSubmitOrder extends React.Component {
             <React.Fragment>
                 <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
                     <Toolbar>
-                        <Typography variant="h6" color="inherit" noWrap>
-                            Review Your Order From: {this.state.rname}
-                        </Typography>
+                        <Grid container spacing={1} direction="row" justify="space-between" alignItems="center">
+                            <Typography variant="h6" color="inherit" noWrap>
+                                Review Your Order From: {this.state.rname}
+                            </Typography>
+                            <Button color="inherit" onClick={this.handleHome}> HOME </Button>
+
+                        </Grid>
                     </Toolbar>
                 </AppBar>
                 <br/><br/>
@@ -191,7 +199,8 @@ export class afterSubmitOrder extends React.Component {
                     <Grid item alignItems="center">
                         <Paper>
                             <span style={{fontWeight: "bold", textAlign: 'center'}}>Delivery Info:</span> <br/> <br/>
-                            Your order is delivered by: Rider ID #{deliveryInfo !== undefined ? deliveryInfo.userid : "no rider is available at the moment"}
+                            Your order is delivered by: Rider ID
+                            #{deliveryInfo !== undefined ? deliveryInfo.userid : "no rider is available at the moment"}
                             <hr/>
                             {/*Received at: {date1} | {time1}*/}
                             <br/>
