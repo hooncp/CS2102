@@ -1,30 +1,27 @@
-# CS2102
-For testing:
+# Introduction:
+This project is a PERN (PostgresSQL, Express, Node.js and React) full stack web application. This repository contains an sample of a food delivery service application. For further details, refer to the report.
 
-- cd to frontend => npm start
+# Application setup:
 
-- cd to backend => node app.js
+- Clone the code
+- Restore missing packages by using npm install in both frontend and backend folders.
+- Initialize database in the /backend/database/SQL_script folder and using the command \i init.sql and \i loaddb.sql in PSQL console.
+- Make appropriate changes to /backend/database/db.js
 
-- update db.js in backend to fit your own (currently using test inserted with pizza.sql
+```
+const pool = new Pool({
+  user: 'postgres',     //change to your own postgres user
+  host: 'localhost', 
+  database: 'project',  //change to your own database name
+  password: 'password', //change to your own postgres password
+  port: 5432,
+}); 
+```
+# Running the application:
+- cd backend
+- npm start
+- cd frontend
+- npm start
 
-
-
-Test using postman:
-
-1.GET requests 
-
-- eg: http://localhost:5000/rider/getData
-
-2.POST requests 
-
-- eg: http://localhost:5000/rider/insertData
-
-- add Key: Content-Type & Value: application/json to HEADER,
-
-- include info in json format in BODY -> raw
-
-- eg: 
-{
-"name1": "value1",
-"name2": "value2"
-}
+# Documentation
+- Refer to the report.pdf 
