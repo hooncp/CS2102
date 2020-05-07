@@ -497,7 +497,6 @@ Non-trivial FDs F = {(promoCode)(applicableTo) → minTimeFromLastOrder}
 
 *Monthly Work Schedule* - For each week in of the MWS, the 4 comprising WWS must be equivalent. Each WWS should have 5 consecutive work days, that comprise of intervals using the pre-defined shifts for full-time riders. Each MWS should last for 28 days exactly, and there should not be any overlapping MWS for the same rider.
 
-*Promotions* - Every promotion applied to an order has to be checked for validity. This includes checking that the promoCode is still in use, is applicable to the restaurant, and that the order had met the minimum requirement to be eligible for promotion (e.g. minimum spending of $10).
 
 *Riders* - During the operation hours of the FDS, there should be at least five riders (part-time or full-time) working at each hourly interval.
 
@@ -871,10 +870,10 @@ $$ LANGUAGE PLPGSQL;
 
 == Conclusion/Summary
 
-One particularly challenging factor that we faced was coding out a full stack development which consists of the front-end, back-end and the database. As some of us are relatively new to PERN (PostgresSQL, Express, Node.js and React) stack development, we have to research a lot to find out how each of the technology works and how to make sure each of them can be used cohesive with each other. We also had some difficulties coming up with various complex queries and triggers for the system. At many times, the queries that we came up with did not generate what we wanted, hence, quite some time was spent on debugging.
+In summary, this project served as a very challenging learning experience for us. All of us were relatively new to full stack development and using technologies like PERN (PostgresSQL, Express, Node.js and React).
+As such, we had to research a lot to find out how each of these technology work and how to integrate them to come up with an application.
+At times, we were also unsure of what the best practices were when building the application. For example, we were uncertain if we should implement a particular logic in the backend or if we should handle it in the database as both ways are possible.
 
-At times, we were also unsure of what the best practices are when building the app. For example, there were cases where we were uncertain if we should implement a logic in the backend or if we should handle it in the database as both ways are possible. Furthermore, when we first started on the project, we were unsure of how to design a good schema, i.e. what kind of attributes we should include in the schema. These were gradually made clearer to us in the later part of the module after we were introduced with concepts like normal forms, which taught us some properties to take note of when evaluating a schema.
-
-From this project, we learnt that it is very important to determine how you will evaluate your system before implementation. We managed to incorporate a design thinking iterative process throughout our project. As there are many different types of users and each user has different needs, hence the design thinking process helps us to understand each user and the needs. With this, we managed to understand the specification better.
-
-The key takeaway was the valuable experience of coding out a database application. This project helps us to understand the importance of using a database in a system and how it is implemented in a real world setting. Apart from learning databases at a deeper level, we also learnt about other web development technologies which will be very useful to us in the future.
+Through these challenges, aside from learning modern technologies, we learnt the importance of thinking from the perspective of the database when making an application, and the important factors when designing a database, such as good schema design.
+We saw firsthand the gradual improvement of our schema design as we were introduced to concepts such as normal forms.
+We learnt how to critically evaluate our system before implementation and afterwards continuously better meet required specifications by incorporating a design thinking iterative process.
