@@ -851,6 +851,18 @@ $$ LANGUAGE PLPGSQL;
 <<<
 
 == Application Screenshot
+.Customer can browse for food, make an order, and make a review
+image::customer.png[700,500]
+
+.Rider can declare schedule, and complete in order real-time
+image::rider_background.png[600,600]
+
+.FDS managers can view all summary info (e.g. Hourly rider update)
+image::fds_bg.png[600,600]
+
+.Restaurant Staff can update menu dyanmically
+image::menu_bg.png[600,600]
+
 
 == Conclusion/Summary
 
