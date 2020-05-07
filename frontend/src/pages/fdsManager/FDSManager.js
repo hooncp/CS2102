@@ -180,6 +180,11 @@ export class FDSManager extends React.Component {
             .catch(err => err);
         alert("Restaurant Created!");
     }
+    handleHome = () => {
+        this.props.history.push({
+            pathname: '/'
+        })
+    }
 
     render() {
         const hourArr = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,]
@@ -588,9 +593,12 @@ export class FDSManager extends React.Component {
                 {workingRiderDialog}
                 <AppBar style={{backgroundColor: "#7e57c2"}} position="relative">
                     <Toolbar>
-                        <Typography variant="h6" color="inherit" noWrap>
-                            FDS Manager Actions - User #{this.state.userId}
-                        </Typography>
+                        <Grid container spacing={1} direction="row" justify="space-between" alignItems="center">
+                            <Typography variant="h6" color="inherit" noWrap>
+                                FDS Manager Actions - User #{this.state.userId}
+                            </Typography>
+                            <Button color="inherit" onClick={this.handleHome}> HOME </Button>
+                        </Grid>
                     </Toolbar>
                 </AppBar>
                 <br/> <br/>

@@ -34,7 +34,7 @@ export default class RestaurantStaff extends Component {
     render() {
         return (
             <div className="RestaurantStaff" style={{ "height": "1000px" }}>
-                <RSAppBar userId={this.state.userId}/>
+                <RSAppBar userId={this.state.userId} history={this.props.history}/>
                 <div className="lander" style={{ "height": "1000px" }}>
                     <h1>CHOOSE YOUR ACTION</h1>
                     <Button variant="contained" color="primary"

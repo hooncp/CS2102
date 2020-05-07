@@ -120,6 +120,11 @@ export class customerActions extends React.Component {
                 }
         });
     }
+    handleHome = () => {
+        this.props.history.push({
+            pathname: '/'
+        })
+    }
     Row = (props) => {
         const {row} = props;
         const [open, setOpen] = React.useState(false);
@@ -264,17 +269,20 @@ export class customerActions extends React.Component {
             <React.Fragment>
                 <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
                     <Toolbar>
-
+                        <Grid container spacing={1} direction="row" justify="space-between" alignItems="center">
                         <Typography variant="h6" color="inherit" noWrap>
                             Customer Actions - User Id: {this.state.userId}
                         </Typography>
+                        <Button color="inherit" onClick={this.handleHome}> HOME </Button>
+                        </Grid>
+
                     </Toolbar>
                 </AppBar>
                 <br/><br/>
                 <div>
                     <Grid container spacing={2} direction="column" justify="center" alignItems="center">
                         <Grid item>
-                            <Button variant="contained" color="primary" onClick={this.handleMakeNewOrder} size="large">
+                            <Button variant="contained" color= "primary" onClick={this.handleMakeNewOrder} size="large">
                                 Make new order!
                             </Button>
                         </Grid>
