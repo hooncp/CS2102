@@ -36,14 +36,14 @@ export class FDSManager extends React.Component {
             customerOpen: false,
             riderOpen: false,
             orderOpen: false,
-            workingRiderOpen:false,
+            workingRiderOpen: false,
             filterCustomer: "",
             filterRider: "",
             monthlyRiderSummary: [],
             hourlyOrderInfo: [],
             otherActions: false,
-            newMinOrderAmt:"",
-            newArea:"",
+            newMinOrderAmt: "",
+            newArea: "",
             newRname: "",
 
             dailyRidersWorkingPerHour: [],
@@ -157,7 +157,7 @@ export class FDSManager extends React.Component {
     handleOrderToggle = () => {
         this.setState({orderOpen: !this.state.orderOpen});
     }
-    handleOtherActionsToggle  = () => {
+    handleOtherActionsToggle = () => {
         this.setState({otherActions: !this.state.otherActions});
     }
     handleCreateRestaurant = () => {
@@ -175,7 +175,7 @@ export class FDSManager extends React.Component {
         })
             .then(res => res.json())
             .then(json => {
-                this.setState({ otherActions : false })
+                this.setState({otherActions: false})
             })
             .catch(err => err);
         alert("Restaurant Created!");
@@ -186,9 +186,84 @@ export class FDSManager extends React.Component {
         const dayArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
         const monthArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         console.log(monthArr);
+        const generalDialog =
+            <Dialog open={this.state.chooseMonthlySummary} onClose={this.handleMonthlySummary} fullWidth="100">
+                <React.Fragment>
+                    <br/>
+                    <Grid container spacing={2} direction="row" justify="center" alignItems="center">
+                        <Grid item>
+                            <FormControl variant="outlined">
+                                <InputLabel>Month</InputLabel>
+                                <Select
+                                    required
+                                    name="month"
+                                    value={this.state.month}
+                                    onChange={this.handleChange}
+                                >
+                                    {monthArr.map(res => {
+                                            return (
+                                                <MenuItem value={res}>{res}</MenuItem>
+                                            )
+                                        }
+                                    )}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <FormControl variant="outlined">
+                                <InputLabel>Year</InputLabel>
+                                <Select
+                                    required
+                                    name="year"
+                                    value={this.state.year}
+                                    onChange={this.handleChange}
+                                >
+
+                                    <MenuItem value={2019}>2019</MenuItem>
+                                    <MenuItem value={2020}>2020</MenuItem>
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Button variant="outlined" color="default" onClick={this.getMonthlyGeneralSummary}
+                                size="large">
+                            Go
+                        </Button>
+                    </Grid>
+                    <hr/>
+                    <DialogContent>
+                        <Grid container spacing={2} direction="column" justify="center" alignItems="center">
+                            <br/>
+                            {this.state.monthlyGeneralSummary !== undefined &&
+                            <Typography variant="h6">
+                                <span style={{fontWeight: "bold"}}>New Customers: </span>
+                                {this.state.monthlyGeneralSummary.newcustomers}
+                                <br/>
+                                <span style={{fontWeight: "bold"}}>Number Of Orders: </span>
+                                {this.state.monthlyGeneralSummary.numorder}
+                                <br/>
+                                <span style={{fontWeight: "bold"}}>Total Cost Of All Orders: </span>
+                                ${this.state.monthlyGeneralSummary.totalcost}
+                                <br/> <br/>
+                            </Typography>
+                            }
+                            {this.state.monthlyGeneralSummary === undefined &&
+                            <Paper>
+                                New Customers: 0
+                                <br/>
+                                Number Of Orders: 0
+                                <br/>
+                                Total Cost Of All Orders: 0
+                            </Paper>
+                            }
+                        </Grid>
+                    </DialogContent>
+                </React.Fragment>
+            </Dialog>
+
         const customerDialog =
             <Dialog open={this.state.customerOpen} onClose={this.handleCustomerToggle} fullWidth="100">
-                <FormControl variant="contained" style={{width: "100%"}}>
+                <FormControl variant="contained">
                     <TextField
                         name="filterCustomer"
                         label="Search Customer ID"
@@ -432,8 +507,8 @@ export class FDSManager extends React.Component {
                 </DialogContent>
             </Dialog>
 
-        const workingRiderDialog = 
-        <Dialog open={this.state.workingRiderOpen} onClose={this.handleWorkingRiderToggle} fullWidth="100">
+        const workingRiderDialog =
+            <Dialog open={this.state.workingRiderOpen} onClose={this.handleWorkingRiderToggle} fullWidth="100">
                 <br/><br/>
                 <FormControl variant="outlined">
                     <InputLabel>Day</InputLabel>
@@ -506,14 +581,15 @@ export class FDSManager extends React.Component {
 
         return (
             <React.Fragment>
+                {generalDialog}
                 {customerDialog}
                 {riderDialog}
                 {orderDialog}
                 {workingRiderDialog}
-                <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
+                <AppBar style={{backgroundColor: "#7e57c2"}} position="relative">
                     <Toolbar>
                         <Typography variant="h6" color="inherit" noWrap>
-                            FDS Manager Actions - User Id: {this.state.userId}
+                            FDS Manager Actions - User #{this.state.userId}
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -526,70 +602,6 @@ export class FDSManager extends React.Component {
                             size="large">
                         View Monthly Summary
                     </Button> <br/> <br/>
-                    {this.state.chooseMonthlySummary &&
-                    <Grid container spacing={2} direction="row" justify="center" alignItems="center">
-                        <Grid item>
-                            <FormControl variant="outlined" style={{width: "100%"}}>
-                                <InputLabel>Month</InputLabel>
-                                <Select
-                                    required
-                                    name="month"
-                                    value={this.state.month}
-                                    onChange={this.handleChange}
-                                >
-                                    {monthArr.map(res => {
-                                            return (
-                                                <MenuItem value={res}>{res}</MenuItem>
-                                            )
-                                        }
-                                    )}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item>
-                            <FormControl variant="outlined" style={{width: "100%"}}>
-                                <InputLabel>Year</InputLabel>
-                                <Select
-                                    required
-                                    name="year"
-                                    value={this.state.year}
-                                    onChange={this.handleChange}
-                                >
-
-                                    <MenuItem value={2019}>2019</MenuItem>
-                                    <MenuItem value={2020}>2020</MenuItem>
-
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Button variant="outlined" color="default" onClick={this.getMonthlyGeneralSummary}
-                                size="large">
-                            Go
-                        </Button>
-                        <br/><br/><br/>
-                        <Grid container spacing={2} direction="column" justify="center" alignItems="center">
-                            <br/>
-                            {this.state.monthlyGeneralSummary !== undefined &&
-                            <Paper>
-                                New Customers: {this.state.monthlyGeneralSummary.newcustomers}
-                                <br/>
-                                Number Of Orders: {this.state.monthlyGeneralSummary.numorder}
-                                <br/>
-                                Total Cost Of All Orders: {this.state.monthlyGeneralSummary.totalcost}
-                            </Paper>
-                            }
-                            {this.state.monthlyGeneralSummary === undefined &&
-                            <Paper>
-                                New Customers: 0
-                                <br/>
-                                Number Of Orders: 0
-                                <br/>
-                                Total Cost Of All Orders: 0
-                            </Paper>
-                            }
-                        </Grid>
-                    </Grid>
-                    }
                     <Button variant="contained" color="secondary" onClick={this.handleCustomerToggle}
                             size="large">
                         View Customer Summary
@@ -602,7 +614,7 @@ export class FDSManager extends React.Component {
                     <h1> Daily Summary </h1>
                     <Button variant="contained" color="secondary" onClick={this.handleWorkingRiderToggle}
                             size="large">
-                        View Number of Working Rider 
+                        View Number of Working Rider
                     </Button> <br/> <br/>
 
                     <h1> Hourly Summary </h1>
@@ -617,36 +629,36 @@ export class FDSManager extends React.Component {
                     {this.state.otherActions &&
                     <React.Fragment>
                         <Grid container spacing={2} direction="column" justify="center" alignItems="center">
-                            <Grid item style={{ width: "80%" }}>
-                                <FormControl variant="outlined" style={{ width: "100%" }}>
-                                <TextField
-                                    required
-                                    name="newRname"
-                                    label="Required"
-                                    helperText="Enter Restaurant Name"
-                                    placeholder="Restaurant Name"
-                                    variant="outlined"
-                                    value={this.state.newRname}
-                                    onChange={this.handleChange}
-                                />
+                            <Grid item style={{width: "80%"}}>
+                                <FormControl variant="outlined" style={{width: "100%"}}>
+                                    <TextField
+                                        required
+                                        name="newRname"
+                                        label="Required"
+                                        helperText="Enter Restaurant Name"
+                                        placeholder="Restaurant Name"
+                                        variant="outlined"
+                                        value={this.state.newRname}
+                                        onChange={this.handleChange}
+                                    />
                                 </FormControl>
                             </Grid>
-                            <Grid item style={{ width: "80%" }}>
-                                <FormControl variant="outlined" style={{ width: "100%" }}>
-                                <TextField
-                                    required
-                                    name="newMinOrderAmt"
-                                    label="Required"
-                                    placeholder="ie. 20"
-                                    helperText="Enter Minimum Order Amount"
-                                    variant="outlined"
-                                    value={this.state.newMinOrderAmt}
-                                    onChange={this.handleChange}
-                                />
+                            <Grid item style={{width: "80%"}}>
+                                <FormControl variant="outlined" style={{width: "100%"}}>
+                                    <TextField
+                                        required
+                                        name="newMinOrderAmt"
+                                        label="Required"
+                                        placeholder="ie. 20"
+                                        helperText="Enter Minimum Order Amount"
+                                        variant="outlined"
+                                        value={this.state.newMinOrderAmt}
+                                        onChange={this.handleChange}
+                                    />
                                 </FormControl>
                             </Grid>
-                            <Grid item style={{ width: "80%" }}>
-                                <FormControl variant="outlined" style={{ width: "100%" }}>
+                            <Grid item style={{width: "80%"}}>
+                                <FormControl variant="outlined" style={{width: "100%"}}>
                                     <InputLabel>Restaurant Area</InputLabel>
                                     <Select
                                         required
