@@ -1,5 +1,6 @@
 = CS2102 PROJECT TEAM 56
 :imagesDir: ./images/
+:pdf-theme: style.yml
 :site-section: Report
 :toc:
 :toc-title: Table Of Content
@@ -30,6 +31,8 @@ endif::[]
 *Hoon Chee Ping* - Fullstack Developer
 
 *Lee Ee Jian* - Fullstack Developer
+
+<<<
 
 == Application
 === Data Requirements and Constraints
@@ -108,6 +111,8 @@ FDS managers should also be able to view monthly summary information. This inclu
 FDS managers should also be able to view an hourly summary information. This includes the total number of orders for each location, and the number of riders for each interval.
 Finally, FDS managers should be able to view the monthly summary information that individual customers and riders have access to.
 
+<<<
+
 == ER Model
 
 .ER diagram for the Food Delivery Service application
@@ -121,10 +126,7 @@ By abstracting out key attributes that are common to all promotions, we are able
 
 Monthly Work Schedules (MWS) - By implementing monthly work schedules (MWS) such that it is composed of 4 unique weekly work schedules (WWS), we can leverage on triggers and checks that are done for the WWS which also apply to each week of the MWS. Checking that each week of the MWS is equivalent is also efficient because we can simply replicate one WWS for    4 times with only the dates adjusted for.
 
-=== Constraints not captured by ER Model
-
-ssss
-
+<<<
 == Database Relational Schema
 Users: BCNF
 [source,SQL]
@@ -138,7 +140,6 @@ CREATE TABLE Users (
 
 Non-trivial FDs F = {userId → name}
 ----
-
 
 Restaurants: BCNF
 [source,SQL]
@@ -190,6 +191,9 @@ CREATE TABLE Sells (
 
 Non-trivial FDs F = {(fname)(rname) → (price)(availability)}
 ----
+
+<<<
+
 Restaurant Staff schema : BCNF
 [source,SQL]
 ----
@@ -252,6 +256,9 @@ CREATE TABLE Riders (
 
 Non-trivial FDs F = {userId → area}
 ----
+
+<<<
+
 Part-time schema : BCNF
 [source,SQL]
 ----
@@ -320,6 +327,9 @@ Non-trivial FDs F = {scheduleId1 → (scheduleId2)(scheduleId3)(scheduleId4)
                     scheduleId3 → (scheduleId1)(scheduleId2)(scheduleId4)
                     scheduleId4 → (scheduleId1)(scheduleId2)(scheduleId3)}
 ----
+
+<<<
+
 Intervals schema : BCNF
 [source,SQL]
 ----
@@ -333,22 +343,14 @@ CREATE TABLE Intervals
     FOREIGN KEY (scheduleId) REFERENCES Weekly_Work_Schedules (scheduleId)
                                 ON DELETE CASCADE,
         check (DATE_PART('minutes', startTime) = 0
-        AND
-           DATE_PART('seconds', startTime) = 0
-        AND
-           DATE_PART('minutes', endTime) = 0
-        AND
-           DATE_PART('seconds', startTime) = 0
-        AND
-           DATE_PART('hours', endTime) - DATE_PART('hours', startTime) <= 4
-        AND
-           startTime::date = endTime::date
-        AND
-           DATE_PART('hours', endTime) > DATE_PART('hours', startTime)
-        AND
-           startTime::time >= '10:00'
-        AND
-           endTime::time <= '22:00'
+        AND DATE_PART('seconds', startTime) = 0
+        AND DATE_PART('minutes', endTime) = 0
+        AND DATE_PART('seconds', startTime) = 0
+        AND DATE_PART('hours', endTime) - DATE_PART('hours', startTime) <= 4
+        AND startTime::date = endTime::date
+        AND DATE_PART('hours', endTime) > DATE_PART('hours', startTime)
+        AND startTime::time >= '10:00'
+        AND endTime::time <= '22:00'
         )
 );
 
@@ -492,6 +494,8 @@ Non-trivial FDs F = {(promoCode)(applicableTo) → minTimeFromLastOrder}
 
 *Delivers* - Assignment of rider has to ensure that the rider is currently on his work shift, and is free to deliver the order.
 
+<<<
+
 == Triggers
 === Ensure No Overlap Between Intervals
 Trigger: interval_overlap_trigger
@@ -552,14 +556,14 @@ CREATE CONSTRAINT TRIGGER interval_overlap_trigger
 EXECUTE FUNCTION check_intervals_overlap_deferred();
 ----
 
+<<<
+
 === Ensure 5 Consecutive Days In Each WWS of a MWS
 Trigger: mws_5days_trigger
 
 Function: check_mws_5days_consecutive_constraint_deferred()
 
-This is to enforce the constraint of “Each WWS in a MWS must consist of five consecutive work days”. The trigger makes sure that all intervals in a week (7 days) of the MWS selected by a full-time rider are of five consecutive days. This means that every day within the five consecutive days are work days with valid intervals.
-
-This is done by ensuring:
+This is to enforce the constraint of “Each WWS in a MWS must consist of five consecutive work days”. The trigger makes sure that all intervals in a week (7 days) of the MWS selected by a full-time rider are of five consecutive days. This means that every day within the five consecutive days are work days with valid intervals. This is done by ensuring:
 
 * there are 5 distinct days that can be obtained from the work intervals for each week
 * the difference between the first interval and the last interval of work is 4 days , i.e. all intervals fall within 5 days.
@@ -628,15 +632,11 @@ Trigger: mws_predefined_interval_trigger
 
 Function: check_mws_intervals_constraint_deferred()
 
-This trigger enforces each work day to only consist of the predefined intervals for full-time riders (e.g. 10pm to 2pm, 3pm to 7pm). This is achieved by pairing intervals of the same day belonging to the same schedule to ensure that they follow the specified timings.
+This trigger enforces each work day to only consist of the predefined intervals for full-time riders (e.g. 10pm to 2pm, 3pm to 7pm). This is achieved by pairing intervals of the same day belonging to the same schedule to ensure that they follow the specified timings through joining 2 Interval instances using the startTime of the intervals. Then, we check:
 
-First, we join 2 Interval instances using the startTime of the intervals.
-Then, we check:
-
-* Each interval declared has a corresponding pair
-* Intervals are 1 hour apart
+* Each interval declared has a corresponding pair, that is 1 hour apart, and are both 4 hours long
 * The first interval starts at 10am/11am/12pm/1pm
-* Both intervals are 4 hours long
+
 
 [source,SQL]
 ----
@@ -662,12 +662,10 @@ BEGIN
     INTO badInputSchedule
     FROM Weekly_Work_Schedules S
     WHERE S.scheduleId = NEW.scheduleId1
-      AND (
-            NOT EXISTS( -- table is non-empty
+      AND ( NOT EXISTS( -- table is non-empty
                     select 1 from Interval_Pairs IP2 limit 1
                 )
-            OR
-            EXISTS( --checks for any bad intervals
+            OR EXISTS( --checks for any bad intervals
                     SELECT 1
                     FROM Interval_Pairs IP
                     WHERE (select count(*) from Interval_Pairs) <>
@@ -680,7 +678,6 @@ BEGIN
                         )
                        OR NOT (DATE_PART('hours', IP.endTime1) - DATE_PART('hours', IP.startTime1) = 4
                         AND DATE_PART('hours', IP.endTime2) - DATE_PART('hours', IP.startTime2) = 4)
-
                        OR NOT (DATE_PART('hours', IP.startTime2) - DATE_PART('hours', IP.endTime1) = 1)
                 )
         );
@@ -700,6 +697,7 @@ CREATE CONSTRAINT TRIGGER mws_predefined_interval_trigger
     FOR EACH ROW
 EXECUTE FUNCTION check_mws_intervals_constraint_deferred();
 ----
+<<<
 == Complex Queries
 === View Monthly Salary for Rider
 
@@ -757,12 +755,11 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
 })
 ----
 
+<<<
 
 === Check current status for Rider
 
-This is a complex query to find the current status of the rider. 
-
-All riders will be in three states:
+This is a complex query to find the current status of the rider. All riders will be in three states:
 
 * Rider is not working 
 * Rider is working and free to accept orders.
@@ -832,7 +829,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 ----
-
+<<<
 == Software tools / Frameworks
 *Frontend* : React.js
 
