@@ -38,11 +38,15 @@ router.get('/getPromoCode', async (req, res) => {
     var parts = url.parse(req.url, true);
     var rname = parts.query.rname;
     let currentDate = new Date().toLocaleString('en-US');
+    // let currentDate = new Date();
+    // let timestamp = currentDate.getDate() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getFullYear()
+    //      + " " + currentDate.getHours() + ":" + currentDate.getMinutes();
     const query = `SELECT DISTINCT promoCode, promoDesc 
                     FROM Promotions P 
                     WHERE P.applicableTo = $1
                     AND startDate <= $2
                     AND endDate >= $2`
+                    
     const values = [rname,currentDate];
     pool.query(query,values)
         .then(result => res.json(result.rows))

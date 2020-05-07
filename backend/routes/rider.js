@@ -325,7 +325,82 @@ router.post('/insertFullTimeRider', async (req, res) => {
 	}
 });
 
+router.get('/getOngoingOrder', async (req, res) => {
+	var parts = url.parse(req.url, true);
+	var userId = parts.query.userId;
+	const query = `SELECT orderId FROM Delivers WHERE userId = $1 
+					AND (departTimeForRestaurant IS NULL 
+						OR departTimeFromRestaurant IS NULL
+						OR arrivalTimeAtRestaurant IS NULL
+						OR deliveryTimetoCustomer IS NULL)`
+	;
+	const values = [userId];
+	pool.query(query, values)
+		.then(result => res.json(result.rows[0]))
+		.catch(e => console.error(e.stack))
+	;
+});
 
+router.get('/getOrderedFood', async (req, res) => {
+	var parts = url.parse(req.url, true);
+	var orderId = parts.query.orderId;
+	const query = `SELECT fname,foodqty FROM Contains WHERE orderId = $1`
+	;
+	const values = [orderId];
+	pool.query(query, values)
+		.then(result => res.json(result.rows))
+		.catch(e => console.error(e.stack))
+	;
+});
+
+router.get('/getOrderDetails', async (req, res) => {
+	var parts = url.parse(req.url, true);
+	var orderId = parts.query.orderId;
+	const query = `SELECT userId, deliverylocation, rname, deliveryfee FROM orderInfo WHERE orderId = $1`
+	;
+	const values = [orderId];
+	pool.query(query, values)
+		.then(result => res.json(result.rows))
+		.catch(e => console.error(e.stack))
+	;
+});
+
+router.put('/updateDepartTimeForRestaurant', async (req, res) => {
+	const orderId = req.body.orderId;
+	let currentDate = new Date().toLocaleString('en-US');
+	const query = `UPDATE Delivers SET departTimeForRestaurant = $2 WHERE orderId = $1`;
+	values = [orderId, currentDate];
+	pool.query(query, values)
+		.then(result => res.json(result.rows))
+		.catch(e => console.error(e.stack))
+});
+router.put('/updateDepartTimeFromRestaurant', async (req, res) => {
+	const orderId = req.body.orderId;
+	let currentDate = new Date().toLocaleString('en-US');
+	const query = `UPDATE Delivers SET departTimeFromRestaurant = $2 WHERE orderId = $1`;
+	values = [orderId, currentDate];
+	pool.query(query, values)
+		.then(result => res.json(result.rows))
+		.catch(e => console.error(e.stack))
+});
+router.put('/updateArrivalTimeAtRestaurant', async (req, res) => {
+	const orderId = req.body.orderId;
+	let currentDate = new Date().toLocaleString('en-US');
+	const query = `UPDATE Delivers SET arrivalTimeAtRestaurant = $2 WHERE orderId = $1`;
+	values = [orderId, currentDate];
+	pool.query(query, values)
+		.then(result => res.json(result.rows))
+		.catch(e => console.error(e.stack))
+});
+router.put('/updateDeliveryTimetoCustomer', async (req, res) => {
+	const orderId = req.body.orderId;
+	let currentDate = new Date().toLocaleString('en-US');
+	const query = `UPDATE Delivers SET deliveryTimetoCustomer = $2 WHERE orderId = $1`;
+	values = [orderId, currentDate];
+	pool.query(query, values)
+		.then(result => res.json(result.rows))
+		.catch(e => console.error(e.stack))
+});
 /*https://codeburst.io/node-js-mysql-and-async-await-6fb25b01b628*/
 
 // router.post('/deleteData', async (req, res) => {

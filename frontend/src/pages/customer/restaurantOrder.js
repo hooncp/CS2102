@@ -199,7 +199,7 @@ export class restaurantOrder extends React.Component {
             .then(json => {
                 this.setState({orderId: json, orderedFood: arr}, this.handleRedirect)
             })
-            .catch(err => err);
+            .catch(err => console.error(err));
 
     }
     handleRedirect = () => {
@@ -355,7 +355,7 @@ export class restaurantOrder extends React.Component {
 
                             >
                                 <MenuItem value="cash">Cash</MenuItem>
-                                <MenuItem value="creditcard">Credit Card</MenuItem>
+                                <MenuItem value="credit">Credit Card</MenuItem>
                             </Select>
                         </FormControl>
                         <br/>
