@@ -20,18 +20,6 @@ endif::[]
     HOON CHEE PING (A0183922B)
     LEE EE JIAN (A0183105N)
 
-== Introduction
-The objective of the team project is to create a food delivery service application for the following stakeholders :
-
-* Customers - Browse and place orders on food items from Restaurants
-
-* Restaurants Staff - Receive, prepare orders from Consumers and manage food items in Restaurant.
-
-* Delivery rider - Receive and deliver orders from Restaurants to Consumers
-
-* Food Delivery Service (FDS) Manager - Manage operations of the application
-
-The following sections will attempt to mainly explain the design considerations for the aforementioned application.
 
 == Roles and Responsibilities
 
