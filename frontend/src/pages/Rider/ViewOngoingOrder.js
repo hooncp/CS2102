@@ -150,7 +150,7 @@ export class ViewOngoingOrder extends Component {
                                 Deliver To: {res.deliverylocation} <br/>
                             </div>
                         )
-                    })}
+                    })} <br/>
                     {this.state.departTimeForRestaurantOpen ? departTimeForRestaurantButton : departTimeForRestaurantButtonDisabled}
                     {this.state.departTimeFromRestaurantOpen ? departTimeFromRestaurant : departTimeFromRestaurantDisabled}
                     {this.state.arrivalTimeAtRestaurantOpen ? arrivalTimeAtRestaurant : arrivalTimeAtRestaurantDisabled }

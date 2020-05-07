@@ -180,8 +180,8 @@ router.post("/createOrder", async (req, res) => {
         const promoCode = req.body.promoCode;
         const applicableTo = req.body.applicableTo;
         const modeOfPayment = req.body.modeOfPayment;
-        const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        // const timeOfOrder = new Date().toLocaleString('en-US');
+        // const timeOfOrder = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        const timeOfOrder = new Date().toLocaleString('en-US');
         const deliveryLocation = req.body.deliveryLocation;
         const usedRewardPoints = req.body.usedRewardPoints;
         const contains = req.body.contains;
@@ -345,6 +345,17 @@ router.post('/submitReview', async (req, res) => {
     })
     client.release();
     await res.json("successfully submitted review");
+
+});
+
+router.post('/submitRating', async (req, res) => {
+    const orderId = req.body.orderId;
+    const rating = req.body.rating;
+    const query = `UPDATE Delivers SET rating = $1 where orderId = $2 `;
+    values = [rating, orderId];
+    pool.query(query, values)
+        .then(result => res.json(result.rows))
+        .catch(e => console.error(e.stack))
 
 });
 

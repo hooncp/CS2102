@@ -250,9 +250,18 @@ export class customerActions extends React.Component {
                             </FormControl>
                             }
                             <br/>
-                            <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium">
-                                GO
-                            </Button>
+                            {this.state.chosenLocation !== "" && this.state.area !== "" ?
+                                <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium">
+                                    GO
+                                </Button>
+                                :
+                                <React.Fragment>
+                                <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium" disabled>
+                                    GO
+                                </Button>
+                                <h6>Please choose the area and location to deliver to</h6>
+                                </React.Fragment>
+                            }
                         </React.Fragment>
                         }
                         <Grid item>
