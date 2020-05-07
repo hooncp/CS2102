@@ -97,18 +97,23 @@ export class FormAddSchedule extends Component {
                 intervals: this.state.intervals
             })
         })
+            .then(response => response.json())
             .then(res => {
-                console.log('Success');
-                this.props.reloadData();
-                this.setState({
-                    startDate: new Date(),
-                    endDate: new Date(),
-                    startDateError: "",
-                    endDateError: "",
-                    intervals: []
-                });
+                if (res !== null) {
+                    console.log(res);
+                    //this.props.reloadData();
+                    this.setState({
+                        startDate: new Date(),
+                        endDate: new Date(),
+                        startDateError: "",
+                        endDateError: "",
+                        intervals: []
+                    });
+                } else {
+                    alert("Error. Schedule or Intervals does not meet requirements. Check database for details");
+                }
             })
-            .catch(err => err);
+            .catch(err => alert(err));
 
     };
 

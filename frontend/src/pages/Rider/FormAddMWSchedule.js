@@ -216,27 +216,32 @@ export class FormAddMWSchedule extends Component {
 
             })
         })
+            .then(response => response.json())
             .then(res => {
-                console.log('Success');
-                this.props.reloadData();
-                this.setState({
-                    monthStartDate: "2020-05-24T00:00",
-                    monthEndDate: "2020-05-24T00:00",
-                    startDate1: "2020-05-24T00:00",
-                    endDate1: "2020-05-24T00:00",
-                    startDate2: "2020-05-24T00:00",
-                    endDate2: "2020-05-24T00:00",
-                    startDate3: "2020-05-24T00:00",
-                    endDate3: "2020-05-24T00:00",
-                    startDate4: "2020-05-24T00:00",
-                    endDate4: "2020-05-24T00:00",
-                    startDateError: "",
-                    endDateError: "",
-                    intervals1: [],
-                    intervals2: [],
-                    intervals3: [],
-                    intervals4: []
-                });
+                if (res !== null) {
+                    console.log('Success');
+                    //this.props.reloadData();
+                    this.setState({
+                        monthStartDate: "2020-05-24T00:00",
+                        monthEndDate: "2020-05-24T00:00",
+                        startDate1: "2020-05-24T00:00",
+                        endDate1: "2020-05-24T00:00",
+                        startDate2: "2020-05-24T00:00",
+                        endDate2: "2020-05-24T00:00",
+                        startDate3: "2020-05-24T00:00",
+                        endDate3: "2020-05-24T00:00",
+                        startDate4: "2020-05-24T00:00",
+                        endDate4: "2020-05-24T00:00",
+                        startDateError: "",
+                        endDateError: "",
+                        intervals1: [],
+                        intervals2: [],
+                        intervals3: [],
+                        intervals4: []
+                    });
+                } else {
+                    alert("Error. Schedule or Intervals does not meet requirements. Check database for details");
+                }
             })
             .catch(err => err);
 

@@ -168,10 +168,14 @@ router.post('/createWeeklySchedule', async (req, res) => {
 					})
 					client.query('COMMIT');
 					client.release()
+					res.json(`${userId}'s schedule added`);
+
+				}).catch(e => {
+					console.log(e);
+					res.json(null);
 				})
 		}
 		)
-		res.json(`${userId}'s schedule added`);
 	} catch (err) {
 		client.query(`ROLLBACK`);
 		client.release()
@@ -199,7 +203,16 @@ async function insertWeeklySchedule(client, schedules) {
 							var currentEndTime = currInt.endTime;
 							return client.query(`INSERT INTO Intervals(scheduleId, startTime, endTime) VALUES ($1,$2,$3)`,
 								[currScheduleId, currentStartTime, currentEndTime])
+								.catch(e => {
+									console.log("Interval insertion error");
+									console.log(e);
+									throw new Error(e.message);
+								})
 						})
+					}).catch(e => {
+						console.log("WWS insertion failure");
+						console.log(e);
+						throw new Error(e.message);
 					})
 					.then(result => {
 						res(scheduleId);
@@ -207,8 +220,7 @@ async function insertWeeklySchedule(client, schedules) {
 					})
 			})
 			return 0;
-		} catch
-		(err) {
+		} catch (err) {
 			console.error("error triggered: ", err.message);
 			throw (err);
 		}
@@ -227,35 +239,39 @@ router.post('/createMonthlySchedule', async (req, res) => {
 		client.query('BEGIN').then(result => {
 			insertWeeklySchedule(client, schedules[0])
 				.then(result => {
+					console.log("result is" + result);
 					scheduleId1 = result;
-					return insertWeeklySchedule(client, schedules[1])
+					insertWeeklySchedule(client, schedules[1])
 						.then(result => {
 							scheduleId2 = result;
-							return insertWeeklySchedule(client, schedules[2])
+							insertWeeklySchedule(client, schedules[2])
 								.then(result => {
 									scheduleId3 = result;
-									return insertWeeklySchedule(client, schedules[3])
+									insertWeeklySchedule(client, schedules[3])
 										.then(result => {
 											scheduleId4 = result;
-											return client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
+											client.query(`INSERT INTO Monthly_Work_Schedules VALUES ($1,$2,$3,$4)`,
 												[scheduleId1, scheduleId2, scheduleId3, scheduleId4])
 												.then(result => {
 													client.query('COMMIT');
 													// client.release();
 												}).catch(err => {
+													console.log("MWS insertion erorr");
 													console.error(err);
+													res.json(null);
+
 												})
 										})
 								})
 						})
 				})
-		}
-		)
+		})
 		return res.json(`schedule added`);
 	} catch (err) {
 		client.query(`ROLLBACK`);
 		client.release()
 		console.error("error triggered: ", err.message);
+		res.json(null);
 	}
 })
 
@@ -333,36 +349,36 @@ router.get('/getOngoingOrder', async (req, res) => {
 						OR departTimeFromRestaurant IS NULL
 						OR arrivalTimeAtRestaurant IS NULL
 						OR deliveryTimetoCustomer IS NULL)`
-	;
+		;
 	const values = [userId];
 	pool.query(query, values)
 		.then(result => res.json(result.rows[0]))
 		.catch(e => console.error(e.stack))
-	;
+		;
 });
 
 router.get('/getOrderedFood', async (req, res) => {
 	var parts = url.parse(req.url, true);
 	var orderId = parts.query.orderId;
 	const query = `SELECT fname,foodqty FROM Contains WHERE orderId = $1`
-	;
+		;
 	const values = [orderId];
 	pool.query(query, values)
 		.then(result => res.json(result.rows))
 		.catch(e => console.error(e.stack))
-	;
+		;
 });
 
 router.get('/getOrderDetails', async (req, res) => {
 	var parts = url.parse(req.url, true);
 	var orderId = parts.query.orderId;
 	const query = `SELECT userId, deliverylocation, rname, deliveryfee FROM orderInfo WHERE orderId = $1`
-	;
+		;
 	const values = [orderId];
 	pool.query(query, values)
 		.then(result => res.json(result.rows))
 		.catch(e => console.error(e.stack))
-	;
+		;
 });
 
 router.put('/updateDepartTimeForRestaurant', async (req, res) => {
