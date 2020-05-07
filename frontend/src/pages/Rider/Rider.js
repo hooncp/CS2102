@@ -39,7 +39,7 @@ export default class Rider extends Component {
     render() {
         return (
             <div className="Rider" style={{ "height": "1000px" }}>
-                <RiderAppBar userId={this.state.userId}/>
+                <RiderAppBar userId={this.state.userId} history={this.props.history}/>
                 <div className="lander" style={{ "height": "1000px" }}>
                     <h1>CHOOSE YOUR ACTION</h1>
                     <Button variant="contained" color="primary"

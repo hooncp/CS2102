@@ -231,6 +231,11 @@ export class restaurantOrder extends React.Component {
             .then(res => res.json())
             .catch(err => err);
     }
+    handleHome = () => {
+        this.props.history.push({
+            pathname: '/'
+        })
+    }
 
     render() {
         const minOrderAmt = this.state.minOrderAmt;
@@ -264,9 +269,12 @@ export class restaurantOrder extends React.Component {
             <div>
                 <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
                     <Toolbar>
+                        <Grid container spacing={1} direction="row" justify="space-between" alignItems="center">
                         <Typography variant="h6" color="inherit" noWrap>
                             Ordering From Restaurant : {this.state.rname}
                         </Typography>
+                        <Button color="inherit" onClick={this.handleHome}> HOME </Button>
+                        </Grid>
                     </Toolbar>
                 </AppBar>
                 {allFoodCopy.filter(res => {
