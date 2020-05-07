@@ -16,6 +16,18 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 
 export class customerActions extends React.Component {
     constructor(props) {
@@ -108,57 +120,145 @@ export class customerActions extends React.Component {
                 }
         });
     }
+    Row = (props) => {
+        const {row} = props;
+        const [open, setOpen] = React.useState(false);
+        return (
+            <React.Fragment>
+                <TableRow >
+                    <TableCell>
+                        <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                            {open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                        </IconButton>
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                        {row.orderId}
+                    </TableCell>
+                    <TableCell align="left" >{row.rname}</TableCell>
+                    <TableCell align="left">{row.timeOfOrder.substring(0, 10)} {row.timeOfOrder.substring(11,19)}</TableCell>
+                </TableRow>
+                <TableRow>
+                    <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                            <Box margin={1}>
+                                <Typography variant="h6" gutterBottom component="div" >
+                                   <span style={{fontWeight:"bold"}}> Order Details </span>
+                                    <hr/>
+                                    Final price: ${row.finalprice} (Delivery Fee: ${row.deliveryfee})
+                                    <br/> <br/>
+                                    {" "} Earned Reward Points: {row.earnedRewardpts} points
+                                    <br/> <br/>
+                                    {" "} Used Reward Points: {row.usedRewardPoints} points
+                                    <hr/>
+                                </Typography>
+                                {row.foodDetails.map((record, i) => {
+                                    return (
+                                        <Typography>
+                                            Food Item: {record.fname} x {record.foodqty}
+                                        </Typography>
 
+                                    )
+                                })}
+                            </Box>
+                        </Collapse>
+                    </TableCell>
+                </TableRow>
+            </React.Fragment>
+        );
+    }
+    createData = (orderId, rname, timeOfOrder, finalprice, deliveryfee, earnedRewardpts, usedrewardpoints, foodDetailsCopy) => {
+        return {
+            orderId,
+            rname,
+            timeOfOrder,
+            finalprice,
+            deliveryfee,
+            earnedRewardpts,
+            usedrewardpoints,
+            foodDetails: foodDetailsCopy.filter(record => {
+                return (record.orderid === orderId)
+            })
+                .map((record) => {
+                    return (
+                        {fname: record.fname, foodqty: record.foodqty}
+                    )
+                })
+
+
+        }
+    }
 
     render() {
         const foodDetailsCopy = this.state.foodDetails.slice();
-        const pastOrdersView = this.state.pastOrders.map(orderDetails => {
-            return (
-                <ExpansionPanel style={{width: "95%"}}>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon/>}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography style={{fontWeight: "bold"}}> Order ID: {orderDetails.orderid}
-                            {"  "} || {"   "}
-                            Restaurant name: {orderDetails.rname}
-                            {"   "} || {"  "}
-                            Date: {orderDetails.timeoforder.substring(0, 10)}
-                        </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <Grid container spacing={2} direction="column" justify="center" alignItems="flex-start">
-                            <Grid item>
-                                <Typography>
-                                    <hr/>
-                                    Final price: ${orderDetails.finalprice} (Delivery Fee: ${orderDetails.deliveryfee})
-                                    <br/> <br/>
-                                    {" "} Earned Reward Points: {orderDetails.earnedrewardpts} points
-                                    <br/> <br/>
-                                    {" "} Used Reward Points: {orderDetails.usedrewardpoints} points
-                                    <hr/>
-                                </Typography>
-                            </Grid>
-                            <Grid item>
-                                {foodDetailsCopy
-                                    .filter(record => {
-                                        return (record.orderid === orderDetails.orderid)
-                                    })
-                                    .map((record, i) => {
-                                        return (
-                                            <Typography>
-                                                Food Item: {record.fname} x {record.foodqty}
-                                            </Typography>
-
-                                        )
-                                    })}
-                            </Grid>
-                        </Grid>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            )
-        })
+        const rows = this.state.pastOrders.map(item => {
+            return this.createData(item.orderid, item.rname, item.timeoforder, item.finalprice, item.deliveryfee, item.earnedrewardpts, item.usedrewardpts, foodDetailsCopy)
+        });
+        const header = [{name: "Order ID"}, {name: "Restaurant Name"}, {name: "Time Of Order"}];
+        const pastOrdersView =
+            <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell />
+                            <TableCell align="left" style={{fontWeight:'bold'}}>Order ID</TableCell>
+                            <TableCell align="left" style={{fontWeight:'bold'}}>Restaurant Name</TableCell>
+                            <TableCell align="left" style={{fontWeight:'bold'}}>Time Of Order</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <this.Row key={row.name} row={row} />
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        // const pastOrdersView = this.state.pastOrders.map(orderDetails => {
+        //     return (
+        //         <ExpansionPanel style={{width: "95%"}}>
+        //             <ExpansionPanelSummary
+        //                 expandIcon={<ExpandMoreIcon/>}
+        //                 aria-controls="panel1a-content"
+        //                 id="panel1a-header"
+        //             >
+        //                 <Typography style={{fontWeight: "bold"}}> Order ID: {orderDetails.orderid}
+        //                     {"  "} || {"   "}
+        //                     Restaurant name: {orderDetails.rname}
+        //                     {"   "} || {"  "}
+        //                     Date: {orderDetails.timeoforder.substring(0, 10)}
+        //                 </Typography>
+        //             </ExpansionPanelSummary>
+        //             <ExpansionPanelDetails>
+        //                 <Grid container spacing={2} direction="column" justify="center" alignItems="flex-start">
+        //                     <Grid item>
+        //                         <Typography>
+        //                             <hr/>
+        //                             Final price: ${orderDetails.finalprice} (Delivery Fee: ${orderDetails.deliveryfee})
+        //                             <br/> <br/>
+        //                             {" "} Earned Reward Points: {orderDetails.earnedrewardpts} points
+        //                             <br/> <br/>
+        //                             {" "} Used Reward Points: {orderDetails.usedrewardpoints} points
+        //                             <hr/>
+        //                         </Typography>
+        //                     </Grid>
+        //                     <Grid item>
+        //                         {foodDetailsCopy
+        //                             .filter(record => {
+        //                                 return (record.orderid === orderDetails.orderid)
+        //                             })
+        //                             .map((record, i) => {
+        //                                 return (
+        //                                     <Typography>
+        //                                         Food Item: {record.fname} x {record.foodqty}
+        //                                     </Typography>
+        //
+        //                                 )
+        //                             })}
+        //                     </Grid>
+        //                 </Grid>
+        //             </ExpansionPanelDetails>
+        //         </ExpansionPanel>
+        //     )
+        // })
         console.log("pastorder:", pastOrdersView);
         return (
             <React.Fragment>
@@ -256,10 +356,11 @@ export class customerActions extends React.Component {
                                 </Button>
                                 :
                                 <React.Fragment>
-                                <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium" disabled>
-                                    GO
-                                </Button>
-                                <h6>Please choose the area and location to deliver to</h6>
+                                    <Button variant="outlined" color="primary" onClick={this.handleGO} size="medium"
+                                            disabled>
+                                        GO
+                                    </Button>
+                                    <h6>Please choose the area and location to deliver to</h6>
                                 </React.Fragment>
                             }
                         </React.Fragment>

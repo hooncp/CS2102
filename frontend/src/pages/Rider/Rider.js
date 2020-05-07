@@ -4,7 +4,7 @@ import "./Rider.css";
 import { Schedule } from './Schedule';
 import { Summary } from './Summary';
 import { Order } from './Order';
-
+import {RiderAppBar} from "./RiderAppBar";
 
 
 export default class Rider extends Component {
@@ -39,6 +39,7 @@ export default class Rider extends Component {
     render() {
         return (
             <div className="Rider" style={{ "height": "1000px" }}>
+                <RiderAppBar userId={this.state.userId}/>
                 <div className="lander" style={{ "height": "1000px" }}>
                     <h1>CHOOSE YOUR ACTION</h1>
                     <Button variant="contained" color="primary"

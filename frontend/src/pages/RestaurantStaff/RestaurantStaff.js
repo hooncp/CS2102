@@ -4,6 +4,7 @@ import "./RestaurantStaff.css";
 import { Menu } from './Menu';
 import { Promotion } from './Promotion';
 import { Summary } from './Summary';
+import {RSAppBar} from "./RSAppBar";
 
 
 export default class RestaurantStaff extends Component {
@@ -33,6 +34,7 @@ export default class RestaurantStaff extends Component {
     render() {
         return (
             <div className="RestaurantStaff" style={{ "height": "1000px" }}>
+                <RSAppBar userId={this.state.userId}/>
                 <div className="lander" style={{ "height": "1000px" }}>
                     <h1>CHOOSE YOUR ACTION</h1>
                     <Button variant="contained" color="primary"
