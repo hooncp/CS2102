@@ -375,12 +375,12 @@ export class restaurantOrder extends React.Component {
 
                             >
                                 <MenuItem value="cash">Cash</MenuItem>
-                                <MenuItem value="creditcard">Credit Card</MenuItem>
+                                <MenuItem value="credit">Credit Card</MenuItem>
                             </Select>
                         </FormControl>
                         <br/>
                         <Grid item>
-                            {this.state.modeOfPayment === "creditcard" &&
+                            {this.state.modeOfPayment === "credit" &&
                             <React.Fragment>
                                 <FormControl variant="contained" style={{width: "100%"}}>
                                     <TextField
