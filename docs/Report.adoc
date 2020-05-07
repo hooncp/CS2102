@@ -827,7 +827,6 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 ----
-<<<
 == Software tools / Frameworks
 *Frontend* : React.js
 
@@ -848,6 +847,8 @@ $$ LANGUAGE PLPGSQL;
 * SQL for database
 
 * Python for generation of large dataset
+
+<<<
 
 == Application Screenshot
 
