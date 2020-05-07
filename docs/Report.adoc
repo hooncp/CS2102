@@ -791,7 +791,7 @@ $$ LANGUAGE PLPGSQL;
 
 ----
 
-This is facilitated by a helper function where we first find out their detailed schedule through a helper function that joins the schedule table and interval table: (see Annex 10.1)
+This is facilitated by a helper function where we first find out their detailed schedule using `checkWorkingStatusHelperOfRider` function that joins the schedule table and interval table: (see Annex 10.1)
 
 === Find the total price of the order
 
@@ -801,7 +801,7 @@ The order price calculation is as such:
 
 Base price + adjustment(reward point)  + adjustment(promotion) + delivery fee.
 
-Base price is calculated by the sum of (food price * quantity) in the single order using the `calculatePrice` function (see Annex 10.2.1)
+Base price is calculated by the sum of (food price * quantity) in the single order using the `calculatePrice` function (see Annex 10.2.1).
 
 Adjustment(reward point) is calculated using the `getTotalPriceAdjustedForRewards` function (see Annex 10.2.2). Every 5 points used is a $1 discount, capped at the maximum of $3. 
 
