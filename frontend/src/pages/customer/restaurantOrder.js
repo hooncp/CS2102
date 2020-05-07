@@ -239,7 +239,7 @@ export class restaurantOrder extends React.Component {
 
     render() {
         const minOrderAmt = this.state.minOrderAmt;
-        console.log("minOrderAmt",minOrderAmt);
+        console.log("minOrderAmt", minOrderAmt);
         const rname = this.state.rname;
         const allFoodCopy = this.state.allFoodAndRes.slice();
         const foodToQtyCopy = this.state.foodToQty;
@@ -270,10 +270,10 @@ export class restaurantOrder extends React.Component {
                 <AppBar style={{backgroundColor: "#ff3d00"}} position="relative">
                     <Toolbar>
                         <Grid container spacing={1} direction="row" justify="space-between" alignItems="center">
-                        <Typography variant="h6" color="inherit" noWrap>
-                            Ordering From Restaurant : {this.state.rname}
-                        </Typography>
-                        <Button color="inherit" onClick={this.handleHome}> HOME </Button>
+                            <Typography variant="h6" color="inherit" noWrap>
+                                Ordering From Restaurant : {this.state.rname}
+                            </Typography>
+                            <Button color="inherit" onClick={this.handleHome}> HOME </Button>
                         </Grid>
                     </Toolbar>
                 </AppBar>
@@ -299,19 +299,31 @@ export class restaurantOrder extends React.Component {
                                         <Typography style={{fontWeight: "bold"}}>
                                             ${res.price}
                                         </Typography>
-                                        <FormControl>
-                                            <Input
-                                                id="qty"
-                                                name={currFname}
-                                                value={foodToQtyCopy[currFname]}
-                                                onChange={this.handleInputQty}
-                                                endAdornment={<InputAdornment position="end">qty</InputAdornment>}
-                                                aria-describedby="qty"
-                                                inputProps={{
-                                                    'aria-label': 'qty',
-                                                }}
-                                            />
-                                        </FormControl>
+                                        {res.availability > 0 ?
+                                            <React.Fragment>
+                                                {foodToQtyCopy[currFname] > res.availability
+                                                && (alert("Please enter a quantity lower than availability!"),
+                                                    foodToQtyCopy[currFname] = 0)
+                                                }
+                                                <FormControl>
+                                                    <Input
+                                                        id="qty"
+                                                        name={currFname}
+                                                        value={foodToQtyCopy[currFname]}
+                                                        onChange={this.handleInputQty}
+                                                        endAdornment={<InputAdornment
+                                                            position="end">qty</InputAdornment>}
+                                                        aria-describedby="qty"
+                                                        inputProps={{
+                                                            'aria-label': 'qty',
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                <br/>
+                                                <span>Availability: {res.availability}</span>
+                                            </React.Fragment>
+                                            : <div>--unavailable--</div>
+                                        }
                                     </Grid>
                                 </Grid>
                             </ExpansionPanelSummary>
@@ -424,7 +436,7 @@ export class restaurantOrder extends React.Component {
                 </Paper>
                 <br/><br/>
                 <br/><br/>
-                {console.log("minOrderAmt",minOrderAmt)}
+                {console.log("minOrderAmt", minOrderAmt)}
                 {minOrderAmt !== undefined && (Number(minOrderAmt.replace(/[^0-9.-]+/g, "")) <= currentFoodCost)
                     ? enabledSubmitButton
                     : disabledSubmitButton

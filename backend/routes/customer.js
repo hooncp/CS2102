@@ -220,8 +220,14 @@ router.post("/createOrder", async (req, res) => {
                                 reviewContent,
                             ]
                         ).then(result => {
+                            return client.query(`UPDATE Sells SET availability = availability - $3 
+                                                                            WHERE rname = $1 AND fname = $2`,
+                                [currentRname,
+                                    currentFname,
+                                    currentFoodQty
+                                ])
                         })
-                            // .catch(e => console.error(e.stack));
+                        // .catch(e => console.error(e.stack));
                     });
                     client.query("COMMIT");
                     client.release();
@@ -258,7 +264,7 @@ router.get('/getSameAreaFood', async (req, res) => {
 
     var parts = url.parse(req.url, true);
     var area = parts.query.area;
-    const query = `SELECT distinct S.fname, F.category
+    const query = `SELECT distinct S.fname, F.category, S.availability
                     FROM Sells S join Restaurants R using (rname) join Food F using (fname)
                     WHERE R.area = $1`;
     values = [area];
@@ -270,7 +276,7 @@ router.get('/getSameAreaFood', async (req, res) => {
 router.get('/getSameAreaRestaurantAndFood', async (req, res) => {
     var parts = url.parse(req.url, true);
     var area = parts.query.area;
-    const query = `SELECT distinct S.rname, S.fname, F.category, S.price
+    const query = `SELECT distinct S.rname, S.fname, F.category, S.price, S.availability
                     FROM Sells S join Restaurants R using (rname) join Food F using (fname)
                     WHERE R.area = $1`;
     values = [area];
@@ -372,7 +378,7 @@ router.get('/getOrderInfo', async (req, res) => {
 
 });
 
-router.get('/getDeliveryRider', async(req,res) => {
+router.get('/getDeliveryRider', async (req, res) => {
     var parts = url.parse(req.url, true);
     var orderId = parts.query.orderId;
     const query = `SELECT * 
@@ -394,7 +400,7 @@ router.post('/submitRiderRatings', async (req, res) => {
         .catch(e => console.error(e.stack))
 });
 
-router.get('/getRestaurantMinOrderAmt', async(req,res) => {
+router.get('/getRestaurantMinOrderAmt', async (req, res) => {
     var parts = url.parse(req.url, true);
     var rname = parts.query.rname;
     const query = `SELECT minOrderAmt 
