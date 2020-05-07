@@ -709,7 +709,9 @@ DROP TRIGGER IF EXISTS interval_overlap_trigger ON Intervals CASCADE;
 DROP TRIGGER IF EXISTS wws_duration_trigger ON Weekly_Work_Schedules CASCADE;
 DROP TRIGGER IF EXISTS wws_seven_days_trigger ON Weekly_Work_Schedules CASCADE;
 DROP TRIGGER IF EXISTS wws_overlap_trigger ON Weekly_Work_Schedules CASCADE;
-
 DROP TRIGGER IF EXISTS orders_insert_trigger ON Orders CASCADE;
+DROP TRIGGER IF EXISTS check_availability_sells_update_trigger ON Sells CASCADE;
+
+
 DROP FUNCTION IF EXISTS findRiderToDeliverOrder CASCADE;
 DROP FUNCTION IF EXISTS insertDelivers CASCADE;

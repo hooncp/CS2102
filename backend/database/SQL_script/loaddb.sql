@@ -86,6 +86,31 @@ COMMIT;
 ------------------------------------------ END OF LARGE DATA SET ------------------------------------------
 /* Trigger functions */
 
+DROP FUNCTION IF EXISTS check_availability_sells_update() CASCADE;
+CREATE OR REPLACE FUNCTION check_availability_sells_update() RETURNS TRIGGER AS
+$$
+DECLARE
+    badAvailable INTEGER;
+BEGIN
+    SELECT availability into badAvailable
+    FROM Sells S
+    WHERE availability < 0
+    ;
+    IF (badAvailable IS NOT NULL) THEN
+        RAISE EXCEPTION 'Quantity ordered more than quantity available';
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE CONSTRAINT TRIGGER check_availability_sells_update_trigger
+    AFTER UPDATE
+    ON Sells
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE FUNCTION check_availability_sells_update();
+
+
 DROP FUNCTION IF EXISTS check_mws_5days_consecutive_constraint_deferred() CASCADE;
 CREATE OR REPLACE FUNCTION check_mws_5days_consecutive_constraint_deferred() RETURNS TRIGGER AS
 $$
