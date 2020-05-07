@@ -79,6 +79,7 @@ endif::[]
 * Each interval entity stores the intervalId, scheduleId of the WWS it belongs to, start time and end time of interval
 * Each interval is uniquely identifiable by intervalId (primary key), and must belong to exactly one WWS that is referenced by scheduleId (foreign key)
 
+<<<
 
 === Functionalities
 
@@ -126,7 +127,6 @@ By abstracting out key attributes that are common to all promotions, we are able
 
 Monthly Work Schedules (MWS) - By implementing monthly work schedules (MWS) such that it is composed of 4 unique weekly work schedules (WWS), we can leverage on triggers and checks that are done for the WWS which also apply to each week of the MWS. Checking that each week of the MWS is equivalent is also efficient because we can simply replicate one WWS for    4 times with only the dates adjusted for.
 
-<<<
 == Database Relational Schema
 Users: BCNF
 [source,SQL]
@@ -140,6 +140,7 @@ CREATE TABLE Users (
 
 Non-trivial FDs F = {userId → name}
 ----
+<<<
 
 Restaurants: BCNF
 [source,SQL]
@@ -191,7 +192,19 @@ CREATE TABLE Sells (
 
 Non-trivial FDs F = {(fname)(rname) → (price)(availability)}
 ----
+FDS Manager schema : BCNF
+[source,SQL]
+----
+CREATE TABLE FDS_Managers (
+	userId 		INTEGER,
+    PRIMARY KEY (userId),
+    FOREIGN KEY (userId) REFERENCES Users
+    			on DELETE CASCADE
+			    on UPDATE CASCADE
+);
 
+Non-trivial FDs F = {0}
+----
 <<<
 
 Restaurant Staff schema : BCNF
@@ -209,19 +222,6 @@ CREATE TABLE Restaurant_Staff (
 );
 
 Non-trivial FDs F = {userId → rname}
-----
-FDS Manager schema : BCNF
-[source,SQL]
-----
-CREATE TABLE FDS_Managers (
-	userId 		INTEGER,
-    PRIMARY KEY (userId),
-    FOREIGN KEY (userId) REFERENCES Users
-    			on DELETE CASCADE
-			    on UPDATE CASCADE
-);
-
-Non-trivial FDs F = {0}
 ----
 Customers schema : BCNF
 [source,SQL]
@@ -257,8 +257,6 @@ CREATE TABLE Riders (
 Non-trivial FDs F = {userId → area}
 ----
 
-<<<
-
 Part-time schema : BCNF
 [source,SQL]
 ----
@@ -269,11 +267,11 @@ CREATE TABLE Part_Time
     FOREIGN KEY (userId) REFERENCES Riders
                             on DELETE CASCADE
                             on UPDATE CASCADE
-    --        DEFERRABLE INITIALLY DEFERRED
 );
 
 Non-trivial FDs F = {0}
 ----
+<<<
 
 Full-time schema : BCNF
 [source,SQL]
@@ -285,7 +283,6 @@ CREATE TABLE Full_Time
     FOREIGN KEY (userId) REFERENCES Riders
                             on DELETE CASCADE
                             on UPDATE CASCADE
-    --        DEFERRABLE INITIALLY DEFERRED
 );
 
 Non-trivial FDs F = {0}
@@ -362,7 +359,7 @@ Promotions schema : BCNF
 CREATE TABLE Promotions (
     promoCode	    VARCHAR(20),
     promoDesc 	    VARCHAR(200),
-    createdBy	    VARCHAR(50), --?
+    createdBy	    VARCHAR(50),
     applicableTo    VARCHAR(200) REFERENCES Restaurants(rname)
                                         ON DELETE CASCADE,
     discUnit	    VARCHAR(20) NOT NULL,
@@ -378,6 +375,27 @@ Non-trivial FDs F = {(promoCode)(applicableTo) → (promoDesc)(createdBy)(discUn
                                                     (discRate)(startDate)(endDate)}
 
 ----
+Contains schema : BCNF
+[source,SQL]
+----
+CREATE TABLE Contains (
+    orderId 		INTEGER REFERENCES Orders
+                                    ON DELETE CASCADE
+                                    ON UPDATE CASCADE,
+    rname		    VARCHAR(100),
+    fname 		    VARCHAR(100),
+    foodQty		    INTEGER NOT NULL,
+    reviewContent   VARCHAR(300),
+    PRIMARY KEY(orderId, rname, fname),
+    FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
+    CHECK(foodQty >= 1)
+);
+
+Non-trivial FDs F = {(orderId)(rname)(fname) → (foodQty)(reviewContent)}
+
+----
+
+<<<
 Orders schema : BCNF
 [source,SQL]
 ----
@@ -404,25 +422,6 @@ CREATE TABLE Orders (
 Non-trivial FDs F = {orderId → (userId)(promoCode)(applicableTo)
                                 (modeOfPayment)(timeOfOrder)(deliveryLocation)
                                 (usedRewardPoints)(givenRewardPoints)}
-----
-Contains schema : BCNF
-[source,SQL]
-----
-CREATE TABLE Contains (
-    orderId 		INTEGER REFERENCES Orders
-                                    ON DELETE CASCADE
-                                    ON UPDATE CASCADE,
-    rname		    VARCHAR(100),
-    fname 		    VARCHAR(100),
-    foodQty		    INTEGER NOT NULL,
-    reviewContent   VARCHAR(300),
-    PRIMARY KEY(orderId, rname, fname),
-    FOREIGN KEY(rname, fname) REFERENCES Sells(rname, fname),
-    CHECK(foodQty >= 1)
-);
-
-Non-trivial FDs F = {(orderId)(rname)(fname) → (foodQty)(reviewContent)}
-
 ----
 Delivers schema : BCNF
 [source,SQL]
@@ -463,6 +462,8 @@ CREATE TABLE MinSpendingPromotions (
 Non-trivial FDs F = {(promoCode)(applicableTo) → minAmt}
 
 ----
+<<<
+
 CustomerPromotions schema : BCNF
 [source,SQL]
 ----
@@ -499,8 +500,6 @@ Non-trivial FDs F = {(promoCode)(applicableTo) → minTimeFromLastOrder}
 == Triggers
 === Ensure No Overlap Between Intervals
 Trigger: interval_overlap_trigger
-
-Function called: check_intervals_overlap_deferred()
 
 This trigger makes sure that within a same schedule which belongs to only one rider, there must not exist an overlap of different intervals.
 This is a different implementation from the `OVERLAPS` operator provided by PSQL. The `OVERLAPS` operator does not consider intervals with a single common endpoint to overlap but our implementation does, in order to better fit our use case.
@@ -561,9 +560,7 @@ EXECUTE FUNCTION check_intervals_overlap_deferred();
 === Ensure 5 Consecutive Days In Each WWS of a MWS
 Trigger: mws_5days_trigger
 
-Function: check_mws_5days_consecutive_constraint_deferred()
-
-This is to enforce the constraint of “Each WWS in a MWS must consist of five consecutive work days”. The trigger makes sure that all intervals in a week (7 days) of the MWS selected by a full-time rider are of five consecutive days. This means that every day within the five consecutive days are work days with valid intervals. This is done by ensuring:
+This is to enforce the constraint of “Each WWS in a MWS must consist of five consecutive work days”. This is done by ensuring:
 
 * there are 5 distinct days that can be obtained from the work intervals for each week
 * the difference between the first interval and the last interval of work is 4 days , i.e. all intervals fall within 5 days.
@@ -617,8 +614,6 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-
-
 CREATE CONSTRAINT TRIGGER mws_5days_trigger
     AFTER INSERT
     ON Monthly_Work_Schedules
@@ -627,12 +622,10 @@ CREATE CONSTRAINT TRIGGER mws_5days_trigger
 EXECUTE FUNCTION check_mws_5days_consecutive_constraint_deferred();
 ----
 
-=== Ensure Intervals in MWS Follow Predefined Timings
+=== Ensure MWS Intervals Follow Predefined Timing
 Trigger: mws_predefined_interval_trigger
 
-Function: check_mws_intervals_constraint_deferred()
-
-This trigger enforces each work day to only consist of the predefined intervals for full-time riders (e.g. 10pm to 2pm, 3pm to 7pm). This is achieved by pairing intervals of the same day belonging to the same schedule to ensure that they follow the specified timings through joining 2 Interval instances using the startTime of the intervals. Then, we check:
+This trigger enforces each work day to only consist of the predefined intervals for full-time riders (e.g. 10pm to 2pm, 3pm to 7pm). This is achieved by pairing intervals belonging to the same day and scheduleId through joining 2 Interval instances using the startTime of the intervals. Then, we check:
 
 * Each interval declared has a corresponding pair, that is 1 hour apart, and are both 4 hours long
 * The first interval starts at 10am/11am/12pm/1pm
@@ -688,7 +681,6 @@ BEGIN
     RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
-
 
 CREATE CONSTRAINT TRIGGER mws_predefined_interval_trigger
     AFTER INSERT
@@ -761,11 +753,11 @@ Bonus salary is calculated by: Number of deliveries($4 per delivery) made during
 
 This is a complex query to find the current status of the rider. All riders will be in three states:
 
-* Rider is not working 
+* Rider is not working
 * Rider is working and free to accept orders.
 * Rider is working and currently delivering orders.
 
-First, we find the detailed schedule of all riders by joining the schedule table and interval table. We check whether he is working or he is on his break at this current time. If he is working, we would check again to see if he is currently delivering or not by checking the expected delivery time to the customer.
+In the main function, we are able to identify the status of the rider by checking whether he is working or he is on his break at this current time. If he is working, we would check again to see if he is currently delivering or not by checking the expected delivery time to the customer:
 
 [source,SQL]
 ----
@@ -798,6 +790,12 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
+----
+
+This is facilitated by a helper function where we first find out their detailed schedule through a helper function that joins the schedule table and interval table: (see next page)
+
+[source,SQL]
+----
 CREATE OR REPLACE FUNCTION checkWorkingStatusHelperOfRider(riderId INTEGER, current TIMESTAMP)
     RETURNS INTEGER AS
 $$
