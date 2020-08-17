@@ -28,6 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
+
 app.use('/', testRouter);
 /* --- V4: Database Connect --- */
 app.use('/rider', riderRouter);
@@ -52,7 +53,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+ // res.render('error');
 });
 
 module.exports = app;

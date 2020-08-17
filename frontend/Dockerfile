@@ -4,7 +4,7 @@ WORKDIR /frontend
 
 COPY . .
 
-ENV PORT=8000
+ENV PORT=3000
 
 RUN npm install
 

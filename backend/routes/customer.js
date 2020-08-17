@@ -101,7 +101,7 @@ router.get('/viewOrderDetail', (req, res) => {
 router.get('/viewAllContainsDetail', (req, res) => {
     const text = ` SELECT * FROM CONTAINS`;
     const values = [];
-    pool
+    pgPoolWrapper
         .query(text, values)
         .then(result => {
             console.log(result.rows);
