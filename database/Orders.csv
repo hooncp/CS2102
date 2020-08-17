@@ -1,0 +1,1703 @@
+userId,promoCode,applicableTo,modeOfPayment,timeOfOrder,deliveryLocation,usedRewardPoints
+11,A121,Lacus Inc.,credit,1/1/2020 10:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,A121,Lacus Inc.,credit,1/1/2020 12:34,"9673 A, St.",0
+6,A121,Lacus Inc.,cash,1/1/2020 12:55,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,A122,Curabitur LLP,cash,1/1/2020 14:34,Ap #724-6214 Donec St.,0
+2,A122,Curabitur LLP,cash,1/1/2020 16:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,A122,Curabitur LLP,cash,1/1/2020 16:13,"P.O. Box 478, 6223 Amet Av.",0
+15,A122,Curabitur LLP,credit,1/1/2020 16:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,A122,Curabitur LLP,cash,1/1/2020 17:31,Ap #811-9386 Sed Ave,0
+14,A122,Curabitur LLP,cash,1/1/2020 17:49,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,1/1/2020 18:40,3633 Sodales St.,0
+4,,,credit,1/1/2020 18:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,1/1/2020 19:04,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,cash,1/1/2020 19:11,Ap #811-9386 Sed Ave,0
+16,,,cash,1/1/2020 19:41,Ap #865-5540 Ligula St.,0
+3,,,cash,1/1/2020 20:19,"P.O. Box 255, 5464 Velit St.",0
+9,,,cash,1/1/2020 20:34,Ap #724-6214 Donec St.,0
+20,,,cash,2/1/2020 11:28,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,credit,2/1/2020 11:34,465 Id Rd.,0
+18,,,credit,2/1/2020 13:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,cash,2/1/2020 14:06,"P.O. Box 478, 6223 Amet Av.",0
+29,,,cash,2/1/2020 14:47,"679 Erat, Ave",0
+21,,,credit,2/1/2020 14:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+31,,,cash,2/1/2020 15:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,cash,2/1/2020 16:11,783-4226 Porttitor St.,0
+35,,,cash,2/1/2020 17:14,Ap #680-1342 At Street,0
+23,,,cash,2/1/2020 17:51,"P.O. Box 525, 5575 Tellus Ave",0
+32,,,credit,2/1/2020 17:54,2424 Eu Road,0
+34,,,cash,2/1/2020 19:15,8225 Risus. Road,0
+22,,,cash,2/1/2020 19:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+27,,,cash,2/1/2020 19:52,"P.O. Box 255, 5464 Velit St.",0
+30,,,credit,2/1/2020 20:00,203-1102 Molestie St.,0
+25,,,credit,2/1/2020 21:00,"Ap #840-1080 Ac, St.",0
+26,,,cash,2/1/2020 21:04,Ap #251-751 Vehicula Road,0
+33,,,cash,2/1/2020 21:54,Ap #680-1342 At Street,0
+28,,,cash,2/1/2020 21:59,Ap #673-6032 Sit Rd.,0
+1,,,cash,3/1/2020 10:41,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,cash,3/1/2020 10:48,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,credit,3/1/2020 12:07,Ap #312-8413 Proin St.,0
+37,,,credit,3/1/2020 13:01,Ap #251-751 Vehicula Road,0
+8,,,cash,3/1/2020 14:34,"P.O. Box 982, 3671 In St.",0
+3,,,cash,3/1/2020 17:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,3/1/2020 17:08,"9673 A, St.",0
+4,,,credit,3/1/2020 17:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+38,,,cash,3/1/2020 17:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+36,,,cash,3/1/2020 17:41,8225 Risus. Road,0
+2,,,credit,3/1/2020 18:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,credit,3/1/2020 21:05,930-8599 Nulla Rd.,0
+7,,,credit,3/1/2020 21:40,9326 Erat Avenue,0
+23,,,cash,4/1/2020 10:16,"545-7472 Lorem, Rd.",0
+22,,,cash,4/1/2020 11:18,6664 Felis Street,0
+16,,,cash,4/1/2020 12:19,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,4/1/2020 13:12,516-5864 Ullamcorper. Street,0
+14,,,cash,4/1/2020 13:19,"Ap #449-4984 Eu, St.",0
+12,,,credit,4/1/2020 15:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,cash,4/1/2020 16:01,7202 Integer St.,0
+21,,,cash,4/1/2020 18:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,4/1/2020 18:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,cash,4/1/2020 20:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,cash,4/1/2020 20:22,740-1045 A Av.,0
+11,,,credit,4/1/2020 20:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,4/1/2020 20:29,"P.O. Box 442, 4876 Est St.",0
+19,,,credit,4/1/2020 20:34,1875 Tincidunt Street,0
+9,,,credit,4/1/2020 20:45,Ap #251-751 Vehicula Road,0
+31,,,cash,5/1/2020 10:57,Ap #995-9429 Tellus St.,0
+24,,,cash,5/1/2020 12:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,credit,5/1/2020 12:34,Ap #595-9948 Pede Av.,0
+33,,,credit,5/1/2020 13:36,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,5/1/2020 13:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,credit,5/1/2020 14:04,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,credit,5/1/2020 14:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+27,,,cash,5/1/2020 15:47,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,credit,5/1/2020 17:39,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,cash,5/1/2020 21:08,2424 Eu Road,0
+25,,,credit,5/1/2020 21:34,6060 Suspendisse Rd.,0
+11,,,credit,6/1/2020 11:31,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,6/1/2020 11:51,968-5015 Nibh Street,0
+37,,,cash,6/1/2020 13:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,credit,6/1/2020 13:46,"P.O. Box 885, 2468 Egestas St.",0
+7,,,credit,6/1/2020 13:53,349-9739 Nisl. Ave,0
+4,,,credit,6/1/2020 14:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,cash,6/1/2020 14:41,"Ap #394-3000 Dui, Road",0
+1,,,cash,6/1/2020 16:26,"P.O. Box 982, 3671 In St.",0
+10,,,credit,6/1/2020 16:57,"21 Lower Kent Ridge Rd, Singapore 119077",0
+38,,,cash,6/1/2020 17:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,6/1/2020 17:20,"P.O. Box 833, 5372 Amet, Rd.",0
+9,,,credit,6/1/2020 18:09,"2543 A, Road",0
+36,,,credit,6/1/2020 18:10,"P.O. Box 708, 9314 Phasellus Avenue",0
+39,,,cash,6/1/2020 18:56,703-7392 Consectetuer St.,0
+40,,,credit,6/1/2020 19:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,credit,6/1/2020 19:18,"P.O. Box 833, 5372 Amet, Rd.",0
+12,,,credit,6/1/2020 20:48,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,cash,6/1/2020 21:26,"P.O. Box 202, 4698 Blandit. Street",0
+17,,,credit,7/1/2020 10:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,7/1/2020 11:04,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,7/1/2020 12:28,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,cash,7/1/2020 12:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,credit,7/1/2020 12:54,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,7/1/2020 13:55,339-7751 Lacinia St.,0
+31,,,cash,7/1/2020 14:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,credit,7/1/2020 14:02,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,cash,7/1/2020 16:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,cash,7/1/2020 16:03,"9673 A, St.",0
+20,,,credit,7/1/2020 16:52,942-9696 Rhoncus. St.,0
+23,,,cash,7/1/2020 18:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,cash,7/1/2020 18:02,"679 Erat, Ave",0
+22,,,cash,7/1/2020 18:30,Ap #865-5540 Ligula St.,0
+13,,,cash,7/1/2020 18:59,516-5864 Ullamcorper. Street,0
+29,,,credit,7/1/2020 19:31,9326 Erat Avenue,0
+27,,,credit,7/1/2020 19:41,106-1568 Est Ave,0
+25,,,credit,7/1/2020 21:38,"Ap #840-1080 Ac, St.",0
+16,,,cash,7/1/2020 21:40,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,8/1/2020 10:12,"P.O. Box 712, 4578 Vivamus Av.",0
+38,,,credit,8/1/2020 10:46,"Ap #840-1080 Ac, St.",0
+34,,,cash,8/1/2020 12:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,cash,8/1/2020 12:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,credit,8/1/2020 13:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,cash,8/1/2020 14:04,"P.O. Box 833, 5372 Amet, Rd.",0
+37,,,credit,8/1/2020 14:10,7886 Etiam Av.,0
+18,,,cash,8/1/2020 15:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+33,,,cash,8/1/2020 16:50,Ap #366-8424 Tempor Road,0
+32,,,cash,8/1/2020 17:15,3568 Mauris St.,0
+1,,,cash,8/1/2020 17:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,cash,8/1/2020 18:44,"304-4116 Sem, Avenue",0
+36,,,credit,8/1/2020 21:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,,,credit,9/1/2020 10:06,"P.O. Box 318, 9700 Ac Av.",0
+36,,,credit,9/1/2020 10:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,credit,9/1/2020 12:15,930-8599 Nulla Rd.,0
+37,,,credit,9/1/2020 15:02,506-3718 Pharetra Road,0
+25,,,credit,9/1/2020 16:13,783-4226 Porttitor St.,0
+13,,,credit,9/1/2020 17:46,106-1568 Est Ave,0
+23,,,credit,9/1/2020 18:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+36,,,cash,9/1/2020 19:35,339-7751 Lacinia St.,0
+12,,,credit,9/1/2020 20:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,9/1/2020 21:55,"P.O. Box 478, 6223 Amet Av.",0
+33,A123,Ornare Ltd,cash,10/1/2020 10:59,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,A123,Amet Consectetuer Corp.,cash,10/1/2020 12:35,Ap #865-5540 Ligula St.,0
+21,A123,Curabitur LLP,credit,10/1/2020 13:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,A123,Egestas Urna Ltd,credit,10/1/2020 13:47,465 Id Rd.,0
+37,A123,Curabitur LLP,credit,10/1/2020 14:13,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,A123,Lacus Inc.,credit,10/1/2020 14:20,"P.O. Box 712, 4578 Vivamus Av.",0
+11,A123,Nulla Semper Industries,credit,10/1/2020 14:49,4892 Proin St.,0
+31,A123,Ligula PC,cash,10/1/2020 14:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,A123,Lacus Inc.,cash,10/1/2020 15:09,1922 Aliquam Street,0
+29,,,cash,10/1/2020 15:11,3568 Mauris St.,0
+13,,,cash,10/1/2020 15:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,credit,10/1/2020 16:35,Ap #346-4100 Odio. Av.,0
+7,,,cash,10/1/2020 17:11,740-1045 A Av.,0
+10,,,credit,10/1/2020 17:31,Ap #312-8413 Proin St.,0
+26,,,cash,10/1/2020 18:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,10/1/2020 19:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,credit,10/1/2020 20:03,4892 Proin St.,0
+39,,,cash,11/1/2020 10:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,11/1/2020 11:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,credit,11/1/2020 11:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,credit,11/1/2020 13:52,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,11/1/2020 15:58,"864-7712 Sapien, Rd.",0
+38,,,cash,11/1/2020 16:11,"Ap #989-9346 At, Avenue",0
+22,,,cash,11/1/2020 16:26,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,credit,11/1/2020 16:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,credit,11/1/2020 16:58,Ap #346-4100 Odio. Av.,0
+8,,,cash,11/1/2020 17:29,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,cash,11/1/2020 17:52,Ap #995-9429 Tellus St.,0
+17,,,cash,11/1/2020 19:07,823-6492 Dolor Avenue,0
+27,,,cash,11/1/2020 19:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,11/1/2020 19:52,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,11/1/2020 19:55,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,credit,11/1/2020 20:38,506-3718 Pharetra Road,0
+29,,,credit,11/1/2020 21:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,12/1/2020 10:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,credit,12/1/2020 11:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,cash,12/1/2020 12:09,2424 Eu Road,0
+2,,,cash,12/1/2020 13:26,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,12/1/2020 15:02,643-6115 Tempus Road,0
+8,,,credit,12/1/2020 15:05,217-6764 Sit Rd.,0
+36,,,cash,12/1/2020 15:55,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,credit,12/1/2020 16:37,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,credit,12/1/2020 16:48,8626 Lorem Rd.,0
+40,,,cash,12/1/2020 18:29,"864-7712 Sapien, Rd.",0
+17,,,credit,12/1/2020 19:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,12/1/2020 19:26,Ap #292-3748 Molestie Av.,0
+37,,,cash,12/1/2020 19:58,"9673 A, St.",0
+17,,,cash,12/1/2020 20:19,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,cash,12/1/2020 20:58,"P.O. Box 343, 5146 Netus St.",0
+9,,,credit,12/1/2020 21:03,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,cash,12/1/2020 21:34,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,credit,13/1/2020 11:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,credit,13/1/2020 11:46,"P.O. Box 393, 8831 Urna Ave",0
+5,,,credit,13/1/2020 14:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,cash,13/1/2020 14:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,13/1/2020 14:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+33,,,cash,13/1/2020 15:10,402-7613 Non Street,0
+2,,,credit,13/1/2020 15:36,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,13/1/2020 17:00,8225 Risus. Road,0
+10,,,cash,13/1/2020 17:34,"P.O. Box 343, 5146 Netus St.",0
+34,,,cash,13/1/2020 17:52,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,credit,13/1/2020 18:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,cash,13/1/2020 18:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,credit,13/1/2020 19:14,942-9696 Rhoncus. St.,0
+39,,,credit,13/1/2020 20:34,413-6677 In Road,0
+5,,,cash,13/1/2020 21:04,"304-4116 Sem, Avenue",0
+12,,,cash,14/1/2020 10:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,cash,14/1/2020 11:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,cash,14/1/2020 11:26,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,14/1/2020 12:50,8252 Mauris Ave,0
+23,,,credit,14/1/2020 13:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,14/1/2020 15:09,Ap #292-3748 Molestie Av.,0
+5,,,credit,14/1/2020 15:35,9093 Eu Street,0
+25,,,credit,14/1/2020 16:23,861-5731 Gravida Av.,0
+25,,,cash,14/1/2020 16:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,credit,14/1/2020 17:47,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,cash,14/1/2020 21:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,cash,15/1/2020 10:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,15/1/2020 10:21,465 Id Rd.,0
+32,,,cash,15/1/2020 10:37,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,cash,15/1/2020 11:07,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,15/1/2020 11:11,Ap #865-5540 Ligula St.,0
+11,,,credit,15/1/2020 11:54,Ap #811-9386 Sed Ave,0
+24,,,cash,15/1/2020 12:05,"P.O. Box 286, 5259 Sollicitudin Av.",0
+9,,,cash,15/1/2020 12:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,credit,15/1/2020 13:16,Ap #274-4967 Nascetur Av.,0
+15,,,credit,15/1/2020 14:31,6060 Suspendisse Rd.,0
+21,,,credit,15/1/2020 14:48,"P.O. Box 318, 9700 Ac Av.",0
+25,,,cash,15/1/2020 15:33,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,cash,15/1/2020 16:29,"Ap #394-3000 Dui, Road",0
+11,,,credit,15/1/2020 16:59,"5961 A, Street",0
+35,,,credit,15/1/2020 17:02,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,cash,15/1/2020 17:56,1922 Aliquam Street,0
+10,,,credit,15/1/2020 19:06,217-6764 Sit Rd.,0
+38,,,cash,15/1/2020 19:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,cash,15/1/2020 21:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,16/1/2020 11:49,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,credit,16/1/2020 12:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,16/1/2020 13:44,"P.O. Box 712, 2846 Nascetur Ave",0
+2,,,credit,16/1/2020 13:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,16/1/2020 15:18,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,credit,16/1/2020 15:33,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,credit,16/1/2020 15:42,"P.O. Box 250, 1540 Ornare, Av.",0
+15,,,credit,16/1/2020 16:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,16/1/2020 16:55,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,16/1/2020 20:08,"5961 A, Street",0
+6,,,cash,16/1/2020 20:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,16/1/2020 20:41,823-6492 Dolor Avenue,0
+32,,,cash,16/1/2020 21:22,Ap #680-1342 At Street,0
+17,,,credit,17/1/2020 10:55,526-9946 Amet Avenue,0
+2,,,cash,17/1/2020 11:15,1033 A Road,0
+24,,,cash,17/1/2020 11:30,3044 Imperdiet Ave,0
+25,,,credit,17/1/2020 13:25,"P.O. Box 118, 8144 Odio. Rd.",0
+11,,,cash,17/1/2020 13:26,Ap #677-5535 Maecenas Street,0
+22,,,cash,17/1/2020 14:01,Ap #202-4358 Non Street,0
+24,,,cash,17/1/2020 14:07,"455-2980 Lacus, Road",0
+18,,,cash,17/1/2020 15:07,"P.O. Box 468, 9141 Convallis St.",0
+14,,,credit,17/1/2020 15:08,7318 Dictum Av.,0
+2,,,cash,17/1/2020 16:17,Ap #206-6584 Aenean St.,0
+5,,,cash,17/1/2020 16:57,Ap #427-684 Lectus. Street,0
+18,,,cash,17/1/2020 17:04,748-8838 Proin Av.,0
+9,,,cash,17/1/2020 17:22,744-9259 Quam. Av.,0
+36,,,cash,17/1/2020 17:44,Ap #830-7141 Rhoncus. Rd.,0
+20,,,cash,17/1/2020 17:53,Ap #265-1270 Suspendisse St.,0
+6,,,credit,17/1/2020 19:26,"P.O. Box 865, 4869 Tellus Rd.",0
+5,,,cash,17/1/2020 19:50,"P.O. Box 317, 2336 Erat Rd.",0
+15,,,cash,18/1/2020 10:10,"P.O. Box 212, 1792 Lorem St.",0
+34,,,cash,18/1/2020 10:12,"P.O. Box 171, 3188 Nisi Street",0
+10,,,cash,18/1/2020 12:15,5207 Ac Street,0
+25,,,cash,18/1/2020 12:33,990-2206 Parturient Rd.,0
+12,,,credit,18/1/2020 13:09,893-6759 Porta Road,0
+40,,,cash,18/1/2020 13:46,2243 Vel Av.,0
+31,,,cash,18/1/2020 14:50,"P.O. Box 353, 4234 Non St.",0
+25,,,cash,18/1/2020 15:49,Ap #704-4602 Mi Rd.,0
+1,,,cash,18/1/2020 16:24,762-5868 Etiam Av.,0
+4,,,cash,18/1/2020 16:28,6007 Feugiat. Av.,0
+40,,,cash,18/1/2020 17:35,Ap #897-9737 Diam Av.,0
+16,,,credit,18/1/2020 18:18,"P.O. Box 376, 1091 Nulla Ave",0
+12,,,credit,18/1/2020 18:37,Ap #865-5369 Lorem Rd.,0
+9,,,cash,18/1/2020 18:48,"P.O. Box 720, 7556 Etiam Avenue",0
+32,,,credit,18/1/2020 18:49,"P.O. Box 437, 9765 Arcu. Avenue",0
+28,,,credit,18/1/2020 19:32,156-1864 Fermentum Avenue,0
+10,,,cash,19/1/2020 10:53,966-9443 Ullamcorper. Rd.,0
+25,,,credit,19/1/2020 11:13,705-6858 Quis Ave,0
+13,,,credit,19/1/2020 12:08,Ap #303-2725 Eu St.,0
+32,,,credit,19/1/2020 12:55,"P.O. Box 617, 9467 Elit, Street",0
+2,,,credit,19/1/2020 14:17,Ap #798-5814 Vitae Avenue,0
+11,,,cash,19/1/2020 14:42,"P.O. Box 304, 2173 Fermentum St.",0
+1,,,cash,19/1/2020 15:45,"451-5534 Quis, St.",0
+38,,,cash,19/1/2020 16:05,427-1463 Rutrum Rd.,0
+7,,,cash,19/1/2020 17:12,466-9326 Pretium Rd.,0
+35,,,credit,19/1/2020 17:14,6138 Egestas Rd.,0
+26,,,credit,19/1/2020 17:16,"7266 Iaculis, Rd.",0
+26,,,cash,19/1/2020 18:15,1285 Erat. Ave,0
+9,,,cash,19/1/2020 18:28,Ap #778-959 Tellus Road,0
+14,,,cash,19/1/2020 18:49,9981 Ipsum. Avenue,0
+13,,,credit,19/1/2020 20:16,Ap #173-6953 Vulputate Avenue,0
+23,,,credit,20/1/2020 11:32,2371 Nascetur Road,0
+32,,,cash,20/1/2020 12:17,746 Sem Av.,0
+39,,,credit,20/1/2020 14:41,Ap #997-4649 Elementum St.,0
+5,,,cash,20/1/2020 15:12,Ap #707-6637 Dictum Rd.,0
+38,,,cash,20/1/2020 15:18,"1179 Lectus, St.",0
+36,,,credit,20/1/2020 15:47,"P.O. Box 259, 9487 Praesent Av.",0
+38,,,cash,20/1/2020 16:04,6944 Bibendum Avenue,0
+23,,,cash,20/1/2020 16:07,992-9630 Faucibus Avenue,0
+35,,,credit,20/1/2020 18:23,"P.O. Box 829, 9645 Dolor. Ave",0
+6,,,cash,20/1/2020 21:57,486-4776 Donec Road,0
+15,,,credit,21/1/2020 10:49,Ap #479-7762 Tellus Street,0
+1,,,credit,21/1/2020 11:38,9079 Neque Ave,0
+31,,,cash,21/1/2020 12:19,156-6912 Amet Street,0
+2,,,cash,21/1/2020 12:23,"P.O. Box 148, 8009 Per Rd.",0
+17,,,credit,21/1/2020 14:26,"P.O. Box 321, 9800 Nulla St.",0
+15,,,credit,21/1/2020 15:22,"P.O. Box 891, 8219 Accumsan Rd.",0
+4,,,credit,21/1/2020 16:07,Ap #501-1476 Ligula. Rd.,0
+26,,,cash,21/1/2020 16:16,"P.O. Box 574, 6835 Nulla Rd.",0
+26,,,cash,21/1/2020 16:44,Ap #380-2332 Donec Rd.,0
+10,,,cash,21/1/2020 17:08,233-1803 Erat Rd.,0
+23,,,credit,21/1/2020 17:33,Ap #666-5520 Velit. Road,0
+18,,,credit,21/1/2020 18:42,Ap #254-8576 Dolor. Rd.,0
+7,,,cash,21/1/2020 19:03,Ap #221-5202 Vitae Avenue,0
+33,,,cash,21/1/2020 19:55,7803 Purus. Av.,0
+5,,,cash,21/1/2020 20:55,"P.O. Box 715, 9339 Non Rd.",0
+1,,,credit,21/1/2020 20:59,Ap #664-4201 Accumsan St.,0
+28,,,credit,21/1/2020 21:34,5729 A Rd.,0
+15,,,cash,22/1/2020 10:13,"P.O. Box 496, 5595 Lobortis Ave",0
+12,,,cash,22/1/2020 11:09,"P.O. Box 657, 7698 Eu, Rd.",0
+25,,,credit,22/1/2020 11:33,"483-2133 At, Street",0
+19,,,credit,22/1/2020 12:00,Ap #546-6868 Molestie Rd.,0
+9,,,cash,22/1/2020 12:47,Ap #536-6413 Facilisis Avenue,0
+20,,,credit,22/1/2020 13:35,456-5817 Justo Rd.,0
+25,,,credit,22/1/2020 15:19,348-106 Senectus Rd.,0
+17,,,credit,22/1/2020 15:28,Ap #345-6320 Tincidunt St.,0
+1,,,cash,22/1/2020 15:46,2143 Mi Rd.,0
+40,,,credit,22/1/2020 17:28,"P.O. Box 112, 4522 Porttitor Av.",0
+40,,,credit,22/1/2020 17:53,Ap #965-7948 Commodo Avenue,0
+15,,,credit,22/1/2020 18:29,Ap #691-5491 Fringilla Road,0
+39,,,cash,22/1/2020 19:33,Ap #383-6975 Nibh. Rd.,0
+27,,,cash,22/1/2020 19:38,9994 Congue. St.,0
+3,,,cash,22/1/2020 20:16,922-8195 Parturient Avenue,0
+32,,,credit,22/1/2020 21:13,"P.O. Box 855, 5646 Vitae Road",0
+29,,,cash,23/1/2020 10:59,2803 Dis St.,0
+37,,,cash,23/1/2020 11:00,"Ap #201-8736 At, Rd.",0
+3,,,cash,23/1/2020 11:04,Ap #830-7141 Rhoncus. Rd.,0
+22,,,credit,23/1/2020 13:03,"P.O. Box 317, 2336 Erat Rd.",0
+33,,,cash,23/1/2020 13:43,Ap #206-6584 Aenean St.,0
+13,,,credit,23/1/2020 13:59,"P.O. Box 468, 9141 Convallis St.",0
+4,,,credit,23/1/2020 14:07,"P.O. Box 118, 8144 Odio. Rd.",0
+39,,,credit,23/1/2020 15:32,1033 A Road,0
+15,,,cash,23/1/2020 15:34,Ap #427-684 Lectus. Street,0
+12,,,cash,23/1/2020 16:19,"P.O. Box 250, 1540 Ornare, Av.",0
+12,,,credit,23/1/2020 17:09,"605-4645 At, Street",0
+35,,,cash,23/1/2020 17:21,Ap #935-5493 Metus Street,0
+3,,,credit,23/1/2020 17:27,2639 Elit Rd.,0
+16,,,credit,23/1/2020 21:13,748-8838 Proin Av.,0
+24,,,cash,23/1/2020 21:43,730-435 Mi Ave,0
+3,,,cash,23/1/2020 21:45,Ap #781-3453 Odio Road,0
+13,,,cash,23/1/2020 21:53,Ap #543-2871 Suspendisse St.,0
+25,,,cash,24/1/2020 10:36,"P.O. Box 865, 4869 Tellus Rd.",0
+4,,,credit,24/1/2020 10:45,744-9259 Quam. Av.,0
+1,,,cash,24/1/2020 12:23,2243 Vel Av.,0
+5,,,cash,24/1/2020 13:37,Ap #265-1270 Suspendisse St.,0
+15,,,credit,24/1/2020 13:46,"P.O. Box 720, 7556 Etiam Avenue",0
+38,,,cash,24/1/2020 13:57,Ap #677-5535 Maecenas Street,0
+34,,,credit,24/1/2020 14:52,526-9946 Amet Avenue,0
+32,,,cash,24/1/2020 15:07,Ap #897-9737 Diam Av.,0
+18,,,cash,24/1/2020 16:05,Ap #704-4602 Mi Rd.,0
+1,,,credit,24/1/2020 17:07,"455-2980 Lacus, Road",0
+18,,,cash,24/1/2020 18:27,3044 Imperdiet Ave,0
+35,,,cash,24/1/2020 18:42,"P.O. Box 437, 9765 Arcu. Avenue",0
+38,,,cash,24/1/2020 18:58,7318 Dictum Av.,0
+35,,,credit,24/1/2020 19:17,156-1864 Fermentum Avenue,0
+4,,,cash,24/1/2020 20:37,Ap #202-4358 Non Street,0
+37,,,cash,25/1/2020 10:19,1285 Erat. Ave,0
+7,,,credit,25/1/2020 10:34,762-5868 Etiam Av.,0
+7,,,cash,25/1/2020 10:38,966-9443 Ullamcorper. Rd.,0
+29,,,cash,25/1/2020 10:57,"451-5534 Quis, St.",0
+25,,,credit,25/1/2020 13:38,893-6759 Porta Road,0
+12,,,credit,25/1/2020 14:45,5207 Ac Street,0
+36,,,cash,25/1/2020 15:08,Ap #865-5369 Lorem Rd.,0
+21,,,credit,25/1/2020 15:48,705-6858 Quis Ave,0
+1,,,credit,25/1/2020 16:03,427-1463 Rutrum Rd.,0
+19,,,cash,25/1/2020 16:52,"P.O. Box 353, 4234 Non St.",0
+37,,,credit,25/1/2020 18:01,"P.O. Box 376, 1091 Nulla Ave",0
+13,,,credit,25/1/2020 19:14,"P.O. Box 212, 1792 Lorem St.",0
+23,,,credit,25/1/2020 20:05,6007 Feugiat. Av.,0
+33,,,cash,25/1/2020 20:36,6138 Egestas Rd.,0
+37,,,credit,25/1/2020 20:43,990-2206 Parturient Rd.,0
+36,,,credit,25/1/2020 20:57,"P.O. Box 171, 3188 Nisi Street",0
+2,,,cash,26/1/2020 11:55,Ap #778-959 Tellus Road,0
+13,,,cash,26/1/2020 11:57,Ap #303-2725 Eu St.,0
+15,,,credit,26/1/2020 13:18,Ap #798-5814 Vitae Avenue,0
+10,,,credit,26/1/2020 14:10,"P.O. Box 304, 2173 Fermentum St.",0
+37,,,credit,26/1/2020 15:22,466-9326 Pretium Rd.,0
+20,,,credit,26/1/2020 15:28,992-9630 Faucibus Avenue,0
+26,,,cash,26/1/2020 19:15,Ap #173-6953 Vulputate Avenue,0
+11,,,credit,26/1/2020 19:53,Ap #997-4649 Elementum St.,0
+34,,,credit,26/1/2020 19:58,9981 Ipsum. Avenue,0
+31,,,cash,26/1/2020 20:32,"P.O. Box 617, 9467 Elit, Street",0
+21,,,credit,26/1/2020 20:54,"7266 Iaculis, Rd.",0
+27,,,cash,27/1/2020 10:09,Ap #707-6637 Dictum Rd.,0
+29,,,credit,27/1/2020 11:48,486-4776 Donec Road,0
+1,,,cash,27/1/2020 12:27,6944 Bibendum Avenue,0
+6,,,cash,27/1/2020 13:04,2371 Nascetur Road,0
+9,,,credit,27/1/2020 14:40,746 Sem Av.,0
+14,,,cash,27/1/2020 18:51,"P.O. Box 829, 9645 Dolor. Ave",0
+8,,,cash,27/1/2020 19:30,"P.O. Box 259, 9487 Praesent Av.",0
+9,,,credit,27/1/2020 19:50,156-6912 Amet Street,0
+12,,,credit,27/1/2020 20:31,"1179 Lectus, St.",0
+17,,,cash,27/1/2020 21:10,"P.O. Box 148, 8009 Per Rd.",0
+40,,,cash,28/1/2020 10:00,Ap #380-2332 Donec Rd.,0
+2,,,cash,28/1/2020 11:22,"P.O. Box 891, 8219 Accumsan Rd.",0
+1,,,cash,28/1/2020 11:27,Ap #501-1476 Ligula. Rd.,0
+35,,,credit,28/1/2020 11:30,Ap #479-7762 Tellus Street,0
+17,,,cash,28/1/2020 13:33,Ap #254-8576 Dolor. Rd.,0
+9,,,cash,28/1/2020 13:46,"P.O. Box 574, 6835 Nulla Rd.",0
+12,,,cash,28/1/2020 15:07,"P.O. Box 321, 9800 Nulla St.",0
+26,,,credit,28/1/2020 16:27,Ap #664-4201 Accumsan St.,0
+2,,,cash,28/1/2020 16:55,233-1803 Erat Rd.,0
+36,,,cash,28/1/2020 17:34,5729 A Rd.,0
+35,,,cash,28/1/2020 18:07,Ap #666-5520 Velit. Road,0
+38,,,cash,28/1/2020 18:17,7803 Purus. Av.,0
+22,,,cash,28/1/2020 19:11,Ap #221-5202 Vitae Avenue,0
+39,,,cash,28/1/2020 19:40,9079 Neque Ave,0
+18,,,credit,28/1/2020 20:42,"P.O. Box 715, 9339 Non Rd.",0
+10,,,cash,29/1/2020 10:18,"P.O. Box 855, 5646 Vitae Road",0
+4,,,credit,29/1/2020 10:20,9994 Congue. St.,0
+5,,,cash,29/1/2020 10:34,Ap #345-6320 Tincidunt St.,0
+28,,,cash,29/1/2020 12:10,348-106 Senectus Rd.,0
+20,,,credit,29/1/2020 14:06,"P.O. Box 112, 4522 Porttitor Av.",0
+2,,,credit,29/1/2020 14:12,Ap #546-6868 Molestie Rd.,0
+25,,,credit,29/1/2020 14:15,Ap #383-6975 Nibh. Rd.,0
+8,,,credit,29/1/2020 14:22,"P.O. Box 657, 7698 Eu, Rd.",0
+34,,,cash,29/1/2020 15:32,2143 Mi Rd.,0
+17,,,credit,29/1/2020 15:42,922-8195 Parturient Avenue,0
+40,,,cash,29/1/2020 16:11,456-5817 Justo Rd.,0
+37,,,cash,29/1/2020 16:17,Ap #536-6413 Facilisis Avenue,0
+21,,,credit,29/1/2020 18:26,Ap #935-5493 Metus Street,0
+14,,,credit,29/1/2020 19:39,"483-2133 At, Street",0
+5,,,credit,29/1/2020 20:05,Ap #691-5491 Fringilla Road,0
+9,,,credit,29/1/2020 20:31,"P.O. Box 496, 5595 Lobortis Ave",0
+29,,,cash,29/1/2020 21:20,Ap #965-7948 Commodo Avenue,0
+33,,,cash,30/1/2020 10:15,2639 Elit Rd.,0
+2,,,cash,30/1/2020 11:04,Ap #724-6214 Donec St.,0
+25,,,credit,30/1/2020 11:08,"P.O. Box 478, 6223 Amet Av.",0
+25,,,cash,30/1/2020 11:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,30/1/2020 11:50,Ap #781-3453 Odio Road,0
+5,,,credit,30/1/2020 11:52,Ap #724-6214 Donec St.,0
+14,,,cash,30/1/2020 12:46,730-435 Mi Ave,0
+8,,,credit,30/1/2020 14:36,Ap #543-2871 Suspendisse St.,0
+17,,,credit,30/1/2020 15:27,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,30/1/2020 15:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,30/1/2020 16:38,"9673 A, St.",0
+39,,,credit,30/1/2020 18:13,"605-4645 At, Street",0
+29,,,cash,30/1/2020 18:35,Ap #811-9386 Sed Ave,0
+12,,,cash,30/1/2020 19:16,"P.O. Box 255, 5464 Velit St.",0
+16,,,cash,30/1/2020 19:54,"Ap #201-8736 At, Rd.",0
+25,,,cash,31/1/2020 10:52,3633 Sodales St.,0
+29,,,cash,31/1/2020 11:39,465 Id Rd.,0
+32,,,cash,31/1/2020 12:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,credit,31/1/2020 16:04,Ap #811-9386 Sed Ave,0
+15,,,credit,31/1/2020 17:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,31/1/2020 17:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,cash,31/1/2020 17:50,"P.O. Box 478, 6223 Amet Av.",0
+2,,,credit,31/1/2020 18:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,credit,31/1/2020 20:37,Ap #865-5540 Ligula St.,0
+30,,,cash,31/1/2020 20:42,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,credit,1/2/2020 10:05,"P.O. Box 525, 5575 Tellus Ave",0
+3,,,cash,1/2/2020 10:12,Ap #251-751 Vehicula Road,0
+11,,,credit,1/2/2020 12:27,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,cash,1/2/2020 14:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,cash,1/2/2020 15:24,203-1102 Molestie St.,0
+32,,,cash,1/2/2020 17:29,"679 Erat, Ave",0
+38,,,cash,1/2/2020 17:40,"Ap #840-1080 Ac, St.",0
+12,,,credit,1/2/2020 19:19,Ap #673-6032 Sit Rd.,0
+29,,,cash,1/2/2020 20:18,783-4226 Porttitor St.,0
+1,,,cash,1/2/2020 20:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,1/2/2020 21:36,"P.O. Box 255, 5464 Velit St.",0
+1,,,credit,2/2/2020 10:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,2/2/2020 10:31,2424 Eu Road,0
+2,,,credit,2/2/2020 11:00,Ap #680-1342 At Street,0
+12,,,cash,2/2/2020 11:24,8225 Risus. Road,0
+13,,,credit,2/2/2020 11:31,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,2/2/2020 13:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,2/2/2020 13:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,2/2/2020 15:46,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,2/2/2020 17:59,8225 Risus. Road,0
+6,,,cash,2/2/2020 18:13,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,2/2/2020 19:27,930-8599 Nulla Rd.,0
+20,,,credit,2/2/2020 19:29,Ap #680-1342 At Street,0
+2,,,cash,2/2/2020 20:35,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,cash,2/2/2020 20:42,Ap #312-8413 Proin St.,0
+18,,,cash,2/2/2020 20:59,9326 Erat Avenue,0
+6,,,credit,2/2/2020 21:36,Ap #251-751 Vehicula Road,0
+25,,,credit,2/2/2020 21:43,"9673 A, St.",0
+36,,,cash,3/2/2020 12:08,516-5864 Ullamcorper. Street,0
+24,,,cash,3/2/2020 13:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,cash,3/2/2020 13:55,"21 Lower Kent Ridge Rd, Singapore 119077",0
+22,,,cash,3/2/2020 14:18,"Ap #449-4984 Eu, St.",0
+2,,,cash,3/2/2020 14:30,Ap #251-751 Vehicula Road,0
+6,,,credit,3/2/2020 15:29,"P.O. Box 442, 4876 Est St.",0
+14,,,credit,3/2/2020 15:43,740-1045 A Av.,0
+5,,,cash,3/2/2020 15:47,"P.O. Box 982, 3671 In St.",0
+18,,,cash,3/2/2020 15:47,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,cash,3/2/2020 15:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,cash,3/2/2020 18:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,4/2/2020 10:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,cash,4/2/2020 10:51,6060 Suspendisse Rd.,0
+12,,,credit,4/2/2020 11:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,cash,4/2/2020 12:50,Ap #995-9429 Tellus St.,0
+25,,,cash,4/2/2020 13:47,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,4/2/2020 13:59,"545-7472 Lorem, Rd.",0
+16,,,credit,4/2/2020 14:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,4/2/2020 14:13,"P.O. Box 708, 9314 Phasellus Avenue",0
+40,,,cash,4/2/2020 15:06,6664 Felis Street,0
+31,,,cash,4/2/2020 15:11,2424 Eu Road,0
+9,,,cash,4/2/2020 15:35,1875 Tincidunt Street,0
+28,,,credit,4/2/2020 16:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,4/2/2020 16:31,Ap #595-9948 Pede Av.,0
+12,,,credit,4/2/2020 17:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,4/2/2020 18:29,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,credit,4/2/2020 19:23,7202 Integer St.,0
+34,,,cash,4/2/2020 21:27,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,cash,4/2/2020 21:31,"P.O. Box 833, 5372 Amet, Rd.",0
+35,,,credit,5/2/2020 10:14,"21 Lower Kent Ridge Rd, Singapore 119077",15
+25,,,credit,5/2/2020 10:24,703-7392 Consectetuer St.,0
+23,,,cash,5/2/2020 10:32,"21 Lower Kent Ridge Rd, Singapore 119077",5
+38,,,cash,5/2/2020 10:50,"P.O. Box 982, 3671 In St.",0
+9,,,cash,5/2/2020 11:43,"21 Lower Kent Ridge Rd, Singapore 119077",5
+11,,,cash,5/2/2020 11:59,"P.O. Box 202, 4698 Blandit. Street",0
+26,,,cash,5/2/2020 12:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,credit,5/2/2020 13:06,516-5864 Ullamcorper. Street,10
+10,,,cash,5/2/2020 14:19,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,5/2/2020 15:21,"21 Lower Kent Ridge Rd, Singapore 119077",5
+13,,,credit,5/2/2020 16:36,968-5015 Nibh Street,0
+2,,,credit,5/2/2020 16:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,cash,5/2/2020 17:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,credit,5/2/2020 18:02,"P.O. Box 833, 5372 Amet, Rd.",0
+26,,,credit,5/2/2020 18:49,349-9739 Nisl. Ave,0
+14,,,cash,5/2/2020 20:35,"Ap #394-3000 Dui, Road",0
+13,,,credit,5/2/2020 21:02,"2543 A, Road",0
+7,,,cash,5/2/2020 21:25,"P.O. Box 885, 2468 Egestas St.",0
+5,,,cash,6/2/2020 10:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,6/2/2020 11:20,339-7751 Lacinia St.,10
+5,,,cash,6/2/2020 11:24,"21 Lower Kent Ridge Rd, Singapore 119077",5
+26,,,cash,6/2/2020 12:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
+38,,,cash,6/2/2020 13:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,credit,6/2/2020 13:37,3568 Mauris St.,0
+26,,,cash,6/2/2020 14:56,"21 Lower Kent Ridge Rd, Singapore 119077",5
+33,,,cash,6/2/2020 15:24,9326 Erat Avenue,15
+28,,,credit,6/2/2020 16:50,"21 Lower Kent Ridge Rd, Singapore 119077",5
+7,,,cash,6/2/2020 17:42,"Ap #840-1080 Ac, St.",10
+2,,,cash,6/2/2020 18:02,Ap #865-5540 Ligula St.,10
+31,,,cash,6/2/2020 18:19,"21 Lower Kent Ridge Rd, Singapore 119077",15
+38,,,cash,6/2/2020 18:48,"21 Lower Kent Ridge Rd, Singapore 119077",10
+1,,,credit,6/2/2020 19:23,106-1568 Est Ave,15
+6,,,cash,6/2/2020 20:56,942-9696 Rhoncus. St.,10
+32,,,cash,6/2/2020 21:35,"21 Lower Kent Ridge Rd, Singapore 119077",10
+1,,,credit,6/2/2020 21:43,"679 Erat, Ave",10
+36,,,credit,6/2/2020 21:50,"9673 A, St.",0
+15,,,credit,7/2/2020 11:14,506-3718 Pharetra Road,0
+20,,,credit,7/2/2020 11:20,339-7751 Lacinia St.,15
+17,,,credit,7/2/2020 11:33,7886 Etiam Av.,0
+9,,,cash,7/2/2020 11:39,"21 Lower Kent Ridge Rd, Singapore 119077",10
+15,,,credit,7/2/2020 12:47,"21 Lower Kent Ridge Rd, Singapore 119077",5
+1,,,cash,7/2/2020 12:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,credit,7/2/2020 13:07,"P.O. Box 478, 6223 Amet Av.",15
+23,,,credit,7/2/2020 13:51,"Ap #840-1080 Ac, St.",5
+3,,,cash,7/2/2020 14:14,"21 Lower Kent Ridge Rd, Singapore 119077",15
+10,,,cash,7/2/2020 14:45,Ap #366-8424 Tempor Road,5
+15,,,cash,7/2/2020 15:38,"21 Lower Kent Ridge Rd, Singapore 119077",5
+19,,,credit,7/2/2020 16:42,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,7/2/2020 17:22,"P.O. Box 833, 5372 Amet, Rd.",15
+39,,,cash,7/2/2020 18:15,"21 Lower Kent Ridge Rd, Singapore 119077",5
+4,,,credit,7/2/2020 18:44,"304-4116 Sem, Avenue",10
+40,,,credit,7/2/2020 21:02,"P.O. Box 712, 4578 Vivamus Av.",10
+17,,,credit,7/2/2020 21:06,106-1568 Est Ave,15
+27,,,cash,7/2/2020 21:37,783-4226 Porttitor St.,0
+15,,,credit,7/2/2020 21:56,"21 Lower Kent Ridge Rd, Singapore 119077",15
+29,,,cash,8/2/2020 12:18,1922 Aliquam Street,10
+13,,,cash,8/2/2020 12:47,740-1045 A Av.,0
+12,,,credit,8/2/2020 13:32,Ap #346-4100 Odio. Av.,10
+25,,,credit,8/2/2020 13:44,"P.O. Box 318, 9700 Ac Av.",5
+37,,,cash,8/2/2020 14:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,credit,8/2/2020 15:02,"21 Lower Kent Ridge Rd, Singapore 119077",5
+24,,,cash,8/2/2020 15:40,465 Id Rd.,0
+35,,,cash,8/2/2020 16:19,3568 Mauris St.,10
+40,,,credit,8/2/2020 16:36,930-8599 Nulla Rd.,0
+3,,,cash,8/2/2020 17:08,"21 Lower Kent Ridge Rd, Singapore 119077",5
+32,,,credit,8/2/2020 17:50,"21 Lower Kent Ridge Rd, Singapore 119077",5
+12,,,cash,8/2/2020 20:35,"P.O. Box 712, 4578 Vivamus Av.",10
+16,,,credit,9/2/2020 10:06,4892 Proin St.,10
+25,,,cash,9/2/2020 10:32,"21 Lower Kent Ridge Rd, Singapore 119077",5
+38,,,cash,9/2/2020 10:41,"21 Lower Kent Ridge Rd, Singapore 119077",5
+4,,,cash,9/2/2020 11:35,Ap #346-4100 Odio. Av.,15
+18,,,cash,9/2/2020 12:40,"864-7712 Sapien, Rd.",5
+13,,,credit,9/2/2020 13:30,"21 Lower Kent Ridge Rd, Singapore 119077",5
+39,,,credit,9/2/2020 14:26,"21 Lower Kent Ridge Rd, Singapore 119077",5
+22,,,credit,9/2/2020 15:32,Ap #865-5540 Ligula St.,5
+4,,,credit,9/2/2020 16:23,Ap #312-8413 Proin St.,0
+15,,,cash,9/2/2020 16:38,"21 Lower Kent Ridge Rd, Singapore 119077",15
+33,,,cash,9/2/2020 16:55,"21 Lower Kent Ridge Rd, Singapore 119077",15
+3,,,cash,9/2/2020 19:51,4892 Proin St.,5
+5,,,cash,9/2/2020 21:02,"21 Lower Kent Ridge Rd, Singapore 119077",15
+11,,,cash,10/2/2020 10:44,"21 Lower Kent Ridge Rd, Singapore 119077",10
+9,,,cash,10/2/2020 10:50,"21 Lower Kent Ridge Rd, Singapore 119077",15
+4,,,credit,10/2/2020 12:09,"21 Lower Kent Ridge Rd, Singapore 119077",5
+34,,,credit,10/2/2020 12:51,823-6492 Dolor Avenue,5
+32,,,cash,10/2/2020 12:57,"21 Lower Kent Ridge Rd, Singapore 119077",5
+4,,,credit,10/2/2020 14:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,cash,10/2/2020 15:47,"21 Lower Kent Ridge Rd, Singapore 119077",15
+35,,,credit,10/2/2020 16:22,506-3718 Pharetra Road,15
+26,,,cash,10/2/2020 16:24,"Ap #989-9346 At, Avenue",0
+1,,,credit,10/2/2020 17:35,"21 Lower Kent Ridge Rd, Singapore 119077",5
+35,,,credit,10/2/2020 17:49,"21 Lower Kent Ridge Rd, Singapore 119077",10
+8,,,credit,10/2/2020 18:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,10/2/2020 18:50,Ap #995-9429 Tellus St.,10
+28,,,credit,10/2/2020 20:40,"21 Lower Kent Ridge Rd, Singapore 119077",5
+38,,,cash,10/2/2020 21:46,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,cash,11/2/2020 11:22,"21 Lower Kent Ridge Rd, Singapore 119077",5
+11,,,credit,11/2/2020 11:58,Ap #292-3748 Molestie Av.,5
+6,,,credit,11/2/2020 13:55,"P.O. Box 343, 5146 Netus St.",15
+13,,,cash,11/2/2020 13:55,"304-4116 Sem, Avenue",0
+7,,,cash,11/2/2020 14:33,2424 Eu Road,10
+8,,,credit,11/2/2020 15:21,"9673 A, St.",5
+39,,,credit,11/2/2020 15:24,"21 Lower Kent Ridge Rd, Singapore 119077",15
+23,,,credit,11/2/2020 15:33,8626 Lorem Rd.,0
+19,,,credit,11/2/2020 17:04,"21 Lower Kent Ridge Rd, Singapore 119077",15
+11,,,cash,11/2/2020 17:09,"21 Lower Kent Ridge Rd, Singapore 119077",15
+11,,,cash,11/2/2020 17:17,"21 Lower Kent Ridge Rd, Singapore 119077",10
+27,,,credit,11/2/2020 17:33,217-6764 Sit Rd.,15
+18,,,credit,11/2/2020 19:12,643-6115 Tempus Road,10
+23,,,cash,11/2/2020 19:27,"21 Lower Kent Ridge Rd, Singapore 119077",5
+6,,,credit,11/2/2020 20:52,"21 Lower Kent Ridge Rd, Singapore 119077",15
+13,,,credit,11/2/2020 20:52,"21 Lower Kent Ridge Rd, Singapore 119077",10
+15,,,credit,11/2/2020 21:01,"21 Lower Kent Ridge Rd, Singapore 119077",15
+20,,,credit,11/2/2020 21:07,"864-7712 Sapien, Rd.",5
+35,,,credit,12/2/2020 11:46,"21 Lower Kent Ridge Rd, Singapore 119077",0
+27,,,cash,12/2/2020 12:43,"21 Lower Kent Ridge Rd, Singapore 119077",10
+19,,,cash,12/2/2020 13:50,Ap #292-3748 Molestie Av.,0
+6,,,cash,12/2/2020 15:05,942-9696 Rhoncus. St.,5
+16,,,cash,12/2/2020 15:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,credit,12/2/2020 15:30,"P.O. Box 393, 8831 Urna Ave",10
+10,,,credit,12/2/2020 15:34,"21 Lower Kent Ridge Rd, Singapore 119077",15
+37,,,credit,12/2/2020 16:10,"21 Lower Kent Ridge Rd, Singapore 119077",5
+28,,,cash,12/2/2020 16:11,"21 Lower Kent Ridge Rd, Singapore 119077",10
+18,,,cash,12/2/2020 17:10,"21 Lower Kent Ridge Rd, Singapore 119077",10
+31,,,credit,12/2/2020 17:51,402-7613 Non Street,10
+20,,,cash,12/2/2020 18:27,8225 Risus. Road,10
+4,,,cash,12/2/2020 18:58,"21 Lower Kent Ridge Rd, Singapore 119077",15
+32,,,cash,12/2/2020 19:05,"P.O. Box 343, 5146 Netus St.",5
+6,,,credit,12/2/2020 19:31,"21 Lower Kent Ridge Rd, Singapore 119077",10
+33,,,credit,12/2/2020 19:32,"21 Lower Kent Ridge Rd, Singapore 119077",15
+24,,,cash,12/2/2020 20:57,413-6677 In Road,0
+31,,,credit,12/2/2020 21:52,"21 Lower Kent Ridge Rd, Singapore 119077",5
+4,,,cash,13/2/2020 10:02,6060 Suspendisse Rd.,10
+26,,,cash,13/2/2020 11:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,13/2/2020 11:36,"21 Lower Kent Ridge Rd, Singapore 119077",5
+30,,,cash,13/2/2020 11:40,8252 Mauris Ave,5
+6,,,credit,13/2/2020 12:27,"21 Lower Kent Ridge Rd, Singapore 119077",5
+14,,,credit,13/2/2020 12:46,217-6764 Sit Rd.,15
+28,,,cash,13/2/2020 13:43,"P.O. Box 318, 9700 Ac Av.",5
+29,,,cash,13/2/2020 14:48,"Ap #394-3000 Dui, Road",0
+25,,,cash,13/2/2020 15:16,861-5731 Gravida Av.,10
+3,,,cash,13/2/2020 16:17,Ap #865-5540 Ligula St.,5
+21,,,cash,13/2/2020 17:45,"21 Lower Kent Ridge Rd, Singapore 119077",5
+38,,,credit,13/2/2020 20:14,"21 Lower Kent Ridge Rd, Singapore 119077",15
+35,,,cash,13/2/2020 20:21,9093 Eu Street,15
+9,,,credit,13/2/2020 21:27,"5961 A, Street",5
+36,,,cash,14/2/2020 10:23,Ap #811-9386 Sed Ave,10
+30,,,credit,14/2/2020 10:44,1922 Aliquam Street,15
+16,,,cash,14/2/2020 11:11,"21 Lower Kent Ridge Rd, Singapore 119077",15
+16,,,cash,14/2/2020 15:21,Ap #274-4967 Nascetur Av.,0
+37,,,credit,14/2/2020 17:41,"P.O. Box 286, 5259 Sollicitudin Av.",0
+8,,,credit,14/2/2020 17:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,14/2/2020 17:50,Ap #680-1342 At Street,0
+2,,,credit,14/2/2020 19:24,"21 Lower Kent Ridge Rd, Singapore 119077",15
+5,,,credit,14/2/2020 19:30,465 Id Rd.,0
+14,,,cash,14/2/2020 19:59,"21 Lower Kent Ridge Rd, Singapore 119077",15
+13,,,cash,14/2/2020 21:07,"21 Lower Kent Ridge Rd, Singapore 119077",10
+20,,,cash,15/2/2020 11:13,"21 Lower Kent Ridge Rd, Singapore 119077",5
+23,,,credit,15/2/2020 11:20,"21 Lower Kent Ridge Rd, Singapore 119077",10
+28,,,cash,15/2/2020 11:22,"21 Lower Kent Ridge Rd, Singapore 119077",5
+12,,,credit,15/2/2020 11:36,"5961 A, Street",10
+21,,,cash,15/2/2020 12:34,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,15/2/2020 13:06,"P.O. Box 317, 2336 Erat Rd.",5
+28,,,credit,15/2/2020 13:18,"P.O. Box 250, 1540 Ornare, Av.",10
+7,,,credit,15/2/2020 14:06,"21 Lower Kent Ridge Rd, Singapore 119077",10
+11,,,credit,15/2/2020 15:16,Ap #206-6584 Aenean St.,15
+7,,,cash,15/2/2020 16:02,Ap #427-684 Lectus. Street,15
+39,,,credit,15/2/2020 17:09,823-6492 Dolor Avenue,5
+34,,,cash,15/2/2020 17:18,"P.O. Box 468, 9141 Convallis St.",5
+24,,,cash,15/2/2020 18:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,15/2/2020 20:02,"P.O. Box 118, 8144 Odio. Rd.",0
+22,,,cash,15/2/2020 20:32,"21 Lower Kent Ridge Rd, Singapore 119077",5
+15,,,cash,15/2/2020 21:23,1033 A Road,5
+35,,,credit,15/2/2020 21:40,"P.O. Box 712, 2846 Nascetur Ave",0
+32,,,credit,16/2/2020 11:01,Ap #830-7141 Rhoncus. Rd.,5
+26,,,cash,16/2/2020 11:21,Ap #865-5369 Lorem Rd.,0
+26,,,cash,16/2/2020 12:32,3044 Imperdiet Ave,5
+10,,,cash,16/2/2020 12:32,"P.O. Box 865, 4869 Tellus Rd.",5
+28,,,cash,16/2/2020 13:20,"P.O. Box 720, 7556 Etiam Avenue",5
+5,,,cash,16/2/2020 13:58,156-1864 Fermentum Avenue,15
+32,,,credit,16/2/2020 14:18,7318 Dictum Av.,0
+28,,,credit,16/2/2020 14:54,Ap #677-5535 Maecenas Street,5
+9,,,credit,16/2/2020 14:59,2243 Vel Av.,15
+19,,,credit,16/2/2020 15:55,526-9946 Amet Avenue,5
+2,,,credit,16/2/2020 16:33,Ap #897-9737 Diam Av.,5
+11,,,cash,16/2/2020 17:25,"P.O. Box 437, 9765 Arcu. Avenue",15
+29,,,cash,16/2/2020 17:38,744-9259 Quam. Av.,5
+3,,,credit,16/2/2020 18:20,748-8838 Proin Av.,10
+11,,,cash,16/2/2020 18:32,Ap #704-4602 Mi Rd.,10
+8,,,cash,16/2/2020 20:25,Ap #265-1270 Suspendisse St.,15
+5,,,credit,16/2/2020 20:28,"455-2980 Lacus, Road",5
+15,,,cash,16/2/2020 21:16,Ap #202-4358 Non Street,15
+11,,,cash,17/2/2020 10:07,"451-5534 Quis, St.",15
+6,,,cash,17/2/2020 11:30,893-6759 Porta Road,15
+23,,,credit,17/2/2020 11:50,1285 Erat. Ave,5
+18,,,cash,17/2/2020 12:10,"P.O. Box 212, 1792 Lorem St.",10
+39,,,credit,17/2/2020 12:16,427-1463 Rutrum Rd.,15
+10,,,cash,17/2/2020 13:40,"P.O. Box 353, 4234 Non St.",10
+15,,,credit,17/2/2020 14:31,762-5868 Etiam Av.,15
+4,,,cash,17/2/2020 14:36,990-2206 Parturient Rd.,0
+11,,,credit,17/2/2020 15:31,6007 Feugiat. Av.,5
+7,,,credit,17/2/2020 17:53,6138 Egestas Rd.,10
+27,,,credit,17/2/2020 18:16,705-6858 Quis Ave,15
+35,,,credit,17/2/2020 18:23,5207 Ac Street,10
+20,,,cash,17/2/2020 18:49,466-9326 Pretium Rd.,5
+8,,,credit,17/2/2020 19:07,"P.O. Box 171, 3188 Nisi Street",0
+11,,,credit,17/2/2020 20:13,966-9443 Ullamcorper. Rd.,10
+6,,,cash,17/2/2020 21:12,"P.O. Box 376, 1091 Nulla Ave",15
+6,,,cash,18/2/2020 12:04,Ap #778-959 Tellus Road,5
+35,,,cash,18/2/2020 12:23,"1179 Lectus, St.",0
+23,,,credit,18/2/2020 12:38,Ap #798-5814 Vitae Avenue,0
+8,,,credit,18/2/2020 13:30,9981 Ipsum. Avenue,5
+25,,,cash,18/2/2020 14:57,746 Sem Av.,10
+13,,,credit,18/2/2020 14:59,"P.O. Box 304, 2173 Fermentum St.",10
+31,,,cash,18/2/2020 15:04,486-4776 Donec Road,10
+24,,,cash,18/2/2020 15:13,Ap #707-6637 Dictum Rd.,0
+6,,,cash,18/2/2020 15:33,Ap #997-4649 Elementum St.,10
+16,,,cash,18/2/2020 16:15,"P.O. Box 259, 9487 Praesent Av.",0
+23,,,cash,18/2/2020 16:38,Ap #173-6953 Vulputate Avenue,5
+18,,,credit,18/2/2020 16:50,6944 Bibendum Avenue,10
+13,,,cash,18/2/2020 17:44,Ap #303-2725 Eu St.,0
+20,,,credit,18/2/2020 18:02,2371 Nascetur Road,10
+32,,,cash,18/2/2020 18:14,"P.O. Box 617, 9467 Elit, Street",5
+19,,,cash,18/2/2020 19:18,"7266 Iaculis, Rd.",15
+4,,,cash,18/2/2020 20:00,"P.O. Box 829, 9645 Dolor. Ave",15
+37,,,cash,18/2/2020 20:13,992-9630 Faucibus Avenue,5
+26,,,cash,19/2/2020 10:13,Ap #254-8576 Dolor. Rd.,0
+21,,,cash,19/2/2020 11:36,Ap #380-2332 Donec Rd.,5
+31,,,cash,19/2/2020 11:43,"P.O. Box 715, 9339 Non Rd.",5
+27,,,credit,19/2/2020 12:06,Ap #221-5202 Vitae Avenue,10
+35,,,credit,19/2/2020 13:53,7803 Purus. Av.,15
+25,,,cash,19/2/2020 15:56,9079 Neque Ave,10
+10,,,credit,19/2/2020 16:25,156-6912 Amet Street,15
+19,,,cash,19/2/2020 16:42,"P.O. Box 574, 6835 Nulla Rd.",0
+33,,,cash,19/2/2020 20:23,Ap #664-4201 Accumsan St.,15
+28,,,credit,19/2/2020 20:26,"P.O. Box 148, 8009 Per Rd.",10
+30,,,cash,19/2/2020 21:12,5729 A Rd.,5
+6,,,cash,20/2/2020 10:02,Ap #383-6975 Nibh. Rd.,5
+29,,,cash,20/2/2020 10:27,"P.O. Box 321, 9800 Nulla St.",0
+28,,,cash,20/2/2020 12:03,233-1803 Erat Rd.,5
+14,,,credit,20/2/2020 13:26,"P.O. Box 891, 8219 Accumsan Rd.",5
+9,,,cash,20/2/2020 13:35,"P.O. Box 496, 5595 Lobortis Ave",5
+5,,,cash,20/2/2020 13:37,Ap #546-6868 Molestie Rd.,0
+2,,,cash,20/2/2020 14:47,922-8195 Parturient Avenue,15
+3,,,cash,20/2/2020 15:27,Ap #666-5520 Velit. Road,5
+4,,,cash,20/2/2020 16:34,Ap #501-1476 Ligula. Rd.,10
+13,,,credit,20/2/2020 18:33,Ap #965-7948 Commodo Avenue,10
+38,,,credit,20/2/2020 20:27,"P.O. Box 657, 7698 Eu, Rd.",15
+14,,,credit,20/2/2020 20:28,Ap #479-7762 Tellus Street,15
+35,,,cash,21/2/2020 10:47,Ap #543-2871 Suspendisse St.,0
+22,,,cash,21/2/2020 11:24,348-106 Senectus Rd.,5
+8,,,credit,21/2/2020 11:58,Ap #691-5491 Fringilla Road,0
+7,,,credit,21/2/2020 12:53,Ap #935-5493 Metus Street,10
+16,,,credit,21/2/2020 13:00,Ap #345-6320 Tincidunt St.,15
+30,,,credit,21/2/2020 13:01,"483-2133 At, Street",15
+20,,,credit,21/2/2020 14:20,"P.O. Box 855, 5646 Vitae Road",5
+36,,,cash,21/2/2020 16:28,Ap #536-6413 Facilisis Avenue,10
+37,,,cash,21/2/2020 16:29,9994 Congue. St.,0
+11,,,cash,21/2/2020 16:52,"P.O. Box 112, 4522 Porttitor Av.",0
+14,,,cash,21/2/2020 18:07,456-5817 Justo Rd.,15
+24,,,credit,21/2/2020 18:15,730-435 Mi Ave,0
+16,,,credit,21/2/2020 18:18,2143 Mi Rd.,0
+23,,,credit,21/2/2020 19:23,2803 Dis St.,10
+28,,,cash,22/2/2020 10:41,Ap #677-5535 Maecenas Street,5
+32,,,credit,22/2/2020 10:52,7318 Dictum Av.,0
+28,,,cash,22/2/2020 11:07,2639 Elit Rd.,5
+19,,,cash,22/2/2020 11:17,"P.O. Box 118, 8144 Odio. Rd.",0
+3,,,cash,22/2/2020 11:50,748-8838 Proin Av.,10
+21,,,cash,22/2/2020 11:54,"Ap #201-8736 At, Rd.",0
+28,,,credit,22/2/2020 12:30,"P.O. Box 250, 1540 Ornare, Av.",10
+8,,,credit,22/2/2020 13:05,Ap #265-1270 Suspendisse St.,15
+11,,,cash,22/2/2020 13:41,Ap #206-6584 Aenean St.,15
+19,,,cash,22/2/2020 13:51,"P.O. Box 317, 2336 Erat Rd.",5
+34,,,cash,22/2/2020 14:20,"P.O. Box 468, 9141 Convallis St.",5
+39,,,cash,22/2/2020 14:59,Ap #781-3453 Odio Road,5
+7,,,cash,22/2/2020 16:16,Ap #427-684 Lectus. Street,15
+15,,,credit,22/2/2020 16:58,Ap #202-4358 Non Street,15
+32,,,credit,22/2/2020 17:39,Ap #830-7141 Rhoncus. Rd.,5
+12,,,cash,22/2/2020 18:37,"605-4645 At, Street",10
+10,,,credit,22/2/2020 20:08,"P.O. Box 865, 4869 Tellus Rd.",5
+15,,,credit,22/2/2020 20:22,1033 A Road,5
+26,,,cash,22/2/2020 20:53,3044 Imperdiet Ave,5
+11,,,cash,23/2/2020 11:49,"P.O. Box 437, 9765 Arcu. Avenue",15
+28,,,credit,23/2/2020 12:00,"P.O. Box 720, 7556 Etiam Avenue",5
+9,,,cash,23/2/2020 12:42,2243 Vel Av.,15
+2,,,cash,23/2/2020 13:05,Ap #897-9737 Diam Av.,5
+11,,,credit,23/2/2020 16:57,Ap #704-4602 Mi Rd.,10
+19,,,credit,23/2/2020 17:03,526-9946 Amet Avenue,5
+10,,,credit,23/2/2020 18:33,"P.O. Box 353, 4234 Non St.",10
+26,,,credit,23/2/2020 18:47,Ap #865-5369 Lorem Rd.,0
+29,,,credit,23/2/2020 19:10,744-9259 Quam. Av.,5
+5,,,credit,23/2/2020 19:32,"455-2980 Lacus, Road",5
+5,,,cash,23/2/2020 21:22,156-1864 Fermentum Avenue,15
+19,,,cash,24/2/2020 10:16,"7266 Iaculis, Rd.",15
+11,,,credit,24/2/2020 10:30,6007 Feugiat. Av.,5
+8,,,cash,24/2/2020 11:08,9981 Ipsum. Avenue,5
+7,,,cash,24/2/2020 11:12,6138 Egestas Rd.,10
+11,,,cash,24/2/2020 11:35,"451-5534 Quis, St.",15
+27,,,cash,24/2/2020 12:38,705-6858 Quis Ave,15
+20,,,cash,24/2/2020 12:39,466-9326 Pretium Rd.,5
+15,,,credit,24/2/2020 13:08,762-5868 Etiam Av.,15
+6,,,credit,24/2/2020 14:07,"P.O. Box 376, 1091 Nulla Ave",15
+18,,,credit,24/2/2020 14:23,"P.O. Box 212, 1792 Lorem St.",10
+8,,,cash,24/2/2020 15:52,"P.O. Box 171, 3188 Nisi Street",0
+23,,,credit,24/2/2020 16:28,Ap #798-5814 Vitae Avenue,0
+35,,,cash,24/2/2020 18:09,5207 Ac Street,10
+23,,,cash,24/2/2020 18:32,Ap #173-6953 Vulputate Avenue,5
+39,,,credit,24/2/2020 18:34,427-1463 Rutrum Rd.,15
+11,,,cash,24/2/2020 18:37,966-9443 Ullamcorper. Rd.,10
+23,,,cash,24/2/2020 18:40,1285 Erat. Ave,5
+6,,,cash,24/2/2020 20:59,893-6759 Porta Road,15
+4,,,credit,24/2/2020 21:53,990-2206 Parturient Rd.,0
+13,,,credit,25/2/2020 11:09,Ap #303-2725 Eu St.,0
+35,,,cash,25/2/2020 11:09,"1179 Lectus, St.",0
+31,,,cash,25/2/2020 13:10,"P.O. Box 715, 9339 Non Rd.",0
+6,,,credit,25/2/2020 13:24,Ap #997-4649 Elementum St.,0
+25,,,cash,25/2/2020 13:34,746 Sem Av.,0
+32,,,credit,25/2/2020 14:11,"P.O. Box 617, 9467 Elit, Street",0
+37,,,cash,25/2/2020 14:39,992-9630 Faucibus Avenue,0
+16,,,credit,25/2/2020 15:06,"P.O. Box 259, 9487 Praesent Av.",0
+13,,,credit,25/2/2020 15:46,"P.O. Box 304, 2173 Fermentum St.",10
+28,,,credit,25/2/2020 15:59,"P.O. Box 148, 8009 Per Rd.",0
+31,,,credit,25/2/2020 18:24,486-4776 Donec Road,0
+24,,,cash,25/2/2020 19:42,Ap #707-6637 Dictum Rd.,0
+6,,,credit,25/2/2020 20:14,Ap #778-959 Tellus Road,5
+10,,,credit,25/2/2020 20:35,156-6912 Amet Street,0
+4,,,cash,25/2/2020 20:43,"P.O. Box 829, 9645 Dolor. Ave",0
+18,,,cash,25/2/2020 20:43,6944 Bibendum Avenue,0
+20,,,cash,25/2/2020 21:17,2371 Nascetur Road,0
+28,,,credit,26/2/2020 10:42,233-1803 Erat Rd.,0
+9,,,cash,26/2/2020 11:11,"P.O. Box 496, 5595 Lobortis Ave",0
+38,,,credit,26/2/2020 11:24,"P.O. Box 657, 7698 Eu, Rd.",0
+30,,,credit,26/2/2020 11:45,5729 A Rd.,0
+4,,,credit,26/2/2020 12:52,Ap #501-1476 Ligula. Rd.,0
+14,,,credit,26/2/2020 14:39,Ap #479-7762 Tellus Street,0
+25,,,credit,26/2/2020 14:56,9079 Neque Ave,0
+14,,,credit,26/2/2020 15:53,"P.O. Box 891, 8219 Accumsan Rd.",0
+33,,,cash,26/2/2020 17:23,Ap #664-4201 Accumsan St.,0
+29,,,credit,26/2/2020 18:03,"P.O. Box 321, 9800 Nulla St.",0
+3,,,credit,26/2/2020 19:04,Ap #666-5520 Velit. Road,0
+19,,,cash,26/2/2020 19:36,"P.O. Box 574, 6835 Nulla Rd.",0
+21,,,cash,26/2/2020 19:55,Ap #380-2332 Donec Rd.,0
+2,,,credit,26/2/2020 19:55,922-8195 Parturient Avenue,0
+27,,,cash,26/2/2020 20:18,Ap #221-5202 Vitae Avenue,0
+6,,,cash,26/2/2020 20:30,Ap #383-6975 Nibh. Rd.,0
+35,,,cash,26/2/2020 20:38,7803 Purus. Av.,0
+5,,,cash,26/2/2020 20:39,Ap #546-6868 Molestie Rd.,0
+26,,,credit,26/2/2020 20:58,Ap #254-8576 Dolor. Rd.,0
+35,,,credit,27/2/2020 11:39,Ap #543-2871 Suspendisse St.,0
+14,,,credit,27/2/2020 11:50,456-5817 Justo Rd.,0
+13,,,cash,27/2/2020 14:34,Ap #965-7948 Commodo Avenue,0
+16,,,cash,27/2/2020 14:37,2143 Mi Rd.,0
+12,,,cash,27/2/2020 14:45,"605-4645 At, Street",0
+11,,,cash,27/2/2020 14:57,"P.O. Box 112, 4522 Porttitor Av.",0
+8,,,credit,27/2/2020 14:59,Ap #691-5491 Fringilla Road,0
+22,,,credit,27/2/2020 15:02,348-106 Senectus Rd.,0
+20,,,cash,27/2/2020 15:14,"P.O. Box 855, 5646 Vitae Road",0
+7,,,cash,27/2/2020 16:11,Ap #935-5493 Metus Street,0
+23,,,credit,27/2/2020 18:06,2803 Dis St.,0
+16,,,cash,27/2/2020 18:23,Ap #345-6320 Tincidunt St.,0
+24,,,cash,27/2/2020 19:15,730-435 Mi Ave,0
+36,,,credit,27/2/2020 20:00,Ap #536-6413 Facilisis Avenue,0
+30,,,credit,27/2/2020 20:28,"483-2133 At, Street",0
+37,,,credit,27/2/2020 21:52,9994 Congue. St.,0
+7,,,credit,28/2/2020 11:07,"P.O. Box 255, 5464 Velit St.",0
+28,,,cash,28/2/2020 11:27,"9673 A, St.",0
+19,,,credit,28/2/2020 11:41,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,cash,28/2/2020 11:48,Ap #811-9386 Sed Ave,0
+10,,,cash,28/2/2020 12:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,cash,28/2/2020 12:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,cash,28/2/2020 12:42,Ap #781-3453 Odio Road,0
+8,,,cash,28/2/2020 13:13,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,28/2/2020 13:31,Ap #811-9386 Sed Ave,0
+34,,,cash,28/2/2020 13:46,Ap #724-6214 Donec St.,0
+19,,,cash,28/2/2020 14:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,28/2/2020 14:58,"P.O. Box 478, 6223 Amet Av.",0
+28,,,credit,28/2/2020 16:44,2639 Elit Rd.,0
+3,,,cash,28/2/2020 17:15,Ap #724-6214 Donec St.,0
+15,,,cash,28/2/2020 19:19,3633 Sodales St.,0
+21,,,credit,28/2/2020 21:00,"Ap #201-8736 At, Rd.",0
+26,,,cash,28/2/2020 21:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,cash,29/2/2020 12:06,783-4226 Porttitor St.,0
+11,,,credit,29/2/2020 12:18,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,29/2/2020 13:40,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,credit,29/2/2020 18:27,"P.O. Box 525, 5575 Tellus Ave",0
+5,,,credit,29/2/2020 19:32,Ap #865-5540 Ligula St.,0
+19,,,cash,29/2/2020 20:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,credit,29/2/2020 20:08,465 Id Rd.,0
+29,,,cash,29/2/2020 20:40,"P.O. Box 478, 6223 Amet Av.",0
+11,,,credit,29/2/2020 21:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,29/2/2020 21:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,1/3/2020 10:57,8225 Risus. Road,0
+35,,,cash,1/3/2020 11:24,"P.O. Box 255, 5464 Velit St.",0
+20,,,credit,1/3/2020 11:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,credit,1/3/2020 11:46,203-1102 Molestie St.,0
+10,,,credit,1/3/2020 11:47,Ap #251-751 Vehicula Road,0
+26,,,cash,1/3/2020 11:59,"Ap #840-1080 Ac, St.",0
+39,,,credit,1/3/2020 12:22,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,,,cash,1/3/2020 12:37,930-8599 Nulla Rd.,0
+4,,,credit,1/3/2020 13:53,"679 Erat, Ave",0
+8,,,cash,1/3/2020 15:15,Ap #673-6032 Sit Rd.,0
+11,,,credit,1/3/2020 16:33,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,cash,1/3/2020 17:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,cash,1/3/2020 18:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,1/3/2020 18:57,Ap #680-1342 At Street,0
+6,,,credit,1/3/2020 19:05,2424 Eu Road,0
+11,,,cash,1/3/2020 19:20,Ap #680-1342 At Street,0
+15,,,cash,1/3/2020 21:00,8225 Risus. Road,0
+27,,,cash,1/3/2020 21:47,Ap #251-751 Vehicula Road,0
+13,,,cash,2/3/2020 10:44,"9673 A, St.",0
+28,,,credit,2/3/2020 11:34,7202 Integer St.,0
+10,,,cash,2/3/2020 11:34,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,cash,2/3/2020 11:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,credit,2/3/2020 13:48,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,cash,2/3/2020 13:57,"Ap #449-4984 Eu, St.",0
+4,,,cash,2/3/2020 14:18,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,credit,2/3/2020 14:50,740-1045 A Av.,0
+16,,,cash,2/3/2020 14:55,1875 Tincidunt Street,0
+13,,,cash,2/3/2020 15:22,9326 Erat Avenue,0
+6,,,credit,2/3/2020 15:33,"21 Lower Kent Ridge Rd, Singapore 119077",0
+31,,,credit,2/3/2020 16:59,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,credit,2/3/2020 17:35,516-5864 Ullamcorper. Street,0
+6,,,cash,2/3/2020 17:43,"P.O. Box 982, 3671 In St.",0
+20,,,cash,2/3/2020 18:10,"P.O. Box 442, 4876 Est St.",0
+23,,,credit,2/3/2020 18:26,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,credit,2/3/2020 18:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,2/3/2020 18:50,Ap #251-751 Vehicula Road,0
+19,,,cash,2/3/2020 21:55,Ap #312-8413 Proin St.,0
+21,,,cash,3/3/2020 11:09,2424 Eu Road,0
+4,,,cash,3/3/2020 11:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+27,,,cash,3/3/2020 12:37,"545-7472 Lorem, Rd.",0
+31,,,credit,3/3/2020 13:40,6664 Felis Street,0
+29,,,credit,3/3/2020 13:41,"P.O. Box 833, 5372 Amet, Rd.",0
+28,,,cash,3/3/2020 14:25,Ap #995-9429 Tellus St.,0
+14,,,cash,3/3/2020 15:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,cash,3/3/2020 15:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,cash,3/3/2020 15:15,Ap #595-9948 Pede Av.,0
+30,,,credit,3/3/2020 15:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,credit,3/3/2020 15:19,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,3/3/2020 16:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+33,,,credit,3/3/2020 16:39,6060 Suspendisse Rd.,0
+3,,,credit,3/3/2020 19:37,"P.O. Box 708, 9314 Phasellus Avenue",0
+26,,,credit,3/3/2020 21:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,3/3/2020 21:52,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,4/3/2020 14:03,"P.O. Box 982, 3671 In St.",0
+16,,,cash,4/3/2020 15:01,968-5015 Nibh Street,0
+5,,,credit,4/3/2020 19:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+38,,,credit,4/3/2020 20:06,703-7392 Consectetuer St.,0
+36,,,credit,4/3/2020 20:22,"Ap #394-3000 Dui, Road",0
+14,,,cash,4/3/2020 20:29,"P.O. Box 885, 2468 Egestas St.",0
+13,,,credit,4/3/2020 21:00,"P.O. Box 833, 5372 Amet, Rd.",0
+8,,,cash,4/3/2020 21:00,349-9739 Nisl. Ave,0
+9,,,cash,4/3/2020 21:07,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,credit,4/3/2020 21:29,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,cash,5/3/2020 11:50,"9673 A, St.",0
+7,,,cash,5/3/2020 12:39,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,cash,5/3/2020 12:49,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,,,credit,5/3/2020 13:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,cash,5/3/2020 13:56,516-5864 Ullamcorper. Street,0
+28,,,cash,5/3/2020 15:33,942-9696 Rhoncus. St.,0
+21,,,cash,5/3/2020 16:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,cash,5/3/2020 16:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+22,,,cash,5/3/2020 16:36,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,5/3/2020 16:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,cash,5/3/2020 16:40,"2543 A, Road",0
+39,,,credit,5/3/2020 17:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,5/3/2020 18:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,credit,5/3/2020 19:04,"P.O. Box 202, 4698 Blandit. Street",0
+20,,,cash,5/3/2020 19:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,5/3/2020 19:45,Ap #865-5540 Ligula St.,0
+24,,,credit,5/3/2020 19:48,339-7751 Lacinia St.,0
+28,,,cash,6/3/2020 10:25,Ap #366-8424 Tempor Road,0
+15,,,cash,6/3/2020 11:36,106-1568 Est Ave,0
+32,,,cash,6/3/2020 13:44,"304-4116 Sem, Avenue",0
+10,,,cash,6/3/2020 14:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,credit,6/3/2020 15:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,credit,6/3/2020 15:30,9326 Erat Avenue,0
+26,,,cash,6/3/2020 15:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,6/3/2020 18:35,3568 Mauris St.,0
+8,,,credit,6/3/2020 19:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,6/3/2020 20:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,cash,6/3/2020 20:35,7886 Etiam Av.,0
+34,,,credit,6/3/2020 20:52,"Ap #840-1080 Ac, St.",0
+32,,,cash,6/3/2020 21:46,"679 Erat, Ave",0
+10,,,credit,7/3/2020 10:46,"P.O. Box 478, 6223 Amet Av.",0
+26,,,cash,7/3/2020 13:33,339-7751 Lacinia St.,0
+11,,,cash,7/3/2020 13:48,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,cash,7/3/2020 14:27,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,cash,7/3/2020 14:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,7/3/2020 17:09,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,credit,7/3/2020 17:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,7/3/2020 17:30,"P.O. Box 833, 5372 Amet, Rd.",0
+35,,,cash,7/3/2020 18:46,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,credit,7/3/2020 20:02,506-3718 Pharetra Road,0
+19,,,cash,7/3/2020 20:41,"Ap #840-1080 Ac, St.",0
+28,,,credit,7/3/2020 21:28,"P.O. Box 712, 4578 Vivamus Av.",0
+13,,,cash,8/3/2020 12:15,Ap #312-8413 Proin St.,0
+13,,,cash,8/3/2020 14:34,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,,,cash,8/3/2020 14:48,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,credit,8/3/2020 15:25,106-1568 Est Ave,0
+23,,,credit,8/3/2020 16:06,1922 Aliquam Street,0
+11,,,cash,8/3/2020 16:38,740-1045 A Av.,0
+23,,,cash,8/3/2020 16:40,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,8/3/2020 17:29,3568 Mauris St.,0
+11,,,credit,8/3/2020 17:37,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,cash,8/3/2020 17:49,Ap #346-4100 Odio. Av.,0
+6,,,cash,8/3/2020 18:50,783-4226 Porttitor St.,0
+23,,,cash,8/3/2020 19:37,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,8/3/2020 19:38,930-8599 Nulla Rd.,0
+27,,,credit,8/3/2020 19:38,465 Id Rd.,0
+15,,,cash,8/3/2020 19:56,"P.O. Box 318, 9700 Ac Av.",0
+8,,,credit,8/3/2020 20:28,"P.O. Box 712, 4578 Vivamus Av.",0
+20,,,cash,8/3/2020 21:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,8/3/2020 21:18,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,credit,9/3/2020 10:47,Ap #346-4100 Odio. Av.,0
+31,,,credit,9/3/2020 11:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,credit,9/3/2020 12:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,credit,9/3/2020 12:39,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,9/3/2020 13:41,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,9/3/2020 13:55,4892 Proin St.,0
+24,,,cash,9/3/2020 14:03,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,credit,9/3/2020 15:08,4892 Proin St.,0
+31,,,cash,9/3/2020 16:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+18,,,credit,9/3/2020 17:41,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,9/3/2020 19:06,Ap #865-5540 Ligula St.,0
+16,,,credit,9/3/2020 19:09,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,cash,9/3/2020 19:35,"864-7712 Sapien, Rd.",0
+10,,,cash,9/3/2020 21:19,506-3718 Pharetra Road,0
+28,,,credit,9/3/2020 21:21,823-6492 Dolor Avenue,0
+26,,,cash,10/3/2020 10:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+33,,,cash,10/3/2020 12:27,"21 Lower Kent Ridge Rd, Singapore 119077",0
+38,,,cash,10/3/2020 13:25,217-6764 Sit Rd.,0
+3,,,credit,10/3/2020 14:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,credit,10/3/2020 14:29,Ap #995-9429 Tellus St.,0
+4,,,credit,10/3/2020 15:02,643-6115 Tempus Road,0
+27,,,cash,10/3/2020 16:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,10/3/2020 18:01,"P.O. Box 343, 5146 Netus St.",0
+19,,,credit,10/3/2020 19:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,10/3/2020 19:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+25,,,credit,10/3/2020 19:46,"21 Lower Kent Ridge Rd, Singapore 119077",0
+6,,,cash,10/3/2020 19:57,"21 Lower Kent Ridge Rd, Singapore 119077",0
+35,,,credit,10/3/2020 20:13,"Ap #989-9346 At, Avenue",0
+28,,,credit,10/3/2020 20:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,credit,10/3/2020 20:25,Ap #292-3748 Molestie Av.,0
+14,,,credit,10/3/2020 21:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,cash,10/3/2020 21:13,"21 Lower Kent Ridge Rd, Singapore 119077",0
+22,,,cash,11/3/2020 10:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,11/3/2020 10:49,"864-7712 Sapien, Rd.",0
+7,,,cash,11/3/2020 10:57,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,credit,11/3/2020 11:10,8626 Lorem Rd.,0
+5,,,cash,11/3/2020 12:34,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,credit,11/3/2020 15:15,"304-4116 Sem, Avenue",0
+11,,,credit,11/3/2020 15:31,942-9696 Rhoncus. St.,0
+36,,,cash,11/3/2020 15:34,"9673 A, St.",0
+13,,,cash,11/3/2020 15:41,2424 Eu Road,0
+16,,,cash,11/3/2020 16:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,11/3/2020 16:37,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,cash,11/3/2020 17:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,credit,11/3/2020 17:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,11/3/2020 19:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,cash,11/3/2020 20:31,8225 Risus. Road,0
+20,,,credit,11/3/2020 21:06,"P.O. Box 343, 5146 Netus St.",0
+35,,,cash,12/3/2020 12:09,"P.O. Box 393, 8831 Urna Ave",0
+34,,,cash,12/3/2020 12:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,cash,12/3/2020 13:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,credit,12/3/2020 13:45,402-7613 Non Street,0
+19,,,cash,12/3/2020 15:21,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,,,credit,12/3/2020 17:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,credit,12/3/2020 17:30,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,12/3/2020 18:03,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,12/3/2020 19:56,413-6677 In Road,0
+39,,,cash,12/3/2020 19:59,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,credit,13/3/2020 10:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,13/3/2020 11:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,credit,13/3/2020 11:51,"P.O. Box 318, 9700 Ac Av.",0
+2,,,cash,13/3/2020 11:51,"5961 A, Street",0
+19,,,credit,13/3/2020 11:56,Ap #865-5540 Ligula St.,0
+19,,,cash,13/3/2020 12:09,Ap #292-3748 Molestie Av.,0
+15,,,credit,13/3/2020 12:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,credit,13/3/2020 12:28,217-6764 Sit Rd.,0
+11,,,credit,13/3/2020 13:59,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,cash,13/3/2020 15:27,9093 Eu Street,0
+5,,,cash,13/3/2020 15:29,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,cash,13/3/2020 17:21,465 Id Rd.,0
+10,,,credit,13/3/2020 17:36,8252 Mauris Ave,0
+2,,,cash,13/3/2020 19:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,13/3/2020 19:19,6060 Suspendisse Rd.,0
+32,,,credit,13/3/2020 20:39,861-5731 Gravida Av.,0
+26,,,cash,13/3/2020 21:09,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,credit,13/3/2020 21:33,"Ap #394-3000 Dui, Road",0
+5,,,credit,13/3/2020 21:41,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,14/3/2020 10:00,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,credit,14/3/2020 10:14,"P.O. Box 286, 5259 Sollicitudin Av.",0
+13,,,credit,14/3/2020 11:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,14/3/2020 13:54,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,14/3/2020 14:06,Ap #811-9386 Sed Ave,0
+32,,,cash,14/3/2020 15:16,Ap #680-1342 At Street,0
+30,,,credit,14/3/2020 16:48,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,credit,14/3/2020 16:53,1922 Aliquam Street,0
+27,,,credit,14/3/2020 17:36,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,cash,14/3/2020 18:23,Ap #274-4967 Nascetur Av.,0
+11,,,cash,14/3/2020 18:40,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,14/3/2020 20:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,cash,15/3/2020 10:04,"P.O. Box 250, 1540 Ornare, Av.",0
+36,,,credit,15/3/2020 10:47,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,15/3/2020 10:51,"P.O. Box 118, 8144 Odio. Rd.",0
+3,,,credit,15/3/2020 11:47,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,cash,15/3/2020 14:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,cash,15/3/2020 18:11,"P.O. Box 317, 2336 Erat Rd.",0
+16,,,cash,15/3/2020 19:45,"5961 A, Street",0
+26,,,cash,15/3/2020 19:58,Ap #206-6584 Aenean St.,0
+5,,,credit,15/3/2020 20:19,"P.O. Box 712, 2846 Nascetur Ave",0
+3,,,cash,15/3/2020 21:13,823-6492 Dolor Avenue,0
+31,,,credit,15/3/2020 21:42,Ap #427-684 Lectus. Street,0
+37,,,cash,15/3/2020 21:59,"P.O. Box 468, 9141 Convallis St.",0
+9,,,cash,16/3/2020 10:35,"P.O. Box 865, 4869 Tellus Rd.",0
+33,,,credit,16/3/2020 10:57,156-1864 Fermentum Avenue,0
+40,,,cash,16/3/2020 11:16,Ap #677-5535 Maecenas Street,0
+19,,,cash,16/3/2020 12:57,748-8838 Proin Av.,0
+21,,,cash,16/3/2020 14:02,7318 Dictum Av.,0
+5,,,credit,16/3/2020 14:22,1033 A Road,0
+13,,,credit,16/3/2020 14:24,"455-2980 Lacus, Road",0
+17,,,cash,16/3/2020 18:05,3044 Imperdiet Ave,0
+2,,,cash,16/3/2020 18:46,744-9259 Quam. Av.,0
+31,,,cash,16/3/2020 19:05,Ap #830-7141 Rhoncus. Rd.,0
+37,,,cash,16/3/2020 19:15,Ap #202-4358 Non Street,0
+10,,,cash,16/3/2020 20:24,526-9946 Amet Avenue,0
+14,,,cash,16/3/2020 21:15,Ap #265-1270 Suspendisse St.,0
+24,,,credit,17/3/2020 10:55,"P.O. Box 353, 4234 Non St.",0
+3,,,credit,17/3/2020 11:04,"P.O. Box 437, 9765 Arcu. Avenue",0
+26,,,cash,17/3/2020 11:40,5207 Ac Street,0
+9,,,credit,17/3/2020 12:14,893-6759 Porta Road,0
+18,,,credit,17/3/2020 12:32,Ap #897-9737 Diam Av.,0
+40,,,cash,17/3/2020 13:35,"P.O. Box 720, 7556 Etiam Avenue",0
+19,,,cash,17/3/2020 14:10,Ap #865-5369 Lorem Rd.,0
+26,,,cash,17/3/2020 14:53,"P.O. Box 212, 1792 Lorem St.",0
+16,,,credit,17/3/2020 17:00,990-2206 Parturient Rd.,0
+21,,,cash,17/3/2020 17:38,"P.O. Box 171, 3188 Nisi Street",0
+37,,,credit,17/3/2020 20:41,Ap #704-4602 Mi Rd.,0
+20,,,credit,17/3/2020 21:47,2243 Vel Av.,0
+32,,,credit,18/3/2020 11:54,427-1463 Rutrum Rd.,0
+39,,,credit,18/3/2020 12:38,966-9443 Ullamcorper. Rd.,0
+5,,,credit,18/3/2020 13:26,"451-5534 Quis, St.",0
+20,,,credit,18/3/2020 13:59,9981 Ipsum. Avenue,0
+32,,,credit,18/3/2020 14:24,Ap #173-6953 Vulputate Avenue,0
+21,,,cash,18/3/2020 16:22,762-5868 Etiam Av.,0
+22,,,cash,18/3/2020 17:04,705-6858 Quis Ave,0
+38,,,cash,18/3/2020 18:08,Ap #798-5814 Vitae Avenue,0
+9,,,cash,18/3/2020 18:38,6138 Egestas Rd.,0
+16,,,credit,18/3/2020 19:54,1285 Erat. Ave,0
+9,,,credit,18/3/2020 20:42,466-9326 Pretium Rd.,0
+20,,,credit,18/3/2020 21:21,"P.O. Box 376, 1091 Nulla Ave",0
+38,,,cash,18/3/2020 21:30,6007 Feugiat. Av.,0
+2,,,credit,19/3/2020 10:10,992-9630 Faucibus Avenue,0
+13,,,cash,19/3/2020 10:11,2371 Nascetur Road,0
+36,,,cash,19/3/2020 10:15,"P.O. Box 304, 2173 Fermentum St.",0
+8,,,credit,19/3/2020 14:04,Ap #707-6637 Dictum Rd.,0
+7,,,cash,19/3/2020 16:18,Ap #303-2725 Eu St.,0
+36,,,cash,19/3/2020 18:52,746 Sem Av.,0
+16,,,cash,19/3/2020 19:17,Ap #778-959 Tellus Road,0
+34,,,cash,19/3/2020 19:46,"P.O. Box 829, 9645 Dolor. Ave",0
+3,,,credit,19/3/2020 19:53,Ap #997-4649 Elementum St.,0
+1,,,cash,19/3/2020 19:57,"P.O. Box 617, 9467 Elit, Street",0
+13,,,cash,19/3/2020 20:39,"7266 Iaculis, Rd.",0
+34,,,cash,20/3/2020 10:07,9079 Neque Ave,0
+12,,,credit,20/3/2020 10:33,5729 A Rd.,0
+8,,,cash,20/3/2020 11:42,Ap #380-2332 Donec Rd.,0
+4,,,cash,20/3/2020 12:21,7803 Purus. Av.,0
+10,,,cash,20/3/2020 12:30,156-6912 Amet Street,0
+24,,,cash,20/3/2020 12:33,"1179 Lectus, St.",0
+15,,,cash,20/3/2020 13:04,"P.O. Box 574, 6835 Nulla Rd.",0
+22,,,cash,20/3/2020 13:06,Ap #221-5202 Vitae Avenue,0
+28,,,cash,20/3/2020 15:31,Ap #501-1476 Ligula. Rd.,0
+28,,,cash,20/3/2020 16:06,233-1803 Erat Rd.,0
+20,,,cash,20/3/2020 16:32,"P.O. Box 891, 8219 Accumsan Rd.",0
+27,,,credit,20/3/2020 16:38,Ap #254-8576 Dolor. Rd.,0
+29,,,cash,20/3/2020 16:47,"P.O. Box 259, 9487 Praesent Av.",0
+19,,,credit,20/3/2020 17:19,"P.O. Box 715, 9339 Non Rd.",0
+26,,,credit,20/3/2020 17:45,486-4776 Donec Road,0
+4,,,credit,20/3/2020 18:27,Ap #664-4201 Accumsan St.,0
+32,,,credit,20/3/2020 18:55,"P.O. Box 148, 8009 Per Rd.",0
+19,,,credit,20/3/2020 19:43,6944 Bibendum Avenue,0
+14,,,cash,20/3/2020 21:34,Ap #479-7762 Tellus Street,0
+2,,,credit,21/3/2020 10:42,Ap #546-6868 Molestie Rd.,0
+2,,,credit,21/3/2020 11:36,Ap #965-7948 Commodo Avenue,0
+24,,,credit,21/3/2020 11:47,"483-2133 At, Street",0
+13,,,credit,21/3/2020 11:50,Ap #536-6413 Facilisis Avenue,0
+17,,,credit,21/3/2020 12:43,"P.O. Box 321, 9800 Nulla St.",0
+27,,,cash,21/3/2020 12:45,Ap #691-5491 Fringilla Road,0
+5,,,credit,21/3/2020 14:35,"P.O. Box 657, 7698 Eu, Rd.",0
+13,,,cash,21/3/2020 15:00,456-5817 Justo Rd.,0
+21,,,credit,21/3/2020 15:02,9994 Congue. St.,0
+14,,,credit,21/3/2020 15:57,Ap #666-5520 Velit. Road,0
+15,,,cash,21/3/2020 16:57,2143 Mi Rd.,0
+16,,,cash,21/3/2020 19:11,"P.O. Box 496, 5595 Lobortis Ave",0
+11,,,credit,21/3/2020 19:32,922-8195 Parturient Avenue,0
+32,,,credit,21/3/2020 20:55,Ap #383-6975 Nibh. Rd.,0
+36,,,cash,22/3/2020 10:09,"Ap #201-8736 At, Rd.",0
+5,,,cash,22/3/2020 10:18,Ap #543-2871 Suspendisse St.,0
+10,,,cash,22/3/2020 12:42,"P.O. Box 855, 5646 Vitae Road",0
+11,,,cash,22/3/2020 13:44,Ap #935-5493 Metus Street,0
+15,,,cash,22/3/2020 14:07,348-106 Senectus Rd.,0
+10,,,cash,22/3/2020 14:49,Ap #345-6320 Tincidunt St.,0
+3,,,credit,22/3/2020 19:52,Ap #781-3453 Odio Road,0
+3,,,cash,22/3/2020 20:23,2639 Elit Rd.,0
+30,,,cash,22/3/2020 20:25,2803 Dis St.,0
+16,,,cash,22/3/2020 20:46,"605-4645 At, Street",0
+34,,,credit,22/3/2020 21:08,730-435 Mi Ave,0
+32,,,cash,22/3/2020 21:37,"P.O. Box 112, 4522 Porttitor Av.",0
+26,,,credit,23/3/2020 10:24,Ap #206-6584 Aenean St.,0
+19,,,credit,23/3/2020 10:49,748-8838 Proin Av.,0
+40,,,cash,23/3/2020 10:55,"P.O. Box 250, 1540 Ornare, Av.",0
+37,,,credit,23/3/2020 11:47,"P.O. Box 468, 9141 Convallis St.",0
+39,,,cash,23/3/2020 12:55,"P.O. Box 317, 2336 Erat Rd.",0
+5,,,cash,23/3/2020 15:32,1033 A Road,0
+31,,,cash,23/3/2020 16:11,Ap #830-7141 Rhoncus. Rd.,0
+31,,,credit,23/3/2020 17:21,Ap #427-684 Lectus. Street,0
+9,,,cash,23/3/2020 18:11,"P.O. Box 865, 4869 Tellus Rd.",0
+37,,,cash,23/3/2020 21:15,Ap #202-4358 Non Street,0
+23,,,cash,23/3/2020 21:37,"P.O. Box 118, 8144 Odio. Rd.",0
+17,,,cash,23/3/2020 21:43,3044 Imperdiet Ave,0
+37,,,cash,24/3/2020 12:08,Ap #704-4602 Mi Rd.,0
+13,,,credit,24/3/2020 12:50,"455-2980 Lacus, Road",0
+2,,,cash,24/3/2020 14:47,744-9259 Quam. Av.,0
+10,,,cash,24/3/2020 16:15,526-9946 Amet Avenue,0
+3,,,credit,24/3/2020 16:18,"P.O. Box 437, 9765 Arcu. Avenue",0
+33,,,cash,24/3/2020 16:36,156-1864 Fermentum Avenue,0
+21,,,cash,24/3/2020 16:40,7318 Dictum Av.,0
+40,,,cash,24/3/2020 18:52,Ap #677-5535 Maecenas Street,0
+18,,,cash,24/3/2020 20:13,Ap #897-9737 Diam Av.,0
+14,,,credit,24/3/2020 21:10,Ap #265-1270 Suspendisse St.,0
+26,,,credit,25/3/2020 11:43,"P.O. Box 212, 1792 Lorem St.",0
+21,,,credit,25/3/2020 13:43,"P.O. Box 171, 3188 Nisi Street",0
+38,,,credit,25/3/2020 15:39,6007 Feugiat. Av.,0
+16,,,credit,25/3/2020 16:53,990-2206 Parturient Rd.,0
+9,,,cash,25/3/2020 17:07,893-6759 Porta Road,0
+24,,,credit,25/3/2020 19:00,"P.O. Box 353, 4234 Non St.",0
+20,,,cash,25/3/2020 19:05,"P.O. Box 376, 1091 Nulla Ave",0
+20,,,cash,25/3/2020 19:57,2243 Vel Av.,0
+26,,,cash,25/3/2020 20:51,5207 Ac Street,0
+40,,,credit,25/3/2020 21:28,"P.O. Box 720, 7556 Etiam Avenue",0
+19,,,cash,25/3/2020 21:56,Ap #865-5369 Lorem Rd.,0
+9,,,cash,26/3/2020 10:04,466-9326 Pretium Rd.,0
+39,,,cash,26/3/2020 10:18,966-9443 Ullamcorper. Rd.,0
+32,,,cash,26/3/2020 10:25,427-1463 Rutrum Rd.,0
+32,,,cash,26/3/2020 11:18,Ap #173-6953 Vulputate Avenue,0
+9,,,cash,26/3/2020 12:31,6138 Egestas Rd.,0
+21,,,cash,26/3/2020 13:11,762-5868 Etiam Av.,0
+16,,,credit,26/3/2020 14:21,1285 Erat. Ave,0
+20,,,credit,26/3/2020 16:57,9981 Ipsum. Avenue,0
+38,,,cash,26/3/2020 17:58,Ap #798-5814 Vitae Avenue,0
+5,,,credit,26/3/2020 18:42,"451-5534 Quis, St.",0
+22,,,credit,26/3/2020 19:06,705-6858 Quis Ave,0
+2,,,credit,27/3/2020 10:29,992-9630 Faucibus Avenue,0
+3,,,cash,27/3/2020 11:11,Ap #997-4649 Elementum St.,0
+36,,,cash,27/3/2020 12:44,"P.O. Box 304, 2173 Fermentum St.",0
+24,,,credit,27/3/2020 12:54,"1179 Lectus, St.",0
+8,,,cash,27/3/2020 12:56,Ap #707-6637 Dictum Rd.,0
+7,,,cash,27/3/2020 14:15,Ap #303-2725 Eu St.,0
+13,,,credit,27/3/2020 15:08,2371 Nascetur Road,0
+19,,,credit,27/3/2020 15:59,6944 Bibendum Avenue,0
+36,,,credit,27/3/2020 16:22,746 Sem Av.,0
+16,,,cash,27/3/2020 16:55,Ap #778-959 Tellus Road,0
+1,,,credit,27/3/2020 18:54,"P.O. Box 617, 9467 Elit, Street",0
+26,,,credit,27/3/2020 19:19,486-4776 Donec Road,0
+13,,,cash,27/3/2020 19:52,"7266 Iaculis, Rd.",0
+34,,,cash,27/3/2020 21:26,"P.O. Box 829, 9645 Dolor. Ave",0
+8,,,credit,28/3/2020 10:07,Ap #380-2332 Donec Rd.,0
+27,,,cash,28/3/2020 10:38,Ap #254-8576 Dolor. Rd.,0
+22,,,cash,28/3/2020 10:48,Ap #221-5202 Vitae Avenue,0
+15,,,credit,28/3/2020 11:04,"P.O. Box 574, 6835 Nulla Rd.",0
+10,,,cash,28/3/2020 11:13,156-6912 Amet Street,0
+14,,,credit,28/3/2020 11:42,Ap #666-5520 Velit. Road,0
+28,,,credit,28/3/2020 11:57,Ap #501-1476 Ligula. Rd.,0
+32,,,credit,28/3/2020 12:22,"P.O. Box 148, 8009 Per Rd.",0
+34,,,credit,28/3/2020 13:19,9079 Neque Ave,0
+20,,,cash,28/3/2020 15:09,"P.O. Box 891, 8219 Accumsan Rd.",0
+12,,,cash,28/3/2020 16:10,5729 A Rd.,0
+29,,,credit,28/3/2020 16:20,"P.O. Box 259, 9487 Praesent Av.",0
+4,,,credit,28/3/2020 16:25,7803 Purus. Av.,0
+17,,,credit,28/3/2020 16:59,"P.O. Box 321, 9800 Nulla St.",0
+14,,,credit,28/3/2020 17:37,Ap #479-7762 Tellus Street,0
+28,,,credit,28/3/2020 20:18,233-1803 Erat Rd.,0
+4,,,cash,28/3/2020 20:32,Ap #664-4201 Accumsan St.,0
+19,,,cash,28/3/2020 21:08,"P.O. Box 715, 9339 Non Rd.",0
+21,,,credit,29/3/2020 10:11,9994 Congue. St.,0
+2,,,cash,29/3/2020 10:15,Ap #965-7948 Commodo Avenue,0
+16,,,cash,29/3/2020 10:32,"P.O. Box 496, 5595 Lobortis Ave",0
+24,,,credit,29/3/2020 11:56,"483-2133 At, Street",0
+13,,,cash,29/3/2020 14:24,456-5817 Justo Rd.,0
+11,,,credit,29/3/2020 16:38,922-8195 Parturient Avenue,0
+2,,,cash,29/3/2020 16:59,Ap #546-6868 Molestie Rd.,0
+13,,,cash,29/3/2020 17:38,Ap #536-6413 Facilisis Avenue,0
+15,,,cash,29/3/2020 18:48,2143 Mi Rd.,0
+10,,,credit,29/3/2020 19:14,Ap #345-6320 Tincidunt St.,0
+5,,,cash,29/3/2020 19:40,"P.O. Box 657, 7698 Eu, Rd.",0
+27,,,cash,29/3/2020 20:05,Ap #691-5491 Fringilla Road,0
+32,,,cash,29/3/2020 20:16,Ap #383-6975 Nibh. Rd.,0
+32,,,credit,29/3/2020 21:05,"P.O. Box 112, 4522 Porttitor Av.",0
+26,,,credit,30/3/2020 10:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,credit,30/3/2020 10:21,"P.O. Box 855, 5646 Vitae Road",0
+23,,,cash,30/3/2020 11:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,cash,30/3/2020 11:41,"605-4645 At, Street",0
+5,,,cash,30/3/2020 12:04,Ap #811-9386 Sed Ave,0
+31,,,credit,30/3/2020 12:12,"P.O. Box 255, 5464 Velit St.",0
+3,,,cash,30/3/2020 12:34,Ap #781-3453 Odio Road,0
+34,,,cash,30/3/2020 13:14,730-435 Mi Ave,0
+11,,,cash,30/3/2020 13:17,Ap #935-5493 Metus Street,0
+39,,,cash,30/3/2020 13:35,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,credit,30/3/2020 14:48,"9673 A, St.",0
+30,,,credit,30/3/2020 15:09,2803 Dis St.,0
+36,,,cash,30/3/2020 18:40,"Ap #201-8736 At, Rd.",0
+15,,,cash,30/3/2020 18:45,348-106 Senectus Rd.,0
+37,,,cash,30/3/2020 19:22,Ap #724-6214 Donec St.,0
+5,,,cash,30/3/2020 20:30,Ap #543-2871 Suspendisse St.,0
+3,,,credit,30/3/2020 20:33,2639 Elit Rd.,0
+33,,,cash,31/3/2020 10:48,465 Id Rd.,0
+13,,,credit,31/3/2020 12:18,Ap #865-5540 Ligula St.,0
+14,,,credit,31/3/2020 12:19,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,31/3/2020 12:35,"P.O. Box 478, 6223 Amet Av.",0
+21,,,credit,31/3/2020 16:28,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,credit,31/3/2020 17:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,credit,31/3/2020 18:26,Ap #811-9386 Sed Ave,0
+19,,,cash,31/3/2020 19:10,Ap #724-6214 Donec St.,0
+37,,,credit,31/3/2020 20:41,3633 Sodales St.,0
+9,,,credit,31/3/2020 20:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+31,,,credit,31/3/2020 21:49,"P.O. Box 478, 6223 Amet Av.",0
+17,,,cash,31/3/2020 21:54,"21 Lower Kent Ridge Rd, Singapore 119077",0
+21,,,cash,1/4/2020 10:31,Ap #673-6032 Sit Rd.,0
+20,,,credit,1/4/2020 10:42,"P.O. Box 525, 5575 Tellus Ave",0
+40,,,cash,1/4/2020 11:53,783-4226 Porttitor St.,0
+3,,,credit,1/4/2020 12:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,credit,1/4/2020 12:20,"Ap #840-1080 Ac, St.",0
+37,,,cash,1/4/2020 12:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,credit,1/4/2020 13:21,203-1102 Molestie St.,0
+18,,,cash,1/4/2020 14:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,cash,1/4/2020 14:28,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,cash,1/4/2020 15:18,2424 Eu Road,0
+21,,,credit,1/4/2020 15:27,8225 Risus. Road,0
+16,,,credit,1/4/2020 15:41,"679 Erat, Ave",0
+38,,,cash,1/4/2020 18:23,Ap #680-1342 At Street,0
+16,,,credit,1/4/2020 19:53,Ap #680-1342 At Street,0
+24,,,credit,1/4/2020 20:53,Ap #251-751 Vehicula Road,0
+26,,,credit,1/4/2020 21:24,"P.O. Box 255, 5464 Velit St.",0
+22,,,cash,2/4/2020 10:15,Ap #251-751 Vehicula Road,0
+9,,,credit,2/4/2020 10:20,930-8599 Nulla Rd.,0
+32,,,cash,2/4/2020 12:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,2/4/2020 13:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,2/4/2020 14:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,cash,2/4/2020 15:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+36,,,credit,2/4/2020 17:20,"9673 A, St.",0
+38,,,credit,2/4/2020 18:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,2/4/2020 18:59,Ap #312-8413 Proin St.,0
+39,,,credit,2/4/2020 19:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,cash,2/4/2020 21:33,8225 Risus. Road,0
+7,,,cash,3/4/2020 10:05,9326 Erat Avenue,0
+34,,,cash,3/4/2020 12:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+22,,,credit,3/4/2020 12:52,"545-7472 Lorem, Rd.",0
+19,,,cash,3/4/2020 14:14,740-1045 A Av.,0
+13,,,cash,3/4/2020 14:16,"P.O. Box 442, 4876 Est St.",0
+10,,,credit,3/4/2020 14:19,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,cash,3/4/2020 14:21,"P.O. Box 982, 3671 In St.",0
+3,,,cash,3/4/2020 14:37,"21 Lower Kent Ridge Rd, Singapore 119077",0
+1,,,credit,3/4/2020 14:51,Ap #251-751 Vehicula Road,0
+8,,,cash,3/4/2020 15:39,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,credit,3/4/2020 15:56,6664 Felis Street,0
+26,,,credit,3/4/2020 16:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+29,,,cash,3/4/2020 18:28,1875 Tincidunt Street,0
+2,,,cash,3/4/2020 19:32,516-5864 Ullamcorper. Street,0
+24,,,cash,3/4/2020 19:43,"21 Lower Kent Ridge Rd, Singapore 119077",0
+36,,,cash,3/4/2020 20:02,"Ap #449-4984 Eu, St.",0
+15,,,credit,3/4/2020 21:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,3/4/2020 21:32,7202 Integer St.,0
+8,,,credit,4/4/2020 10:58,2424 Eu Road,0
+20,,,credit,4/4/2020 13:21,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,credit,4/4/2020 13:31,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,4/4/2020 13:38,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,cash,4/4/2020 13:45,Ap #595-9948 Pede Av.,0
+4,,,credit,4/4/2020 14:29,6060 Suspendisse Rd.,0
+28,,,cash,4/4/2020 16:21,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,credit,4/4/2020 16:55,Ap #995-9429 Tellus St.,0
+27,,,cash,4/4/2020 19:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,cash,4/4/2020 20:14,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,cash,4/4/2020 20:37,"P.O. Box 708, 9314 Phasellus Avenue",0
+16,,,credit,4/4/2020 20:54,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,4/4/2020 21:21,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,cash,4/4/2020 21:28,"P.O. Box 833, 5372 Amet, Rd.",0
+13,,,credit,5/4/2020 10:11,"Ap #394-3000 Dui, Road",0
+2,,,cash,5/4/2020 10:12,"P.O. Box 833, 5372 Amet, Rd.",0
+27,,,cash,5/4/2020 11:04,349-9739 Nisl. Ave,0
+32,,,cash,5/4/2020 11:05,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,5/4/2020 11:26,"P.O. Box 982, 3671 In St.",0
+15,,,credit,5/4/2020 12:18,968-5015 Nibh Street,0
+5,,,cash,5/4/2020 14:11,703-7392 Consectetuer St.,0
+13,,,credit,5/4/2020 16:24,"P.O. Box 885, 2468 Egestas St.",0
+24,,,cash,5/4/2020 17:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,5/4/2020 18:07,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,5/4/2020 18:50,"2543 A, Road",0
+21,,,cash,5/4/2020 19:21,"P.O. Box 202, 4698 Blandit. Street",0
+30,,,credit,5/4/2020 20:17,516-5864 Ullamcorper. Street,0
+10,,,cash,5/4/2020 20:27,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,credit,5/4/2020 20:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,cash,6/4/2020 10:27,9326 Erat Avenue,0
+23,,,credit,6/4/2020 11:07,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,credit,6/4/2020 11:08,"21 Lower Kent Ridge Rd, Singapore 119077",0
+31,,,cash,6/4/2020 11:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,cash,6/4/2020 11:27,"Ap #840-1080 Ac, St.",0
+36,,,cash,6/4/2020 15:09,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,credit,6/4/2020 15:24,106-1568 Est Ave,0
+39,,,cash,6/4/2020 15:42,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,credit,6/4/2020 15:52,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,credit,6/4/2020 16:37,Ap #865-5540 Ligula St.,0
+11,,,cash,6/4/2020 16:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,cash,6/4/2020 16:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,credit,6/4/2020 18:03,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,cash,6/4/2020 18:06,"9673 A, St.",0
+5,,,cash,6/4/2020 19:33,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,cash,6/4/2020 20:05,339-7751 Lacinia St.,0
+31,,,cash,6/4/2020 20:58,"679 Erat, Ave",0
+3,,,credit,6/4/2020 21:49,942-9696 Rhoncus. St.,0
+14,,,cash,7/4/2020 10:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,cash,7/4/2020 10:17,"21 Lower Kent Ridge Rd, Singapore 119077",0
+33,,,credit,7/4/2020 11:29,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,7/4/2020 12:31,"Ap #840-1080 Ac, St.",0
+24,,,cash,7/4/2020 12:37,"P.O. Box 478, 6223 Amet Av.",0
+19,,,credit,7/4/2020 12:54,339-7751 Lacinia St.,0
+21,,,credit,7/4/2020 13:44,"304-4116 Sem, Avenue",0
+37,,,cash,7/4/2020 16:03,3568 Mauris St.,0
+21,,,credit,7/4/2020 16:52,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,credit,7/4/2020 17:32,"P.O. Box 712, 4578 Vivamus Av.",0
+3,,,cash,7/4/2020 18:32,"P.O. Box 833, 5372 Amet, Rd.",0
+18,,,credit,7/4/2020 18:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,cash,7/4/2020 19:18,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,cash,7/4/2020 20:29,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,7/4/2020 21:13,"21 Lower Kent Ridge Rd, Singapore 119077",0
+40,,,credit,7/4/2020 21:19,Ap #366-8424 Tempor Road,0
+2,,,credit,7/4/2020 21:45,7886 Etiam Av.,0
+22,,,cash,8/4/2020 10:51,465 Id Rd.,0
+16,,,cash,8/4/2020 11:07,506-3718 Pharetra Road,0
+21,,,cash,8/4/2020 11:55,"P.O. Box 318, 9700 Ac Av.",0
+9,,,cash,8/4/2020 11:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+9,,,cash,8/4/2020 11:57,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,8/4/2020 12:26,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,8/4/2020 12:48,Ap #346-4100 Odio. Av.,0
+39,,,cash,8/4/2020 14:36,740-1045 A Av.,0
+5,,,credit,8/4/2020 15:03,3568 Mauris St.,0
+26,,,cash,8/4/2020 15:23,106-1568 Est Ave,0
+38,,,cash,8/4/2020 16:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+38,,,cash,8/4/2020 19:01,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,credit,8/4/2020 19:22,1922 Aliquam Street,0
+20,,,credit,8/4/2020 20:28,930-8599 Nulla Rd.,0
+20,,,cash,8/4/2020 20:38,"P.O. Box 712, 4578 Vivamus Av.",0
+9,,,credit,8/4/2020 21:11,783-4226 Porttitor St.,0
+13,,,credit,9/4/2020 10:09,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,credit,9/4/2020 11:08,4892 Proin St.,0
+8,,,credit,9/4/2020 13:45,"21 Lower Kent Ridge Rd, Singapore 119077",0
+24,,,cash,9/4/2020 13:46,"21 Lower Kent Ridge Rd, Singapore 119077",0
+19,,,credit,9/4/2020 14:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+7,,,cash,9/4/2020 15:03,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,cash,9/4/2020 15:03,4892 Proin St.,0
+34,,,credit,9/4/2020 15:50,"864-7712 Sapien, Rd.",0
+36,,,credit,9/4/2020 16:18,Ap #346-4100 Odio. Av.,0
+16,,,credit,9/4/2020 16:23,Ap #865-5540 Ligula St.,0
+13,,,cash,9/4/2020 16:34,"21 Lower Kent Ridge Rd, Singapore 119077",0
+36,,,cash,9/4/2020 16:36,Ap #312-8413 Proin St.,0
+29,,,cash,9/4/2020 17:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,credit,9/4/2020 17:24,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,credit,9/4/2020 18:43,506-3718 Pharetra Road,0
+1,,,cash,9/4/2020 19:55,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,9/4/2020 21:30,823-6492 Dolor Avenue,0
+19,,,cash,9/4/2020 21:40,"21 Lower Kent Ridge Rd, Singapore 119077",0
+14,,,credit,10/4/2020 10:07,"21 Lower Kent Ridge Rd, Singapore 119077",0
+22,,,cash,10/4/2020 10:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,credit,10/4/2020 10:38,"Ap #989-9346 At, Avenue",0
+14,,,cash,10/4/2020 10:42,"21 Lower Kent Ridge Rd, Singapore 119077",0
+20,,,cash,10/4/2020 13:11,"P.O. Box 343, 5146 Netus St.",0
+27,,,credit,10/4/2020 13:12,"21 Lower Kent Ridge Rd, Singapore 119077",0
+4,,,cash,10/4/2020 13:25,"21 Lower Kent Ridge Rd, Singapore 119077",0
+8,,,credit,10/4/2020 13:44,Ap #995-9429 Tellus St.,0
+16,,,cash,10/4/2020 13:44,"21 Lower Kent Ridge Rd, Singapore 119077",0
+12,,,cash,10/4/2020 13:56,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,cash,10/4/2020 14:11,"21 Lower Kent Ridge Rd, Singapore 119077",0
+28,,,credit,10/4/2020 15:46,643-6115 Tempus Road,0
+28,,,credit,10/4/2020 18:32,"21 Lower Kent Ridge Rd, Singapore 119077",0
+17,,,credit,10/4/2020 19:06,Ap #292-3748 Molestie Av.,0
+34,,,cash,10/4/2020 19:26,"21 Lower Kent Ridge Rd, Singapore 119077",0
+15,,,credit,10/4/2020 20:21,"21 Lower Kent Ridge Rd, Singapore 119077",0
+27,,,credit,11/4/2020 10:07,"21 Lower Kent Ridge Rd, Singapore 119077",0
+30,,,cash,11/4/2020 11:21,"21 Lower Kent Ridge Rd, Singapore 119077",0
+5,,,cash,11/4/2020 12:25,217-6764 Sit Rd.,0
+24,,,cash,11/4/2020 12:31,8626 Lorem Rd.,0
+13,,,cash,11/4/2020 12:48,"9673 A, St.",0
+15,,,credit,11/4/2020 13:10,"21 Lower Kent Ridge Rd, Singapore 119077",0
+10,,,cash,11/4/2020 13:22,"P.O. Box 343, 5146 Netus St.",0
+2,,,credit,11/4/2020 13:59,2424 Eu Road,0
+11,,,cash,11/4/2020 14:20,"21 Lower Kent Ridge Rd, Singapore 119077",0
+2,,,cash,11/4/2020 14:35,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,credit,11/4/2020 14:48,"864-7712 Sapien, Rd.",0
+10,,,credit,11/4/2020 15:15,"304-4116 Sem, Avenue",0
+15,,,cash,11/4/2020 16:23,"21 Lower Kent Ridge Rd, Singapore 119077",0
+11,,,credit,11/4/2020 18:31,"21 Lower Kent Ridge Rd, Singapore 119077",0
+32,,,credit,11/4/2020 19:14,942-9696 Rhoncus. St.,0
+21,,,cash,11/4/2020 19:50,"21 Lower Kent Ridge Rd, Singapore 119077",0
+37,,,cash,12/4/2020 12:02,"21 Lower Kent Ridge Rd, Singapore 119077",0
+26,,,credit,12/4/2020 12:06,"21 Lower Kent Ridge Rd, Singapore 119077",0
+23,,,credit,12/4/2020 12:15,"21 Lower Kent Ridge Rd, Singapore 119077",0
+34,,,cash,12/4/2020 14:01,8225 Risus. Road,0
+5,,,cash,12/4/2020 14:01,"P.O. Box 393, 8831 Urna Ave",0
+40,,,cash,12/4/2020 15:16,"21 Lower Kent Ridge Rd, Singapore 119077",0
+3,,,credit,12/4/2020 16:18,"21 Lower Kent Ridge Rd, Singapore 119077",0
+16,,,credit,12/4/2020 16:53,413-6677 In Road,0
+3,,,credit,12/4/2020 17:11,402-7613 Non Street,0
+36,,,cash,12/4/2020 17:57,"21 Lower Kent Ridge Rd, Singapore 119077",0
+31,,,cash,12/4/2020 17:58,"21 Lower Kent Ridge Rd, Singapore 119077",0
+39,,,cash,13/4/2020 10:21,Ap #292-3748 Molestie Av.,0
+37,,,credit,13/4/2020 11:16,"21 Lower Kent Ridge Rd, Singapore 119077",5
+31,,,cash,13/4/2020 12:47,861-5731 Gravida Av.,0
+5,,,credit,13/4/2020 12:51,"21 Lower Kent Ridge Rd, Singapore 119077",0
+13,,,cash,13/4/2020 13:09,217-6764 Sit Rd.,5
+9,,,cash,13/4/2020 13:28,8252 Mauris Ave,5
+14,,,credit,13/4/2020 14:29,"21 Lower Kent Ridge Rd, Singapore 119077",5
+19,,,credit,13/4/2020 14:32,9093 Eu Street,5
+20,,,cash,13/4/2020 14:43,"21 Lower Kent Ridge Rd, Singapore 119077",5
+37,,,credit,13/4/2020 14:58,465 Id Rd.,5
+40,,,credit,13/4/2020 15:18,"21 Lower Kent Ridge Rd, Singapore 119077",5
+17,,,credit,13/4/2020 15:48,"21 Lower Kent Ridge Rd, Singapore 119077",5
+21,,,cash,13/4/2020 16:22,6060 Suspendisse Rd.,5
+10,,,cash,13/4/2020 16:41,Ap #865-5540 Ligula St.,5
+3,,,cash,13/4/2020 17:34,"21 Lower Kent Ridge Rd, Singapore 119077",5
+40,,,cash,13/4/2020 18:19,"P.O. Box 318, 9700 Ac Av.",5
+18,,,credit,13/4/2020 20:44,"5961 A, Street",5
+33,,,credit,13/4/2020 20:50,"21 Lower Kent Ridge Rd, Singapore 119077",5
+2,,,credit,13/4/2020 21:56,"Ap #394-3000 Dui, Road",5
+26,,,cash,14/4/2020 10:33,"21 Lower Kent Ridge Rd, Singapore 119077",5
+19,,,cash,14/4/2020 11:50,"21 Lower Kent Ridge Rd, Singapore 119077",5
+21,,,credit,14/4/2020 12:52,"21 Lower Kent Ridge Rd, Singapore 119077",5
+26,,,credit,14/4/2020 14:30,Ap #811-9386 Sed Ave,5
+16,,,cash,14/4/2020 14:56,"21 Lower Kent Ridge Rd, Singapore 119077",5
+9,,,credit,14/4/2020 15:45,"P.O. Box 286, 5259 Sollicitudin Av.",5
+16,,,credit,14/4/2020 16:02,"21 Lower Kent Ridge Rd, Singapore 119077",5
+38,,,cash,14/4/2020 17:22,"21 Lower Kent Ridge Rd, Singapore 119077",5
+20,,,credit,14/4/2020 17:44,Ap #680-1342 At Street,5
+21,,,cash,14/4/2020 18:05,Ap #274-4967 Nascetur Av.,5
+24,,,cash,14/4/2020 19:13,1922 Aliquam Street,5
+32,,,credit,15/4/2020 11:24,"5961 A, Street",5
+22,,,credit,15/4/2020 11:36,"21 Lower Kent Ridge Rd, Singapore 119077",5
+32,,,credit,15/4/2020 12:12,Ap #206-6584 Aenean St.,5
+5,,,cash,15/4/2020 14:33,"21 Lower Kent Ridge Rd, Singapore 119077",5
+16,,,cash,15/4/2020 14:54,"P.O. Box 317, 2336 Erat Rd.",5
+39,,,cash,15/4/2020 16:27,"P.O. Box 712, 2846 Nascetur Ave",5
+7,,,credit,15/4/2020 17:33,"P.O. Box 468, 9141 Convallis St.",5
+9,,,credit,15/4/2020 18:07,"21 Lower Kent Ridge Rd, Singapore 119077",5
+38,,,credit,15/4/2020 18:48,"21 Lower Kent Ridge Rd, Singapore 119077",5
+13,,,cash,15/4/2020 19:00,Ap #427-684 Lectus. Street,5
+9,,,cash,15/4/2020 19:13,823-6492 Dolor Avenue,5
+36,,,cash,15/4/2020 19:35,"P.O. Box 118, 8144 Odio. Rd.",5
+20,,,cash,15/4/2020 20:27,"P.O. Box 250, 1540 Ornare, Av.",5
+13,,,cash,16/4/2020 10:52,"P.O. Box 865, 4869 Tellus Rd.",5
+2,,,credit,16/4/2020 11:32,Ap #830-7141 Rhoncus. Rd.,5
+32,,,credit,16/4/2020 11:46,526-9946 Amet Avenue,5
+34,,,cash,16/4/2020 12:27,"P.O. Box 720, 7556 Etiam Avenue",5
+36,,,credit,16/4/2020 13:01,Ap #202-4358 Non Street,5
+1,,,credit,16/4/2020 13:37,1033 A Road,5
+19,,,credit,16/4/2020 13:59,7318 Dictum Av.,5
+34,,,credit,16/4/2020 15:03,3044 Imperdiet Ave,5
+26,,,cash,16/4/2020 15:04,"455-2980 Lacus, Road",5
+24,,,cash,16/4/2020 16:04,Ap #265-1270 Suspendisse St.,5
+4,,,cash,16/4/2020 16:48,2243 Vel Av.,5
+10,,,cash,16/4/2020 17:22,156-1864 Fermentum Avenue,5
+29,,,credit,16/4/2020 17:55,744-9259 Quam. Av.,5
+8,,,cash,16/4/2020 18:31,Ap #677-5535 Maecenas Street,5
+3,,,cash,16/4/2020 19:16,748-8838 Proin Av.,5
+19,,,credit,16/4/2020 19:58,Ap #897-9737 Diam Av.,5
+15,,,credit,16/4/2020 20:52,Ap #704-4602 Mi Rd.,5
+22,,,cash,16/4/2020 21:41,"P.O. Box 437, 9765 Arcu. Avenue",5
+11,,,cash,17/4/2020 12:11,427-1463 Rutrum Rd.,5
+28,,,cash,17/4/2020 13:12,990-2206 Parturient Rd.,5
+5,,,credit,17/4/2020 13:29,705-6858 Quis Ave,5
+20,,,credit,17/4/2020 14:02,893-6759 Porta Road,5
+28,,,cash,17/4/2020 14:41,"P.O. Box 212, 1792 Lorem St.",5
+14,,,credit,17/4/2020 14:46,"P.O. Box 376, 1091 Nulla Ave",5
+2,,,credit,17/4/2020 14:48,966-9443 Ullamcorper. Rd.,5
+16,,,cash,17/4/2020 15:02,"451-5534 Quis, St.",5
+17,,,cash,17/4/2020 15:21,6007 Feugiat. Av.,5
+14,,,cash,17/4/2020 16:53,762-5868 Etiam Av.,5
+27,,,credit,17/4/2020 17:43,"P.O. Box 171, 3188 Nisi Street",5
+8,,,cash,17/4/2020 18:46,"P.O. Box 353, 4234 Non St.",5
+12,,,credit,17/4/2020 19:33,5207 Ac Street,5
+4,,,credit,17/4/2020 21:05,Ap #865-5369 Lorem Rd.,5
+32,,,credit,17/4/2020 21:31,1285 Erat. Ave,5
+32,,,credit,18/4/2020 12:34,Ap #778-959 Tellus Road,5
+21,,,cash,18/4/2020 12:37,"P.O. Box 304, 2173 Fermentum St.",5
+13,,,cash,18/4/2020 13:36,9981 Ipsum. Avenue,5
+27,,,credit,18/4/2020 13:43,"7266 Iaculis, Rd.",5
+15,,,cash,18/4/2020 15:43,Ap #173-6953 Vulputate Avenue,5
+2,,,credit,18/4/2020 17:08,6138 Egestas Rd.,5
+10,,,cash,18/4/2020 18:30,"P.O. Box 617, 9467 Elit, Street",5
+24,,,credit,18/4/2020 19:52,Ap #798-5814 Vitae Avenue,5
+10,,,credit,18/4/2020 20:56,Ap #303-2725 Eu St.,5
+13,,,cash,18/4/2020 21:01,466-9326 Pretium Rd.,5
+3,,,credit,19/4/2020 11:10,486-4776 Donec Road,5
+5,,,cash,19/4/2020 13:20,746 Sem Av.,5
+31,,,cash,19/4/2020 13:29,156-6912 Amet Street,5
+37,,,cash,19/4/2020 13:29,Ap #221-5202 Vitae Avenue,5
+40,,,cash,19/4/2020 13:45,"P.O. Box 259, 9487 Praesent Av.",5
+16,,,credit,19/4/2020 13:52,Ap #707-6637 Dictum Rd.,5
+23,,,credit,19/4/2020 13:52,"P.O. Box 715, 9339 Non Rd.",5
+26,,,credit,19/4/2020 14:12,"P.O. Box 148, 8009 Per Rd.",5
+34,,,cash,19/4/2020 14:27,2371 Nascetur Road,5
+3,,,credit,19/4/2020 14:40,6944 Bibendum Avenue,5
+36,,,cash,19/4/2020 14:51,"1179 Lectus, St.",5
+11,,,credit,19/4/2020 15:52,"P.O. Box 829, 9645 Dolor. Ave",5
+39,,,cash,19/4/2020 17:05,"P.O. Box 574, 6835 Nulla Rd.",5
+30,,,cash,19/4/2020 19:21,Ap #997-4649 Elementum St.,5
+15,,,credit,19/4/2020 19:50,992-9630 Faucibus Avenue,5
+5,,,credit,19/4/2020 20:35,Ap #664-4201 Accumsan St.,5
+3,,,cash,20/4/2020 10:03,"P.O. Box 657, 7698 Eu, Rd.",5
+10,,,cash,20/4/2020 11:12,Ap #666-5520 Velit. Road,5
+2,,,credit,20/4/2020 11:33,"P.O. Box 321, 9800 Nulla St.",5
+9,,,cash,20/4/2020 12:29,5729 A Rd.,5
+37,,,credit,20/4/2020 13:00,Ap #546-6868 Molestie Rd.,5
+13,,,cash,20/4/2020 13:35,Ap #479-7762 Tellus Street,5
+21,,,cash,20/4/2020 14:01,Ap #501-1476 Ligula. Rd.,5
+19,,,credit,20/4/2020 14:03,7803 Purus. Av.,5
+17,,,credit,20/4/2020 14:05,Ap #380-2332 Donec Rd.,5
+14,,,credit,20/4/2020 15:01,"P.O. Box 891, 8219 Accumsan Rd.",5
+37,,,credit,20/4/2020 15:02,Ap #254-8576 Dolor. Rd.,5
+40,,,cash,20/4/2020 17:52,233-1803 Erat Rd.,5
+33,,,credit,20/4/2020 20:18,Ap #383-6975 Nibh. Rd.,5
+31,,,cash,20/4/2020 20:29,9079 Neque Ave,5
+18,,,credit,20/4/2020 21:47,"P.O. Box 496, 5595 Lobortis Ave",5
+20,,,credit,21/4/2020 10:05,"P.O. Box 112, 4522 Porttitor Av.",5
+26,,,cash,21/4/2020 11:32,Ap #345-6320 Tincidunt St.,5
+38,,,cash,21/4/2020 12:32,"P.O. Box 855, 5646 Vitae Road",5
+21,,,cash,21/4/2020 12:38,2143 Mi Rd.,5
+26,,,credit,21/4/2020 12:49,Ap #536-6413 Facilisis Avenue,5
+16,,,credit,21/4/2020 18:10,Ap #691-5491 Fringilla Road,5
+24,,,cash,21/4/2020 19:06,"483-2133 At, Street",5
+19,,,cash,21/4/2020 20:25,456-5817 Justo Rd.,5
+9,,,credit,21/4/2020 20:45,9994 Congue. St.,5
+20,,,cash,21/4/2020 21:31,922-8195 Parturient Avenue,5
+40,,,credit,21/4/2020 21:52,Ap #965-7948 Commodo Avenue,5
+32,,,credit,22/4/2020 10:34,"605-4645 At, Street",5
+22,,,credit,22/4/2020 12:20,730-435 Mi Ave,5
+5,,,cash,22/4/2020 13:00,Ap #935-5493 Metus Street,5
+39,,,cash,22/4/2020 14:14,Ap #543-2871 Suspendisse St.,5
+9,,,credit,22/4/2020 14:17,"Ap #201-8736 At, Rd.",5
+9,,,cash,22/4/2020 15:59,Ap #781-3453 Odio Road,5
+16,,,cash,22/4/2020 16:28,2803 Dis St.,5
+21,,,credit,22/4/2020 17:00,348-106 Senectus Rd.,5
+38,,,credit,22/4/2020 21:33,2639 Elit Rd.,5
+32,,,credit,23/4/2020 17:30,526-9946 Amet Avenue,5
+17,,,cash,24/4/2020 10:09,6007 Feugiat. Av.,5
+22,,,cash,24/4/2020 11:46,"P.O. Box 437, 9765 Arcu. Avenue",5
+19,,,credit,24/4/2020 13:56,Ap #897-9737 Diam Av.,5
+10,,,cash,24/4/2020 21:17,156-1864 Fermentum Avenue,5
+15,,,cash,25/4/2020 12:21,Ap #173-6953 Vulputate Avenue,5
+27,,,credit,25/4/2020 12:38,"7266 Iaculis, Rd.",5
+21,,,cash,25/4/2020 16:09,"P.O. Box 304, 2173 Fermentum St.",5
+3,,,credit,26/4/2020 11:03,486-4776 Donec Road,5
+3,,,credit,26/4/2020 18:36,6944 Bibendum Avenue,5
+21,,,cash,27/4/2020 13:06,Ap #501-1476 Ligula. Rd.,5
+13,,,cash,27/4/2020 20:35,Ap #479-7762 Tellus Street,5
+21,,,cash,28/4/2020 11:53,2143 Mi Rd.,5
+16,,,credit,28/4/2020 12:10,Ap #691-5491 Fringilla Road,5
+32,,,credit,29/4/2020 10:03,"21 Lower Kent Ridge Rd, Singapore 119077",5
+20,,,cash,29/4/2020 11:02,"9673 A, St.",5
+9,,,cash,29/4/2020 17:45,Ap #781-3453 Odio Road,5
+38,,,credit,29/4/2020 18:13,2639 Elit Rd.,5
+13,,,cash,29/4/2020 18:28,"P.O. Box 255, 5464 Velit St.",5
+19,,,credit,30/4/2020 11:27,"21 Lower Kent Ridge Rd, Singapore 119077",5
+22,,,cash,30/4/2020 15:15,"21 Lower Kent Ridge Rd, Singapore 119077",5
+10,,,cash,30/4/2020 15:40,465 Id Rd.,5
+32,,,credit,30/4/2020 16:33,"21 Lower Kent Ridge Rd, Singapore 119077",5
+32,,,credit,1/5/2020 15:37,Ap #680-1342 At Street,5
+16,,,cash,1/5/2020 18:39,8225 Risus. Road,5
+5,,,cash,2/5/2020 12:30,"Ap #449-4984 Eu, St.",5
+21,,,cash,2/5/2020 14:21,"9673 A, St.",5
+34,,,cash,2/5/2020 19:28,"P.O. Box 442, 4876 Est St.",5
+27,,,credit,2/5/2020 20:08,Ap #312-8413 Proin St.,5
+17,,,credit,3/5/2020 10:31,2424 Eu Road,5
+5,,,credit,3/5/2020 10:52,6060 Suspendisse Rd.,5
+19,,,credit,3/5/2020 15:30,"21 Lower Kent Ridge Rd, Singapore 119077",5
+31,,,cash,3/5/2020 21:24,Ap #595-9948 Pede Av.,5
+9,,,cash,4/5/2020 12:46,"21 Lower Kent Ridge Rd, Singapore 119077",5
+37,,,credit,4/5/2020 17:37,"21 Lower Kent Ridge Rd, Singapore 119077",5

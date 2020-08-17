@@ -1,0 +1,16 @@
+promocode,promodesc,createdby,applicableto,discunit,discrate,startdate,enddate
+A121,$5 OFF if you order for a minimum of 10 dollars,,Lacus Inc.,$,5,1/1/2020 10:00,8/1/2020 23:59
+A122,15% OFF if first order,,Curabitur LLP,%,15,1/1/2020 10:00,8/1/2020 23:59
+A123,Free Delivery for all users,FDS,Lacus Inc.,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Curabitur LLP,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Ornare Ltd,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Egestas Urna Ltd,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Convallis In Limited,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Dignissim Company,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Libero Dui PC,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Ligula PC,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Amet Consectetuer Corp.,FD,,10/1/2020 10:00,10/1/2020 23:59
+A123,Free Delivery for all users,FDS,Nulla Semper Industries,FD,,10/1/2020 10:00,10/1/2020 23:59
+B111,$5 OFF if you order for a minimum of 10 dollars,,Curabitur LLP,$,5,1/5/2020 10:00,26/5/2020 23:59
+B122,Free Delivery for all users,FDS,Nulla Semper Industries,FD,,1/5/2020 10:00,26/5/2020 23:59
+B123,15% OFF if first order,,Dignissim Company,%,15,1/5/2020 10:00,26/5/2020 23:59
